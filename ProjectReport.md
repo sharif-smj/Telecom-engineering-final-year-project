@@ -47,6 +47,24 @@ SUPERVISOR: Dr. Dickson Mugerwa
 3.12 Ethical Considerations
 3.13 Tools and Software Requirements
 
+# List of Abbreviations
+
+| Abbreviation | Description |
+| --- | --- |
+| AMC | Automatic Modulation Classification |
+| DAE | Denoising Autoencoder |
+| SDR | Software-Defined Radio |
+| ML | Machine Learning |
+| DL | Deep Learning |
+| SNR | Signal-to-Noise Ratio |
+| SINR | Signal-to-Interference-plus-Noise Ratio |
+| QoS | Quality of Service |
+| UCC | Uganda Communications Commission |
+| UCUSAF | Uganda Communications Universal Service and Access Fund |
+| NDPIII | Third National Development Plan (2020/21–2024/25) |
+| NBP | National Broadband Policy |
+| TVWS | Television White Space |
+
 ---
 
 # CHAPTER ONE
@@ -67,7 +85,9 @@ Machine Learning (ML) and Deep Learning (DL) have improved AMC accuracy by learn
 
 ## 1.2 Problem Statement
 
-Traditional AMC systems break down in noisy and multipath environments because they rely on handcrafted features that are easily distorted. Furthermore, their performance significantly degrades when the received signal’s signal-to-noise ratio (SNR) falls below a certain threshold. This study addresses that limitation by introducing a machine learning-based denoising autoencoder (DAE) front-end that cleans the signal before classification, followed by an Automatic Modulation Classifier (AMC) that identifies the modulation type.
+Licensed networks in Uganda are already operating at the edge of their coverage obligations—UCUSAF targets sub-counties where 3G signal strength hovers around the −90 dBm minimum, meaning receivers routinely experience marginal SINR while sharing congested bands with multiple operators.[^5] UCC QoS drive tests confirm the consequence: in 2019 more than 70 % of MTN and Airtel call failures were traced to same-frequency interference, and blocked-call rates in towns such as Jinja spiked to 34 % against the 2 % regulatory ceiling because radios could not maintain reliable modulation recognition under noise.[^9] The regulator also documented illegal rooftop links and signal boosters that inject additional RF noise, threatening aviation and public-safety channels unless spectrum monitors can correctly classify weak emitters in real time.[^7][^9]
+
+Conventional AMC workflows—built on handcrafted cumulants or unenhanced neural classifiers—struggle in this environment; even mixture-of-expert architectures benchmarked across diverse SNRs only reach about 71.76 % average accuracy, far below what UCC’s fault-repair and QoS mandates require when signals drop below 0 dB.[^10] Without a front-end that denoises I/Q streams before classification, enforcement teams and network operators cannot meet national targets for rapid fault resolution, interference mitigation, or safe spectrum sharing. This project therefore tackles the specific gap by pairing a denoising autoencoder with an AMC head so that modulation decisions remain stable under Uganda’s low-SNR, interference-heavy conditions.
 
 ---
 
@@ -125,6 +145,8 @@ While most AMC systems assume clean, ideal signals, real-world transmissions suf
 [^6]: Ghana Chamber of Telecommunications, “Mobile Internet Access Still Limited in Africa, Millions Remain Offline,” citing GSMA data, 2024, https://www.telecomschamber.org/industry-news/mobile-internet-access-still-limited-in-africa-millions-remain-offline/.
 [^7]: Uganda Communications Commission, “UCC cracks down on illegal and non-compliant broadcasters,” 21 October 2024, https://www.ucc.co.ug/ucc-cracks-down-on-illegal-and-non-compliant-broadcasters/.
 [^8]: Xiaolin Zhang et al., “Dual Residual Denoising Autoencoder with Channel Attention Mechanism for Modulation of Signals,” *Sensors* 23, no. 1023 (2023), https://pmc.ncbi.nlm.nih.gov/articles/PMC9861137/.
+[^9]: *Low SNR, Interference & Illegal Transmissions in Uganda’s Wireless Networks*, internal research brief, 2025 (synthesizing UCC QoS surveys and enforcement bulletins).
+[^10]: *Quantifying the Impact of Low SNR and Interference on Wireless Service Resilience*, internal research brief, 2025 (summarizing NDPIII/NBP mandates and AMC accuracy benchmarks).
 
 ---
 
