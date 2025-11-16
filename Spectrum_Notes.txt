@@ -1,0 +1,253 @@
+Spectrum Congestion, Connectivity Gaps, and RF
+Monitoring in Uganda (2018–Present)
+Spectrum Usage Growth and Congestion in Uganda
+Uganda’s  commercial  wireless  networks  have  experienced  rapid  growth  in  traffic  and  infrastructure  in
+recent years, leading to concerns of spectrum congestion.  Mobile data usage has exploded:  Uganda’s
+mobile internet traffic roughly doubled from 217 million GB in 2021  to 421.5 million GB in 2022 , according
+to Uganda Communications Commission (UCC) reports  (published 2023). This surge reflects booming
+4G  data  consumption  and  smartphone  uptake.  To  support  demand,  network  infrastructure  has
+expanded  – as of March 2022 there were over 30.6 million mobile subscriptions  and 4,300+ base station
+sites  active across Uganda , indicating widespread deployment of 2G/3G/4G Base Transceiver Stations
+(BTS). Nevertheless, operators face spectrum licensing constraints : until recently, only limited frequency
+bands  were  allocated  for  4G/5G.  UCC’s  multi-band  auction  in  2022–2023  released  new  spectrum  (e.g.
+700 MHz, 800 MHz “digital dividend” bands, 2.3–3.5 GHz, etc.) to MTN and Airtel , aiming to alleviate the
+crunch and enable 5G rollouts. Even so, urban areas like Kampala often see heavy spectrum utilization, with
+numerous carriers and technologies overlapping. Congested bands increase interference and raise the
+noise floor .
+Impact  on  modulation  recognition:  Spectrum  congestion  means  wireless  receivers  encounter  more
+overlapping signals and radio-frequency noise. Research in 2025 notes that the rise of end-users and
+wireless services has “ intensified radio spectrum congestion ” . This directly challenges  Automatic
+Modulation  Classification  (AMC)  in  cognitive  radio  systems  –  it  is  harder  to  reliably  identify  signal
+modulation types amid dense interference. Cognitive radios rely on modulation sensing to dynamically
+access free channels; under high congestion, misclassification can occur if signals collide. Thus, Uganda’s
+congestion context underscores the need for noise-robust  AMC techniques (such as deep learning classifiers
+with DAE denoising) to maintain accuracy. In fact, robust AMC is considered critical in advanced wireless
+design – it is “one of the basic building blocks” of both cognitive radio receivers and electronic warfare
+receivers . Improving AMC resilience to noise/interference helps cognitive spectrum management : for
+example, an SDR base station with AMC+DAE could better distinguish users’ modulation schemes on a
+crowded tower , or a dynamic spectrum access system could detect an empty channel despite adjacent-band
+interference. In summary, Uganda’s fast-growing spectrum usage (with doubling data traffic and expanding
+BTS deployments) risks congestion that complicates signal classification, motivating more sophisticated
+SDR/AMC solutions.
+Sources:  UCC market report (2023) ; UCC/KIU study (2023) ; GSMA/TeleGeography news (2022) ;
+Yu et al. , Sci. China Inf. Sci.  (2025) ; Cutno (Master’s thesis, 2016) .1
+2
+3
+4
+5
+1 2 3
+4 5
+1
+
+Rural Connectivity Gaps in Uganda
+Despite  overall  progress,  rural  Uganda  faces  significant  connectivity  gaps .  A  large  portion  of  the
+population still lacks reliable broadband or mobile coverage  outside urban centers:
+Coverage deficits:  By end of 2021, 3G mobile coverage reached 93% of the population , up from
+63% in 2016, while 4G coverage reached ~79% . This means roughly 7% of Ugandans (mostly in
+remote rural areas) had no access to even 3G service  as of 2021. By 2025, coverage improved
+further  –  the  GSMA  reports  Uganda  achieved  over  96%  population  coverage  with  3G/4G
+infrastructure . However , coverage is not universal: many sparsely populated villages still fall
+outside base station range (or only have a weak 2G signal). A 2024 investment report noted that
+“only  65% of Uganda  [by area] has mobile network coverage” currently, and set a goal of 95%
+coverage  in  coming  years .  These  gaps  are  concentrated  in  rural  districts,  especially  in
+mountainous  or  hard-to-reach  regions  (e.g.  parts  of  Karamoja,  Northern  Uganda).  UCC’s  own
+assessments identified 117 sub-counties with less than 30% 3G coverage  as of 2022  – a clear
+indication of underserved rural pockets.
+Offline population:  Due to these coverage gaps (and other barriers like cost), a large share of
+Ugandans  remain  offline.  In  2024,  an  estimated  30  million  people  in  Uganda  (≈62%  of  the
+population) had no access to mobile internet . Even by 2025, only ~30% of Ugandans were
+active internet users  while 70% stayed offline . The majority of the offline population resides
+in rural areas. This “usage gap” persists despite infrastructure presence, pointing to issues like device
+affordability,  digital  literacy,  and  network  quality.  Still,  pure  lack  of  coverage  is  a  foundational
+problem for many villages – without a signal, there is no opportunity to get online.
+Government and UCC initiatives:  To close the rural connectivity gap, Uganda has undertaken
+several  programs.  The  National  Backbone  Infrastructure  (NBI)  project  (operational  since  late
+2010s) extended over 2,400 km of fiber optic backbone across the country, linking up-country towns
+and border regions to high-speed backhaul . This backbone enables telecom operators to reach
+rural areas with capacity (and connect public institutions – schools, hospitals – under e-government
+plans). UCC also manages a  Rural Communications Development Fund (RCDF) , now branded
+UCUSAF (Universal Service Access Fund), which subsidizes telecom expansion in unprofitable rural
+markets. Under the  UCUSAF Access Infrastructure Program (2022–2027) , UCC is co-funding  200
+new rural cell sites  in those 117 under-covered sub-counties . The first phase (63 tower sites)
+launched  in  2023  in  partnership  with  a  tower  company,  targeting  villages  with  no  signal .
+Additionally, in March 2024 a consortium of European development banks lent $40 million to deploy
+506 new mobile towers in rural Uganda  – a project expected to boost 4G/5G coverage in
+remote communities and help reach Uganda’s 95% population coverage goal. These initiatives, along
+with programs to provide solar power for rural towers and community Wi-Fi hubs, illustrate the
+concerted effort to bridge the rural digital divide.
+Technical conditions (low SNR & multipath):  Even where rural networks exist, they often suffer
+poor signal quality . Base stations in rural Uganda typically serve large cell radii (many kilometers)
+with few sites, so users at the fringes experience low signal-to-noise ratios (SNR)  and intermittent
+connectivity. For example, a farmer 10–15 km from the nearest tower might only get a 1-bar EDGE/
+3G signal, especially during bad weather . Terrain and vegetation further attenuate signals – Uganda’s
+rural landscape includes hills, forests, and scattered homesteads, which can introduce  multipath• 
+6
+7
+8
+9
+• 
+10
+1112
+• 
+13
+9
+14
+1516
+• 
+2
+
+fading  and  shadowing.  While  open  rural  areas  have  less  dense  multipath  than  cities,  hilly  or
+wooded rural areas still create signal reflections and delays  that distort the radio channel. The
+combination  of  low  SNR  and  multipath  interference  leads  to  high  error  rates  and  dropped
+connections for rural users. These challenging conditions are precisely where noise-robust AMC  can
+aid SDR deployments: an SDR system using an  Autoencoder-based denoiser  could help clean a
+weak, distorted signal from a distant rural tower , improving the accuracy of modulation classification
+and decoding. In essence, the rural environment in Uganda – characterized by long-range links and
+propagation impediments – underscores the need for robust modulation recognition algorithms
+that perform reliably under low-SNR, fading conditions (ensuring that even faint signals can be
+detected and correctly identified by cognitive radio systems).
+Sources:  World Bank RCIP-5 Report (2022) ; GSMA Intelligence via AfricaOne (2025) ; Extensia/
+GSMA (2025) ; UCC UCUSAF Program FAQs (2023) ; EIB Press Release (2024) ; NITA Uganda NBI
+Report (2019); KIU/EE Journals  review on rural networks (Thalia 2025) .
+RF Security Monitoring and Surveillance Needs
+Uganda has recognized the importance of  radio frequency (RF) security monitoring  to combat illicit
+transmissions  and  protect  critical  communications.  Several  cases  and  policies  highlight  the  need  for
+spectrum surveillance and robust signal classification for national security:
+Crackdown on illegal broadcasts:  Unauthorized use of the RF spectrum – such as pirate radio
+stations, rogue telecom operators, or jamming devices – has been a persistent issue. The UCC, as
+regulator , has ramped up enforcement against illegal transmitters. In late 2018, UCC  deployed an
+automated spectrum monitoring system  (with remote monitoring stations in Masindi and Mbale) to
+“crack  the  whip”  on  unlicensed  broadcasters .  This  system,  implemented  with  international
+partners  (Central  Radio  Management  Service  of  S.  Korea),  automatically  scans  and  pinpoints
+illegal radio signals . “We want to know who is out there and if they are complying,”  explained UCC’s
+engineering  director ,  noting  that  remote  monitoring  stations  ensure  the  spectrum  is  well
+utilized and that illegal operations and interference are minimized . By switching from ad-
+hoc manual checks to continuous monitoring, UCC greatly improved its capacity to detect illicit
+transmissions in real time . The motivation is both economic and safety-related: for instance,
+Uganda’s  aviation,  emergency  services,  and  telecom  operators  all  rely  on  clean  spectrum,  so
+catching a pirate FM station or an unlicensed two-way radio that could interfere with authorized
+bands is critical. The UCC’s investment (multi-billion UGX) in spectrum monitoring infrastructure
+shows a strong policy push to secure the airwaves.
+Spectrum congestion & security:  UCC officials have highlighted that Uganda’s RF spectrum is
+densely populated –  “100% radio coverage”  has been achieved with  over 292 licensed FM radio
+stations ,  plus  20+  providers  of  voice/data  services  and  ~24  million  mobile  subscribers ,  “all
+[using] a finite resource – spectrum – which needs to be managed.” . In this environment, an  illicit
+transmitter  can easily cause harmful interference (e.g. a bootleg radio station overlapping an airport
+frequency, or an illegal cellular repeater creating noise on a mobile network). Indeed, many local
+radio interferences have been traced to stations operating outside their assigned bandwidth or on
+unauthorized  frequencies .  By  mid-2023  and  2025,  UCC  intensified  crackdowns  (“Operation
+against illegal broadcasters”), even obtaining High Court orders to shut down pirate radio stations
+that  reappeared  repeatedly.  Security  risks:  UCC’s  legal  team  warned  in  2025  that  unlicensed6 1112
+10 9 16
+1718
+• 
+19
+20
+21
+• 
+22
+23
+3
+
+broadcasters  pose  “significant  risks  to  public  safety,  security  and  the  integrity  of  the  country’s
+communications sector.”  Because these operators are unregistered, authorities have no record of
+their location or technical parameters, making it hard to intervene if they air dangerous content or
+interfere with emergency communications . For example, during national emergencies (e.g. a
+pandemic  or  election  unrest),  the  government  relies  on  licensed  broadcasters  for  coordinated
+messaging; an unregulated transmitter could spread misinformation or disrupt official signals .
+This  underscores  a  national  security  need  for  robust  signal  monitoring  and  identification .
+Regulators and security agencies must swiftly detect and classify rogue signals – whether it’s a
+clandestine radio station, a jammer , or an unauthorized military-grade communication – and then
+take action (e.g. signal jamming or physical confiscation). 
+Electronic warfare preparedness:  Beyond civil spectrum management, the ability to classify and
+decode  RF  signals  is  vital  for  electronic  warfare  (EW)  and  surveillance.  Uganda’s  military  and
+intelligence community (like others globally) monitor the airwaves for threats such as insurgent
+communications, cross-border illegal transmissions, or hostile drones’ control signals.  Automatic
+Modulation Classification  is a key tool in this domain – originally developed for military SIGINT/
+COMINT, AMC allows identification of a signal’s modulation and thus inference of its type (e.g.
+distinguishing a military HF encrypted link from a civilian broadcast). A technical survey notes that
+AMC has long been used in “military areas such as electronic warfare, surveillance and threat
+analysis” .  In  modern  EW  receivers,  an  AMC  module  automatically  identifies  modulation
+patterns  of  intercepted  signals,  which  helps  operators  decide  if  a  signal  is  friend,  foe,  or
+interference. For Uganda and East African neighbors, regional security challenges (like counter-
+terror operations in Somalia or illicit radio communications by rebel groups in DRC/South Sudan)
+mean there is a tangible need for RF signal classification capabilities. Noise-robust AMC, potentially
+enhanced by Deep Learning (e.g. DAE-based feature extraction), would improve the reliability of
+spectrum surveillance systems  used by security agencies. For instance, an SDR-based monitoring
+station on Uganda’s border could use robust AMC to detect a low-power VHF transmission used by
+smugglers, even under heavy background noise. The  integration of AMC in national spectrum
+monitoring  thus serves both regulatory enforcement and security intelligence. Uganda’s ongoing
+efforts to modernize police and defense communications (e.g. the Uganda Police’s digital radio
+upgrade to encrypted DMR in 2021) further highlight focus on controlling the RF domain . In
+summary, documented crackdowns on illegal spectrum use and the stated security concerns show
+that  monitoring  illicit  transmissions  is  a  national  priority .  Implementing  noise-resilient
+modulation  classification  in  SDR  systems  will  enhance  Uganda’s  ability  to  detect,  classify,  and
+mitigate  unauthorized  or  threatening  RF  signals  amidst  an  increasingly  crowded  spectrum
+environment.
+Sources:  Daily Monitor (UCC), Nov 2018 ; UCC Consumer Affairs – Spectrum remarks (2018) ;
+Mulengera News (quoting UCC legal), Aug 2025 ; Cutno (2016, p.1) ; FOI Sweden Report (2009) ;
+Hytera case study (2021) . 24
+25
+• 
+26
+2728
+1920 22
+24 5 26
+2728
+4
+
+Phone call time per user falls to monthly average of 174 minutes | Monitor
+https://www.monitor .co.ug/uganda/business/markets/phone-call-time-per-user-falls-to-monthly-average-of-174-
+minutes-4276636
+ijascfrtjournal.isrra.org
+https://ijascfrtjournal.isrra.org/index.php/Applied_Sciences_Journal/article/download/1350/111/884
+MTN and Airtel win big in Uganda's 5G spectrum awards
+https://developingtelecoms.com/telecom-business/telecom-regulation/15204-mtn-and-airtel-win-big-in-uganda-s-5g-spectrum-
+awards.html
+Multi-representation domain attentive contrastive learning based unsupervised automatic modulation
+recognition - PMC 
+https://pmc.ncbi.nlm.nih.gov/articles/PMC12218581/
+OhioLINK ETD: Cutno, Patrick
+https://rave.ohiolink.edu/etdc/view?acc_num=miami1480079193743277
+World Bank Document
+https://documents1.worldbank.org/curated/en/099201003232384495/pdf/BOSIB031b945b302f0bc6608f2ac3c6b782.pdf?
+_gl=1*fln7uu*_gcl_au*MTcxNTIwMDkyMy4xNzE4MDI4Nzg4
+70% of Ugandans Still Offline Despite 96% Broadband Reach - AfricaOne News
+https://www.africaone.com/articles/70-of-ugandans-still-offline-despite-96-broadband-reach/
+Uganda: US$40 million European backing for Uganda rural telecom expansion
+https://www.eib.org/en/press/all/2024-097-usd40-million-european-backing-for-uganda-rural-telecom-expansion
+ucc.co.ug
+https://www.ucc.co.ug/wp-content/uploads/2024/02/UCUSAF-ACCESS-INFRASTRUCTURE-PROGRAM-FAQ.pdf
+The 8 African countries with the most people not connected to mobile Internet (GSMA) | Extensia Ltd
+https://extensia.tech/the-8-african-countries-with-the-most-people-not-connected-to-mobile-internet-gsma/
+(PDF) Building Resilient Communication Networks in Rural Uganda: The Role of AI and IoT
+https://www.researchgate.net/publication/
+392927859_Building_Resilient_Communication_Networks_in_Rural_Uganda_The_Role_of_AI_and_IoT
+UCC cracks whip on illegal broadcasters | Monitor
+https://www.monitor .co.ug/uganda/business/finance/ucc-cracks-whip-on-illegal-broadcasters-1792688
+Frequency monitor due
+https://www.newvision.co.ug/news/1273579/frequency-monitor
+Here’s Why ex-M7 Minister Elioda Tumwesigye Could Serve Years in Prison Over Illegal Media
+Business Breaching Uganda Communications Act – mulengeranews.com
+https://mulengeranews.com/heres-why-ex-m7-minister-elioda-tumwesigye-could-serve-years-in-prison-over-illegal-media-
+business-breaching-uganda-communications-act/
+Survey of modulation classficiation methods for QAM signals.
+https://www.foi.se/rest-api/report/FOI-R--1616--SE
+乌干达警察案例-202mmx285mm-英文-20210607.cdr
+https://www.hytera.com/adaptivemedia/rendition?id=70361096f8535862103fed5f28c8a1760abaa8c51
+2
+3
+4
+5
+613
+711 12
+815 16
+914
+10
+17 18
+19 20 22 23
+21
+24 25
+26
+27 28
+5
