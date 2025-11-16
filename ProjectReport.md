@@ -97,56 +97,37 @@ To design, implement, and empirically evaluate a hybrid Denoising Autoencoder–
 
 ### 1.3.1 Specific Objectives
 
-1. To review existing AMC and DAE-based denoising techniques.
-2. To design a DAE network that reduces channel noise and preserves key modulation features in I/Q data.
-3. To implement and train an AMC model on both raw and denoised data.
-4. To evaluate the combined DAE-AMC system against standard metrics such as accuracy, F1-score, and robustness across varying SNR conditions.
+1. To review AMC and DAE literature with emphasis on low-SNR mitigation strategies relevant to Ugandan channel conditions.
+2. To architect and train a Conv1D DAE module that reconstructs clean I/Q samples from noisy inputs representative of UCUSAF –90 dBm thresholds.
+3. To implement a supervised AMC classifier that ingests both raw and DAE-cleaned signals and quantify feature preservation.
+4. To benchmark the integrated DAE–AMC pipeline against the standalone AMC using accuracy, F1-score, confusion matrices, and robustness across controlled SNR sweeps.
+5. To document deployment considerations for embedding the prototype within SDR-based monitoring or enforcement workflows in Uganda.
 
 ---
 
 ## 1.4 Scope of the Study
 
-This study focuses on supervised learning for AMC and unsupervised learning for signal denoising. It will classify modulation schemes such as BPSK, QPSK, 8PSK, 16QAM, 64QAM, AM, and FM. The dataset is the RF Signal Data (Kaggle), containing real I/Q samples from SDR hardware. The DAE module will be trained on synthetically degraded versions of these samples (by adding Gaussian noise) and evaluated based on how much it improves AMC accuracy at low SNRs.
+This investigation is limited to offline experimentation using publicly available I/Q corpora: the RF Signal Data collection on Kaggle (real SDR captures), the DeepSig RadioML 2018.01A benchmark, the MIGOU-MOD over-the-air IoT dataset, and the historical RadioML 2016.10A archive.[^11][^12][^13][^14] No live SDR capture, hardware deployment, or regulatory compliance testing is undertaken. Instead, controlled Additive White Gaussian Noise (AWGN) levels and SNR sweeps are injected to emulate the −90 dBm edge conditions faced by UCUSAF sites while training two components: (i) an unsupervised Conv1D DAE that reconstructs clean waveforms and (ii) a supervised AMC head that consumes both raw and denoised samples across the BPSK, QPSK, 8PSK, 16QAM, 64QAM, AM, and FM families. Findings and metrics therefore reflect these synthetic SNR scenarios rather than live network measurements; cross-dataset tests quantify how well the pipeline generalizes to other public benchmarks.
 
 ---
 
 ## 1.5 Significance of the Study
 
-The proposed hybrid DAE-AMC system improves reliability in signal classification tasks under poor channel conditions. By adding the DAE, the study contributes to robust and noise-resilient RF systems, improving demodulation accuracy, signal clarity, and downstream model confidence. This has practical implications in cognitive radio, spectrum monitoring, and defense communication, where signals are often corrupted by environmental noise.
+By keeping modulation recognition stable when SNR collapses toward UCUSAF’s −90 dBm coverage floor, the proposed DAE–AMC pipeline offers a practical response to the congestion, interference, and illegal-transmitter issues highlighted by UCC QoS audits and GSMA connectivity surveys. It bolsters spectrum surveillance, rural broadband, aviation safety, and mobile money services that depend on reliable radio links in Uganda’s noisy bands.[^5][^6][^7][^9]
 
 ---
 
 ## 1.6 Justification
 
-While most AMC systems assume clean, ideal signals, real-world transmissions suffer from severe distortions. A denoising autoencoder preprocessor allows the model to reconstruct near-clean signals, boosting classifier robustness without manually engineered filters. This hybrid DAE-AMC structure blends unsupervised feature learning (for denoising) and supervised classification (for modulation identification) into one intelligent, adaptive system.
+UCC’s mandates to resolve 95 % of faults within 24 hours and suppress harmful interference cannot be met if AMC models deliver barely 71.76 % accuracy once SNR drops below 0 dB.[^9][^10] Pairing a learnable denoiser with the classifier reduces reliance on brittle handcrafted features, aligns with NDPIII/NBP directives to adopt spectrum-efficient techniques, and creates an adaptable software upgrade that fits existing SDR monitoring chains without requiring additional spectrum allocations.[^4][^10]
 
 ---
 
 ## 1.7 Conceptual Framework
 
 ```
-        RF Signal (I/Q Data)
-                │
-                ▼
-       Denoising Autoencoder (DAE)
-                │
-                ▼
-     Machine Learning Classifier (AMC)
-                │
-                ▼
-      Predicted Modulation Scheme
+RF Signal (I/Q Data) -> Denoising Autoencoder (DAE) -> AMC Classifier -> Predicted Modulation
 ```
-
-[^1]: Uganda Communications Commission, “Telephone Subscriptions Rise to 33.2 Million,” *UCC Communications Blog*, 9 June 2023, https://uccinfoblog.com/2023/06/09/telephone-subscriptions-rise-to-33-2-million/.
-[^2]: Atomic Energy Council, “Radiofrequency Radiation in Uganda,” 2022, https://www.atomiccouncil.go.ug/non-ionizing-radiation-radiofrequency/.
-[^3]: Christopher Kiiza, “Uganda’s Internet Users Hit 13 Million,” *ChimpReports*, 25 March 2024, https://chimpreports.com/ugandas-internet-users-hit-13-million/.
-[^4]: European Investment Bank, “US$40 million European backing for Uganda rural telecom expansion,” Press Release, 11 April 2024, https://www.eib.org/en/press/all/2024-097-usd40-million-european-backing-for-uganda-rural-telecom-expansion.
-[^5]: TechJaja, “UCUSAF: Why is UCC still rolling out own telecom network?” 6 February 2024, https://techjaja.com/ucusaf-why-is-ucc-still-rolling-out-own-telecom-network/.
-[^6]: Ghana Chamber of Telecommunications, “Mobile Internet Access Still Limited in Africa, Millions Remain Offline,” citing GSMA data, 2024, https://www.telecomschamber.org/industry-news/mobile-internet-access-still-limited-in-africa-millions-remain-offline/.
-[^7]: Uganda Communications Commission, “UCC cracks down on illegal and non-compliant broadcasters,” 21 October 2024, https://www.ucc.co.ug/ucc-cracks-down-on-illegal-and-non-compliant-broadcasters/.
-[^8]: Xiaolin Zhang et al., “Dual Residual Denoising Autoencoder with Channel Attention Mechanism for Modulation of Signals,” *Sensors* 23, no. 1023 (2023), https://pmc.ncbi.nlm.nih.gov/articles/PMC9861137/.
-[^9]: *Low SNR, Interference & Illegal Transmissions in Uganda’s Wireless Networks*, internal research brief, 2025 (synthesizing UCC QoS surveys and enforcement bulletins).
-[^10]: *Quantifying the Impact of Low SNR and Interference on Wireless Service Resilience*, internal research brief, 2025 (summarizing NDPIII/NBP mandates and AMC accuracy benchmarks).
 
 ---
 
@@ -256,3 +237,21 @@ All data are open-source and used for academic purposes only. Proper citations w
 
 Python 3.11, TensorFlow/PyTorch, NumPy, scikit-learn, Matplotlib, and Jupyter Notebook.
 
+---
+
+# References
+
+[^1]: Uganda Communications Commission, “Telephone Subscriptions Rise to 33.2 Million,” *UCC Communications Blog*, 9 June 2023, https://uccinfoblog.com/2023/06/09/telephone-subscriptions-rise-to-33-2-million/.
+[^2]: Atomic Energy Council, “Radiofrequency Radiation in Uganda,” 2022, https://www.atomiccouncil.go.ug/non-ionizing-radiation-radiofrequency/.
+[^3]: Christopher Kiiza, “Uganda’s Internet Users Hit 13 Million,” *ChimpReports*, 25 March 2024, https://chimpreports.com/ugandas-internet-users-hit-13-million/.
+[^4]: European Investment Bank, “US$40 million European backing for Uganda rural telecom expansion,” Press Release, 11 April 2024, https://www.eib.org/en/press/all/2024-097-usd40-million-european-backing-for-uganda-rural-telecom-expansion.
+[^5]: TechJaja, “UCUSAF: Why is UCC still rolling out own telecom network?” 6 February 2024, https://techjaja.com/ucusaf-why-is-ucc-still-rolling-out-own-telecom-network/.
+[^6]: Ghana Chamber of Telecommunications, “Mobile Internet Access Still Limited in Africa, Millions Remain Offline,” citing GSMA data, 2024, https://www.telecomschamber.org/industry-news/mobile-internet-access-still-limited-in-africa-millions-remain-offline/.
+[^7]: Uganda Communications Commission, “UCC cracks down on illegal and non-compliant broadcasters,” 21 October 2024, https://www.ucc.co.ug/ucc-cracks-down-on-illegal-and-non-compliant-broadcasters/.
+[^8]: Xiaolin Zhang et al., “Dual Residual Denoising Autoencoder with Channel Attention Mechanism for Modulation of Signals,” *Sensors* 23, no. 1023 (2023), https://pmc.ncbi.nlm.nih.gov/articles/PMC9861137/.
+[^9]: *Low SNR, Interference & Illegal Transmissions in Uganda’s Wireless Networks*, internal research brief, 2025 (synthesizing UCC QoS surveys and enforcement bulletins).
+[^10]: *Quantifying the Impact of Low SNR and Interference on Wireless Service Resilience*, internal research brief, 2025 (summarizing NDPIII/NBP mandates and AMC accuracy benchmarks).
+[^11]: RF Signal Data, Kaggle, accessed 2025, https://www.kaggle.com/datasets/suraj520/rf-signal-data.
+[^12]: DeepSig Dataset: RadioML 2018.01A, Kaggle, accessed 2025, https://www.kaggle.com/datasets/pinxau1000/radioml2018.
+[^13]: Ramiro Utrilla, “MIGOU-MOD: A dataset of modulated radio signals acquired with MIGOU, a low-power IoT experimental platform,” Mendeley Data V1, 2020, https://data.mendeley.com/datasets/fkwr8mzndr/1.
+[^14]: DeepSig, “RadioML 2016.10A Dataset,” https://www.deepsig.ai/datasets/, accessed 2025.
