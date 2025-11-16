@@ -1,0 +1,206 @@
+Low SNR, Interference & Illegal Transmissions in
+Uganda’s Wireless Networks
+1. Technical Metrics in Uganda/East Africa
+Signal Quality at Cell Edges:  Rural and edge-of-network users often operate near the minimum
+SNR for connectivity. For example, an LTE link can maintain ~95% throughput at roughly (–1 dB SNR)
+using robust QPSK coding, whereas higher-order modulations demand >10 dB SNR . This
+means cell-edge devices frequently fall back to low-rate modulation when SNR dips near zero,
+limiting data speeds. 
+Interference-Driven Errors: Uganda Communications Commission (UCC)  QoS surveys show that
+“poor signal quality” (i.e. degraded SNR due to interference) is a leading cause of network failures. In
+late 2019, over (70 %) of MTN and Airtel call failures were attributed to in-network interference  (same-
+frequency radios causing self-interference), resulting in dropped/blocked calls . By contrast,
+Africell and UTL saw more failures from outright coverage gaps , highlighting how noise vs. signal
+paucity both impact rural service. 
+Modulation Classification Under Noise:  Cognitive radio studies confirm that heavy noise severely
+impairs automatic modulation recognition. One report finds even advanced classifiers barely achieve
+(~30% accuracy) at extreme low SNR (–20 dB) . In practice, accuracies remain poor until SNR
+improves by an order of magnitude – e.g. an 8-PSK signal requires ~8 dB SNR to reach about (90 %
+classification accuracy) . This drop-off underscores the challenge of identifying signals under
+Uganda’s noisy spectrum conditions. 
+Rural Link Performance Figures:  Field trials in the region quantify the impact of distance and
+interference on link quality. For instance, a TV White Space pilot in Malawi (UHF band) reported an
+average SNR of (~24.7 dB) over a 7.5 km  link, yet throughput was only ~0.42 Mbps with ~118 ms
+latency . This modest data rate, despite a healthy SNR, reflects constraints like limited channel
+bandwidth and ambient interference in real deployments. Likewise, in Uganda’s high-traffic areas,
+UCC observed call block rates spiking to (34 %)+ in towns like Jinja  (vs. a 2% target), correlating
+with low signal levels and local interference issues.
+2. Documented Service Impacts
+Mobile Network Outages & Quality Degradation:  UCC’s investigations have linked illegal
+transmitters to service disruptions. In Oct 2024 , UCC revealed that unauthorized 3.5 GHz point-to-
+point radios on Kampala rooftops were interfering  with licensed LTE bands (used by MTN/Airtel),
+degrading connectivity downtown . An enforcement operation was launched to dismantle ~8
+such links causing these disruptions . Earlier , mid-2023 , UCC had similarly shut down dozens of
+illicit signal repeaters (“boosters”) after complaints from operators  that these devices were injecting
+noise and crippling local cell reception . Several offenders faced prosecution as the
+interference was directly undermining mobile voice and data quality in the affected areas. 
+Dropped Calls & Data Failures:  High interference translates to tangible user impact in Uganda’s
+networks. UCC’s QoS drive tests (Sept–Nov 2019) found call drop and block rates far above• 
+12
+• 
+34
+5
+• 
+6
+7
+• 
+8
+9
+• 
+10
+11
+1213
+• 
+1
+acceptable levels in multiple regions, largely due to low SNR. Notably, Airtel users in Jinja
+experienced a blocked-call rate of 34%  (meaning over one-third of call attempts failed) , while
+cities like Lira, Mbale, and Moroto saw 12–15% call blocking – all vastly exceeding the 2% QoS
+threshold. UCC traced this to signal interference and congestion causing “degradation in the quality
+of the network signal” and has since pressed operators for remedial plans . Such
+interference-induced outages also jeopardize services like mobile money  which rely on a stable
+mobile network. 
+Aviation Communication Risks:  The Uganda Civil Aviation Authority (UCAA)  has cautioned that
+traditional aeronautical radio channels suffer reliability issues due to coverage gaps and interference .
+In Sept 2024, UCAA noted that over oceanic and remote continental airspace “voice/radio
+communication is less reliable… due to limited coverage and interference,” which can lead to
+miscommunication . To mitigate this safety risk, Uganda adopted a data-link system (text-
+based air-ground communication) less vulnerable to noise. The move came after recognizing that
+high radio noise floors were impeding clear voice links with pilots, underscoring how illegal
+transmissions or ambient RF noise can even impact critical services like aviation and air traffic
+control. 
+Enforcement and Monitoring Lapses:  Until recently, Ugandan authorities lacked robust spectrum
+monitoring, allowing some illegal operators to persist. UCC has since acquired new monitoring
+equipment and, in 2024, jointly with police, intensified crackdowns on pirate broadcasters and
+unlicensed radios . For example, numerous “bizindaalo” (outdoor megaphone community
+radios) were seized for broadcasting without licenses and causing harmful interference  to legitimate
+FM stations and even public safety communications . In one sweep, 30+ illegal radio setups
+were dismantled nationwide . These incidents illustrate that unregulated transmitters not only
+break the law but also degrade the overall RF environment – prompting UCC to invest in continuous
+spectrum surveillance to detect and address interference sources in real time.
+3. Policy and Regulatory Mandates
+Quality of Service & Coverage Goals:  Uganda’s national strategies explicitly prioritize improved
+signal quality and interference management as part of expanding broadband. The Third National
+Development Plan (NDPIII 2020/21–2024/25)  acknowledges that broadband infrastructure still has
+“significant quality of service challenge,” with most rural areas underserved . NDPIII and the 
+National Broadband Policy (2018)  set ambitious targets for universal access (e.g. minimum 4 Mbps
+countrywide) and call for investments to extend reliable coverage to 100%  of districts. Indeed,
+Uganda’s new Digital Transformation Roadmap (2023–2028)  aims for (90 % broadband coverage)
+by 2040, stressing “strengthened infrastructure and wider connectivity”  to bridge the urban–rural divide
+. These policies create a mandate for regulators and operators to improve SNR at cell edges,
+adhere to QoS thresholds, and reduce outages caused by noise or interference. 
+Spectrum Management & Interference Mitigation:  Ugandan law and regulations empower UCC
+to enforce strict anti-interference measures. The Uganda Communications Act 2013  (Sections 5, 22,
+26–27) forbids operating any radio/transmitter without a license or in violation of technical rules.
+UCC’s Radio Spectrum Management Guidelines  (2017) explicitly instruct that “Any interference reported
+or observed shall be investigated and addressed.”  Offending users face penalties “including fines,
+withdrawal of spectrum and other penalties” for unauthorized or non-compliant transmissions .
+In practice, this has led UCC to issue public warnings (e.g. in 2021 against unapproved signal
+boosters ) and to mount enforcement operations as noted. The Commission also runs an 
+Intelligent Network Monitoring System  to continuously sample QoS and detect anomalies ,9
+414
+• 
+1516
+• 
+1718
+1920
+21
+• 
+22
+2324
+• 
+25
+26
+27
+2
+aligning with ITU best practices. In short, Uganda’s regulatory framework mandates proactive
+interference monitoring and swift enforcement to protect licensed services’ SNR and bit error rates. 
+Dynamic Spectrum Allocation Initiatives:  National policy supports innovative spectrum sharing to
+alleviate congestion and noise. The Digital Uganda Vision 2040  and Broadband Policy encourage 
+“optimal utilization of spectrum resources”  through technologies like dynamic access . In 2021, UCC
+rolled out a TV White Space (TVWS) usage standard  for the 470–694 MHz band – allowing
+secondary rural broadband use of vacant TV channels under a geolocation database system .
+This framework permits multiple services to share spectrum without interference, reflecting
+Uganda’s commitment to modern spectrum management. Similarly, the regulator has discussed
+opening unlicensed or lightly-licensed bands for community networks and Wi-Fi offload as long as
+devices meet technical parameters to avoid harmful interference . These policy moves
+(guided by NDPIII and the Broadband Infrastructure Blueprint) underscore that mitigating
+interference is not just reactive; it’s built into Uganda’s future spectrum planning via smarter
+allocation and spectrum sharing  mechanisms. 
+Mandated QoS and Monitoring:  Uganda’s National Broadband Policy and UCC regulations also set 
+quantitative QoS thresholds  that indirectly target interference issues. For mobile networks, UCC
+requires <2% call drop/block rates and adequate signal strength in all covered areas . The Quality
+of Service Regulations (2019)  define metrics like signal-to-noise ratio (SNR)  and bit error rate (BER)
+that operators must meet, and empower UCC to audit performance . For example, UCC’s 2022
+public QoS report compared year-on-year data drop rates and signaled that operators must improve
+radio signal levels in regions falling short . Furthermore, Uganda’s National Broadband Plan
+emphasizes resilience against “signal interference with other licensed operators” , aligning policy
+with the need for on-the-ground enforcement. In sum, through a mix of development plans, policies,
+and technical standards, Uganda’s government has mandated: (a) expansion of reliable,
+interference-free communications nationwide, (b) adoption of dynamic spectrum tools to maximize
+SNR and reduce illegal use, and (c) continuous monitoring with penalties to ensure compliance with
+interference mitigation and QoS norms.
+Data Gaps:  While the above sources give concrete interference cases and some SNR/accuracy figures,
+localized  BER  measurements  in  Uganda’s  rural  deployments  remain  scarce  in  public  literature.  For
+instance,  no  specific  bit-error-rate  statistics  for  UCUSAF-funded  tower  sites  were  found  in  connected
+sources. Future field studies (e.g. drive tests on UCUSAF base stations or SDR spectrum sensing in villages)
+may be needed to quantify BER under real interference conditions. Similarly, detailed modulation-classifier
+performance data in Uganda’s context are limited – current figures are mostly from lab simulations. These
+gaps suggest an opportunity for on-site measurements and trials to further inform  dynamic spectrum
+management  and investment in interference mitigation technologies. 
+Sources: See the inline citations for titles, authors, dates, and URLs of the referenced reports, regulations, and
+articles.
+LTE Reference Sensitivity | SNR and throughput at the Cell edge
+https://www.techplayon.com/lte-reference-sensitivity-calculation-how-it-depends-on-snr-why-throughput-decrease-at-the-cell-
+edge/
+UCC finds poor signal responsible for most network failures
+https://www.independent.co.ug/ucc-finds-poor-signal-responsible-for-most-network-failures/• 
+28
+29 30
+10 31
+• 
+14
+32
+33
+20
+1 2
+3 4 5 914 33
+3
+Classifier confusion matrix for SNR=−10~20 dB. | Download Scientific Diagram
+https://www.researchgate.net/figure/Classifier-confusion-matrix-for-SNR-1020dB_fig7_361340918
+(PDF) Malawi Television White Spaces (TVWS) Pilot Network ...
+https://www.researchgate.net/publication/
+262275766_Malawi_Television_White_Spaces_TVWS_Pilot_Network_Performance_Analysis
+UCC, POLICE LAUNCH OPERATION AGAINST ILLEGAL BROADCASTERS – THE
+COMMUNICATIONS BLOG
+https://uccinfoblog.com/2024/10/22/ucc-police-launch-operation-against-illegal-broadcasters/
+UCC OPERATION TARGETS ILLEGAL RADIO STATIONS, BOOSTERS AND MEGAPHONES –
+THE COMMUNICATIONS BLOG
+https://uccinfoblog.com/2023/07/05/ucc-operation-targets-illegal-radio-stations-boosters-and-megaphones/
+Uganda Adopts Data Communication for Enhanced Air Navigation Reliability – Civil Aviation
+Authority
+https://caa.go.ug/uganda-adopts-data-communication-for-enhanced-air-navigation-reliability/
+library.health.go.ug
+https://library.health.go.ug/sites/default/files/resources/
+Third%20National%20Development%20Plan%20III%2C%202020-21-2024-25.pdf
+Gov’t to connect 90% of Ugandan households to internet in new digital transformation roadmap
+https://nilepost.co.ug/news/168580/govt-to-connect-90-of-ugandan-households-to-internet-in-new-digital-transformation-
+roadmap
+ucc.co.ug
+https://www.ucc.co.ug/wp-content/uploads/2023/10/UCC_Spectrum_Management_Guidelines_June_2017.pdf
+Uganda: MPs decry exploitation of Ugandans by telecom companies | Extensia Ltd
+https://extensia.tech/uganda-mps-decry-exploitation-of-ugandans-by-telecom-companies/
+ucc.co.ug
+https://www.ucc.co.ug/wp-content/uploads/2023/10/UCC-TVWS-standards.pdf
+Uganda: Africell registers worst drop call rate – UCC QoS report
+https://extensia.tech/uganda-africell-registers-worst-drop-call-rate-ucc-qos-report/6 7
+8
+10 11 17 18
+12 13 19 20 21 31
+15 16
+22
+23 24
+25 27
+26
+28 29 30
+32
+4
