@@ -64,6 +64,19 @@ SUPERVISOR: Dr. Dickson Mugerwa
 | NDPIII | Third National Development Plan (2020/21–2024/25) |
 | NBP | National Broadband Policy |
 | TVWS | Television White Space |
+| AWGN | Additive White Gaussian Noise |
+| CNN | Convolutional Neural Network |
+| RNN | Recurrent Neural Network |
+| LSTM | Long Short-Term Memory |
+| CLDNN | Convolutional LSTM Dense Neural Network |
+| OTA | Over-the-Air |
+| USRP | Universal Software Radio Peripheral |
+| GUI | Graphical User Interface |
+| PSNR | Peak Signal-to-Noise Ratio |
+| SSIM | Structural Similarity Index Measure |
+| AUC | Area Under the Curve |
+| MLflow | Machine Learning Flow (experiment tracking platform) |
+| W&B | Weights & Biases (experiment tracking platform) |
 
 ---
 
