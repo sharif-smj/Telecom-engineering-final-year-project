@@ -186,69 +186,110 @@ Denoising front-ends have emerged as an effective countermeasure when raw I/Q fe
 
 ## 3.0 Overview of Existing AMC Systems
 
-Existing AMC systems rely on handcrafted features or complex likelihood functions that fail under realistic conditions. This project introduces a supervised ML-based system enhanced with a DAE preprocessor.
+Conventional AMC pipelines in Ugandan networks still depend on handcrafted cumulants, likelihood tests, and static DSP filters that assume high SNR and stable oscillators. As laid out in Chapter 2, those assumptions collapse in practice: the UCC documents interference-driven failures, and recent research shows that even sophisticated CNNs lose accuracy near −5 dB unless they incorporate noise-aware architectures.[^7][^15] Our methodology therefore replaces hand-engineered features with a learnable denoising preprocessor (DAE) followed by a supervised AMC head, trained and evaluated under the same SNR ranges that stress current deployments.
 
 ## 3.1 Introduction to Methods
 
-An experimental and quantitative approach will be used. The study will train and test the DAE and AMC modules using the RF Signal Data dataset.
+We adopt an experimental research design anchored in reproducible data processing and quantitative benchmarking. The workflow spans four pillars:
+
+1. Curate I/Q datasets representing both simulated and real captures (RF Signal Data, RadioML 2016.10A, RadioML 2018.01A, MIGOU-MOD, and RML22 subsets).[^^11][^12][^13][^14][^19]
+2. Generate controlled SNR scenarios (−12…+18 dB) that mimic UCUSAF edge conditions and inject additional impairments such as Rician fading, frequency offsets, and symbol timing jitter.
+3. Train a Conv1D denoising autoencoder (unsupervised) and a 1D CNN AMC classifier (supervised) both separately and as a combined pipeline.
+4. Compare the hybrid system against a standalone AMC baseline using statistically rigorous metrics (accuracy-vs-SNR curves, F1-score, and confusion matrices) and document findings for eventual SDR deployment.
 
 ## 3.2 Research Paradigm
 
-The study adopts a post-positivist paradigm focused on empirical testing, reproducibility, and quantitative evaluation.
+A post-positivist paradigm guides the study: hypotheses about low-SNR robustness are tested empirically, while acknowledging that experimental results are provisional and must be corroborated by replication on additional datasets or field captures. All code, hyperparameters, and preprocessing steps will be version-controlled to enable independent verification.
 
 ## 3.3 Research Approach
 
-A data-driven approach integrating unsupervised (DAE) and supervised (AMC) learning stages will be used.
+The approach is data-driven and bifurcated into complementary learning stages:
+
+- **Unsupervised denoising stage** – the DAE learns to reconstruct clean I/Q tensors from synthetically corrupted inputs, capturing noise statistics without label supervision.
+- **Supervised classification stage** – the AMC head consumes either raw I/Q data or DAE outputs to predict modulation classes via cross-entropy training. This stage emphasizes generalization across modulation families and SNR bins.
+
+Coupling the two stages allows us to quantify how much low-SNR accuracy is recovered by denoising when the classifier architecture itself remains modest (edge-friendly).
 
 ## 3.4 Research Strategy
 
-1. Dataset exploration.
-2. Noise augmentation and preprocessing.
-3. Train DAE for signal reconstruction.
-4. Train AMC on clean and denoised data.
-5. Evaluate comparative performance.
+1. **Dataset harmonization** – convert each dataset into a unified tensor format (length-1024 complex samples, normalized amplitude) and split into train/validation/test partitions with stratification by modulation and SNR.
+2. **Noise modeling** – inject AWGN, Rician fading, oscillator offsets, and impulsive noise to emulate the Ugandan RF environment; maintain a metadata log describing each corruption level.
+3. **DAE pretraining** – train the Conv1D encoder–decoder on noisy/clean pairs using mean squared error (MSE) loss until reconstruction PSNR converges.
+4. **AMC training** – train the baseline AMC on raw I/Q inputs, then re-train with DAE outputs as features to create the hybrid pipeline.
+5. **Cross-dataset evaluation** – assess the models on held-out SNR bins, on unseen modulation families (e.g., test on MIGOU-MOD after training on RadioML), and on OTA-style splits to expose domain shift.
+6. **Deployment prototyping** – integrate the trained models into a lightweight inference service/GUI for visualization and regulatory demonstrations.
 
 ## 3.5 Model Selection
 
-* DAE: Conv1D encoder-decoder with MSE loss.
-* AMC: 1D CNN classifier with cross-entropy loss.
-* Comparison between AMC alone and DAE+AMC pipeline to measure improvement.
+- **Denoising Autoencoder (DAE)**: a symmetric Conv1D encoder–decoder with three downsampling and three upsampling blocks, each containing batch normalization, PReLU activations, and residual skip connections inspired by the dual-residual DAEs in literature.[^8] The bottleneck dimension is 128, encouraging compact latent representations. Training uses AdamW (learning rate 1e‑3, weight decay 1e‑4) with cosine annealing over 100 epochs.
+- **AMC Classifier**: a 1D CNN with four convolutional blocks (kernel sizes 3×1 and 5×1), squeeze-and-excitation modules for channel attention, and a softmax output over the target modulation set. Cross-entropy loss and label smoothing help stabilize training. A mixture-of-experts variant (lightweight gating between “low-SNR” and “high-SNR” sub-paths) will also be explored to mirror MoE-AMC’s benefits at extreme SNRs.[^16]
+- **Baselines**: we maintain a “raw AMC” baseline (no denoiser) and, where feasible, re-implement a thresholded autoencoder denoiser as reported by An & Lee to compare gating strategies.[^21]
 
 ## 3.6 Data Collection and Preprocessing
 
-The Kaggle RF dataset will be used. Noisy versions will be created synthetically by injecting AWGN at various SNRs. Normalization and windowing will be applied.
+1. **Acquisition**: download and verify checksums for RF Signal Data (real SDR captures), RadioML 2016.10A/2018.01A (synthetic benchmarks), MIGOU-MOD (IoT OTA traces), and optional RML22 slices for realism.[^^11][^12][^13][^14][^19]
+2. **Segmentation**: segment each recording into fixed-length windows (1024 samples) with 50 % overlap to ensure sufficient training examples per class.
+3. **Normalization**: perform per-window zero-mean, unit-variance normalization; optionally apply IQ imbalance correction based on dataset metadata.
+4. **Label encoding**: unify modulation labels across datasets (e.g., “QPSK,” “OQPSK,” “BPSK,” etc.) and map them to numeric IDs.
+5. **Augmentation**: add AWGN at SNR levels {−12, −10, −8, −6, −4, −2, 0, 2, 4, 6, 8, 12, 18 dB}, apply random carrier frequency offsets (±5 ppm), and simulate multipath via tapped-delay lines. Each sample is tagged with its applied impairments for downstream analysis.
 
 ## 3.7 Model Development and Training
 
-Phase 1: Train DAE using MSE loss to reconstruct clean signals.
-Phase 2: Train AMC using softmax classifier.
-Phase 3: Test hybrid system on unseen noisy data.
+**Phase 1 – DAE Pretraining**
+- Input: noisy I/Q tensor; Target: clean tensor from the same sample.
+- Loss: MSE plus a small L1 penalty on latent activations to discourage trivial copying.
+- Optimizer: AdamW with gradient clipping (1.0) and mixed-precision to accelerate training.
+- Early stopping monitors validation PSNR at SNR = −6 dB to ensure low-SNR fidelity.
+
+**Phase 2 – AMC Baseline**
+- Train the 1D CNN classifier on raw inputs using cross-entropy loss and class-balanced sampling.
+- Learning rate: 3e‑4 with cosine decay; batch size 512; training for 80 epochs or until validation accuracy plateaus.
+
+**Phase 3 – Hybrid DAE–AMC**
+- Freeze or fine-tune the DAE encoder and feed its denoised outputs into the AMC classifier.
+- Compare two settings: (a) frozen DAE (acts as feature preprocessor) and (b) joint fine-tuning (end-to-end backpropagation with a smaller LR on the DAE).
+- Evaluate mixture-of-experts gating by duplicating the final convolutional block and training SNR-aware experts similar to MoE-AMC.[^16]
+
+All experiments will log metrics via MLflow/W&B and store checkpoints for reproducibility.
 
 ## 3.8 Evaluation Metrics
 
-Denoising: MSE, PSNR.
-Classification: Accuracy, F1-score, confusion matrix.
-Combined: Improvement ratio (AMC_DAE – AMC_raw).
+- **Denoising quality**: Mean Squared Error (MSE), Peak Signal-to-Noise Ratio (PSNR), and Structural Similarity Index (SSIM) between original and reconstructed I/Q waveforms.
+- **Classification**: Accuracy, macro F1-score, per-class confusion matrices, and calibration plots across SNR bins.
+- **Robustness indices**: accuracy-vs-SNR curves, area-under-curve (AUC) for the −12…0 dB region, and an improvement ratio defined as `Accuracy_hybrid − Accuracy_raw` at each SNR.
+- **Computational metrics**: FLOPs, parameter counts, and inference latency on CPU/GPU to validate deployability on SDR hardware.
 
 ## 3.9 Model Validation
 
-Validation uses unseen SNR levels and modulation classes. Cross-validation ensures generalization.
+To mitigate overfitting and quantify generalization:
+
+- **Hold-out splits**: 70/15/15 train/validation/test within each dataset, ensuring that specific SNR bins or modulation classes can be withheld for zero-shot testing.
+- **Cross-dataset testing**: train on RadioML 2018.01A, test on MIGOU-MOD or RF Signal Data to measure domain shift, echoing the OTA demonstrations outlined in Section 2.[^20]
+- **SNR-based k-fold CV**: treat each SNR level as a fold; iteratively leave one SNR out during training to evaluate extrapolation performance.
+- **Statistical significance**: run each experiment with three random seeds and report mean ± std accuracy; apply paired t-tests when comparing AMC vs. DAE–AMC.
 
 ## 3.10 User Interface Development
 
-A simple GUI will visualize noisy vs. denoised constellations and display predicted modulation types.
+A lightweight Streamlit/PyQt GUI will:
+
+1. Load stored I/Q snippets or accept live SDR buffers (future work) and visualize the raw constellation, its denoised counterpart, and power spectra.
+2. Display model predictions with probability bars, per-class confusion summaries, and SNR estimates.
+3. Offer toggles to compare “raw AMC” vs. “DAE–AMC” outputs, helping regulators understand the benefit of preprocessing during demonstrations.
 
 ## 3.11 Deployment and Demonstration
 
-The final model will be deployed in a Python-based app to classify stored or live SDR-captured signals.
+Deployment will target a Python microservice (FastAPI) that serves ONNX-exported versions of the DAE and AMC models. The service will expose REST/WebSocket endpoints for ingesting I/Q chunks and returning modulation predictions plus metadata (SNR estimate, denoising confidence). Demonstrations will simulate UCC monitoring workflows: ingest recorded interference events, visualize denoising improvements, and show automated alerts when low-SNR signals become classifiable. Future work may integrate the service with SDR front-ends (e.g., RTL-SDR or USRP) for live enforcement pilots.
 
 ## 3.12 Ethical Considerations
 
-All data are open-source and used for academic purposes only. Proper citations will be provided.
+All datasets are open-source and redistributed only under their respective licenses (Kaggle Terms of Service, DeepSig EULA, Mendeley Data licenses). The study avoids collecting personal or sensitive information and stresses that the resulting models are intended for lawful spectrum monitoring and academic exploration. Any deployment with live SDR captures will require operator consent and compliance with Uganda’s Communications Act to prevent inadvertent interception of protected communications.
 
 ## 3.13 Tools and Software Requirements
 
-Python 3.11, TensorFlow/PyTorch, NumPy, scikit-learn, Matplotlib, and Jupyter Notebook.
+- **Languages/Frameworks**: Python 3.11, PyTorch 2.x (primary DL framework), optional TensorFlow for baseline comparisons, NumPy/SciPy for DSP utilities, scikit-learn for metrics, and Matplotlib/Plotly for visualization.
+- **Experiment management**: MLflow or Weights & Biases for logging, DVC/Git LFS for dataset versioning, and Docker for environment reproducibility.
+- **Hardware**: Training on NVIDIA GPUs (>= 16 GB VRAM) for efficiency, with CPU-only fallbacks for inference. SDR replay experiments will use GNU Radio or DragonOS Focal for signal capture/streaming.
+- **Automation**: Makefiles or Fabric scripts to orchestrate preprocessing, training, evaluation, and report generation so that each experiment can be reproduced end-to-end.
 
 ---
 
