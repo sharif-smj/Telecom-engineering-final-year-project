@@ -93,7 +93,7 @@ Conventional AMC workflows—built on handcrafted cumulants or unenhanced neural
 
 ## 1.3 Main Objective of the Study
 
-To develop a hybrid Denoising Autoencoder and Automatic Modulation Classification (DAE-AMC) system that enhances signal quality and accurately identifies modulation schemes under different SNR and channel environments.
+To design, implement, and empirically evaluate a hybrid Denoising Autoencoder–Automatic Modulation Classification (DAE–AMC) pipeline that can suppress interference in noisy I/Q streams and maintain accurate modulation decisions across the low-SNR channel conditions observed in Ugandan networks.
 
 ### 1.3.1 Specific Objectives
 
