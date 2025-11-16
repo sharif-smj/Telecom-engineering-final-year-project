@@ -1,0 +1,142 @@
+Recent Advances in Low-SNR AMC and Denoising
+Approaches (2020–2025)
+Low-SNR Automatic Modulation Classification (AMC) Performance
+Abd-Elaziz  et al. , 2023 – “Deep Learning-Based AMC Using Robust CNN Architecture for CR
+Networks” (MDPI Sensors ): Proposes a novel CNN with parallel asymmetric convolution blocks and
+skip connections to enhance feature extraction at low SNR. Evaluated on a custom dataset of 9
+modulation schemes with AWGN, Rician fading, and clock offset impairments, it achieves  86.1%
+accuracy at –2 dB SNR , rising to ~99.8% at 10 dB . This substantially outperformed prior CNN-
+based  models,  reliably  distinguishing  even  challenging  16QAM/64QAM  in  very  noisy  conditions
+(overall average accuracy ~81%). Dataset: Simulated + impairments (non-cooperative scenario).
+Zhang  et  al. ,  2023  –  “MoE-AMC:  Mixture-of-Experts  for  AMC”  (arXiv  preprint):  Introduces  a
+mixture-of-experts  network that routes signals to different sub-models optimized for high vs. low
+SNR. A Transformer-based expert (LSRM) handles low-SNR signals, while a ResNet-based expert
+(HSRM) handles high-SNR inputs . A small gating MLP estimates SNR and switches experts
+accordingly. On the RML2018.01a  dataset (24 modulations, –20 to 18 dB), MoE-AMC attained 71.76%
+average classification accuracy across SNRs – about  10% higher  than prior single-expert CNN or
+Transformer  models .  This  demonstrates  balanced  performance:  the  Transformer  branch
+preserves accuracy below 0 dB while the ResNet branch excels at higher SNR.
+Rehman et al. , 2025 – “DL-AMC: Deep Learning for Automatic Modulation Classification” (arXiv
+preprint):  Proposes  converting  raw  I/Q  waveforms  into  eye  diagrams  as  input  to  deep  CNNs
+(ResNet-18/50, MobileNet) to boost robustness at low SNR. Trained on a curated set of modulation
+types with SNR ranging  –20 dB to 30 dB , the approach achieves  high accuracy even at negative
+SNRs , thanks to the noise-resilient eye-diagram representation . For example, at the lowest SNR
+in tests, the DL-AMC ResNet substantially outperformed earlier deep models – prior approaches like
+DBN, RNN, LSTM, and CLDNN had only ~10–48% accuracy in the lowest-SNR conditions  (near
+chance-level), whereas the proposed method maintained strong classification performance. Dataset:
+custom-generated signals (multi-SNR) transformed into eye diagrams.
+Sathyanarayanan  et al. , 2023 –  IEEE TWC  (“RML22: Realistic Dataset Generation for Wireless
+Modulation Classification”):  Introduces the RML22 dataset , a next-generation public dataset that
+builds on DeepSig’s RadioML by correcting artifacts in RML2016 data and adding more realistic
+channel  effects .  RML22  includes  a  wide  range  of  modulations  (likely  24  classes,  similar  to
+RML2018) with improved fidelity to over-the-air conditions. The authors’ data-centric generation
+approach yields a benchmark where state-of-the-art models now exceed 99% accuracy at high SNR
+, underscoring RML22’s value for evaluating AMC algorithms. This dataset innovation beyond
+RadioML 2016/2018 is enabling researchers to validate models under more realistic multipath and
+interference  scenarios, bridging the gap between simulation and field performance.• 
+1
+• 
+23
+4
+• 
+5
+6
+• 
+7
+8
+1
+Jagannath  et al. , 2022 –  PHYCOM  (multi-task AMC on SDR testbed):  Demonstrated a real-world
+validation of deep learning AMC on an over-the-air SDR platform . Using a feed-forward CNN-based
+multi-task classifier (distinguishing both modulation and signal type), they achieved ≈98% accuracy
+on  7  modulation  classes  in  a  live  USRP  testbed  experiment .  This  near-perfect  accuracy  in
+controlled OTA tests (moderate SNR) highlights that modern DL models can retain high performance
+outside  simulations.  It  also  underscores  the  importance  of  heterogeneous  training  (including
+impairments and hardware effects) to ensure models generalize to field conditions. Dataset:  Live OTA
+captures via USRP; results confirm consistency with simulation benchmarks.
+Denoising Front-Ends and Noise-Robust Techniques for AMC
+An & Lee, 2023 – “Robust AMC in Low SNR” (IEEE Access ): Develops a noise-mitigation front-end
+consisting of a Thresholded Autoencoder Denoiser (TAD)  and an SNR predictor , integrated before
+an AMC classifier . The lightweight SNR estimator triggers the denoiser only for low-SNR inputs,
+avoiding  unnecessary  processing  for  high-SNR  signals.  This  design  yielded  a  ~70%  relative
+improvement in low-SNR classification accuracy  (vs. no denoiser) . In other words, the TAD
+front-end dramatically boosted accuracy in heavy noise scenarios (e.g. from ~30% to ~51% on a very
+low SNR set). The overall model (TAD + CNN) achieved robust performance down to ~–10 dB SNR,
+illustrating  the  effectiveness  of  learned  denoising.  Datasets:  Evaluated  on  RadioML  2016/2018
+variants; the approach improved low-SNR accuracy across these benchmarks.
+Faysal  et  al. ,  2025  –  “DenoMAE:  A  Multimodal  Denoising  Autoencoder  for  Modulation
+Signals”  (arXiv):  Presents  a  denoising  masked  autoencoder  that  treats  noise  as  an  additional
+modality  during self-supervised pre-training. DenoMAE is pre-trained to reconstruct clean I/Q signals
+and their constellation diagrams from masked, noisy inputs (leveraging both raw waveform and
+constellation  image  domains).  After  fine-tuning  for  classification,  this  approach  reached  83.5%
+accuracy  on a 10-class modulation task using only 1,000 labeled samples (with 10,000 unlabeled
+pre-training samples) . Crucially, it maintains strong generalization at very low SNR: e.g.  77.5%
+accuracy at –10 dB , which is a ~22% improvement over the same model without MAE pre-
+training. DenoMAE also outperformed prior denoising methods (e.g. CNN-AMC, DL-GRF) by 24–33%
+in low-SNR regimes .  Dataset:  Simulated multi-SNR signals (10 modulations); comparisons show
+DenoMAE’s efficacy in noise-intensive environments and even on SNR levels lower than seen in
+training (extrapolation).
+Suman  &  Qu,  2023  –  “Lightweight  AMC  via  Dual-Path  Residual  Shrinkage  Network”  (MDPI
+Electronics ): Proposes an efficient CNN-LSTM architecture with an internal  learnable denoising
+mechanism .  The  model  uses  deep  residual  shrinkage  blocks  with  garrote  thresholding  to
+adaptively  suppress  noise  in  feature  maps.  Despite  only  ~27k  parameters,  it  achieved  ≈62%
+average accuracy  on the 24-class RML2018.01a dataset (–20 to 18 dB) , rivaling larger models. An
+ablation showed the garrote-based denoiser yields slightly higher low-SNR accuracy than standard
+soft-thresholding – about 2.2% better in the –4 to +6 dB SNR range . The network’s maximum
+accuracy  at  high  SNR  reaches  ~97–98%,  and  it  degrades  gracefully  as  SNR  drops .  This
+demonstrates that clever threshold-based denoising within  the model can boost noise robustness
+with  minimal  complexity  overhead  (garrote  added  ~0.6%  FLOPs).  Datasets:  Evaluated  on
+RML2016/2018; the method targets edge devices, showing that denoising boosts accuracy without
+heavy computation.• 
+9
+• 
+10
+• 
+11
+1213
+13
+• 
+14
+15
+1617
+2
+Sources:  The above findings are drawn from recent open-access publications and preprints, including arXiv
+papers, IEEE journals, and MDPI journals, with relevant metrics and details cited for each. Researchers have
+also released code and datasets (e.g. RML22 on GitHub, DenoMAE on GitHub) alongside these works, aiding
+reproducibility and further experimentation . Each study highlights a trend toward improving AMC
+performance below 0 dB SNR – whether by novel neural architectures or by introducing explicit denoising –
+and validates those improvements either on realistic synthetic data or through over-the-air tests. These
+contributions collectively advance the reliability of modulation classification in interference-heavy, low-SNR
+environments. 
+Deep Learning-Based Automatic Modulation Classification Using Robust CNN Architecture for Cognitive
+Radio Networks
+https://www.mdpi.com/1424-8220/23/23/9467
+MoE-AMC: Enhancing Automatic Modulation Classification Performance Using Mixture-of-Experts
+https://arxiv.org/html/2312.02298
+DL-AMC: Deep Learning for Automatic Modulation Classification
+https://arxiv.org/html/2504.08011v1
+Deep multilevel architecture for automatic modulation classification
+https://www.sciencedirect.com/science/article/abs/pii/S187449072400079X
+[2408.07247] BiLSTM and Attention-Based Modulation ... - ar5iv - arXiv
+https://ar5iv.labs.arxiv.org/html/2408.07247
+Deep learning at the edge for futureG networks: RF signal intelligence for comprehensive spectrum
+awareness.
+https://repository.library.northeastern.edu/files/neu:4f248n12w/fulltext.pdf
+(PDF) Robust Automatic Modulation Classification In Low Signal To ...
+https://www.researchgate.net/publication/
+367368950_Robust_Automatic_Modulation_Classification_In_Low_Signal_To_Noise_Ratio/download
+DenoMAE: A Multimodal Autoencoder for Denoising Modulation Signals This work is funded
+by the U.S. Department of Energy, funding number DE-FE0032196.
+https://arxiv.org/html/2501.11538v1
+A Lightweight Deep Learning Model for Automatic Modulation Classification Using Dual-Path
+Deep Residual Shrinkage Network
+https://www.mdpi.com/2673-2688/6/8/19518 11
+1
+2 3 4
+5 6
+7
+8
+9
+10
+11 12 13 18
+14 15 16 17
+3

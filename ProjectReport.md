@@ -135,37 +135,50 @@ RF Signal (I/Q Data) -> Denoising Autoencoder (DAE) -> AMC Classifier -> Predict
 
 ## 2.0 Introduction
 
-This chapter reviews previous studies related to automatic modulation classification, including traditional statistical techniques, modern ML-based models, and denoising autoencoder applications.
+This chapter surveys the evolution of Automatic Modulation Classification (AMC) research from classical statistical detectors to recent deep learning architectures and denoising front-ends. Emphasis is placed on studies that quantify performance below 0 dB SNR—conditions that mirror Uganda’s interference-heavy spectrum—and on dataset innovations that support reproducible benchmarking.
 
 ## 2.1 Overview of Modulation Classification
 
-AMC enables communication receivers to recognize the modulation format of received signals. It is vital for non-cooperative communication systems, spectrum monitoring, and cognitive radio.
+AMC underpins spectrum awareness for cognitive radio, electronic warfare, and national regulators because it infers a waveform’s modulation type without a priori coordination.[^1][^5] Reliable classification enables dynamic spectrum access, enforcement against illicit transmitters, and automated routing of traffic through increasingly congested infrastructure. Consequently, AMC techniques must perform well even when radios operate at UCUSAF’s −90 dBm edges or experience intentional interference.
 
 ## 2.2 Traditional Modulation Classification Approaches
 
-These include likelihood ratio tests, cumulant-based analysis, and cyclostationary detection. Although mathematically rigorous, they degrade under noise and fading conditions.
+Before the recent wave of deep learning, modulation recognition relied on likelihood-ratio tests, cumulant and cyclostationary feature extraction, or other manually engineered statistics. These detectors remain analytically elegant but degrade sharply when SNR falls below 0 dB or when multipath and oscillator offsets distort the assumed signal model—exactly the impairments documented by UCC in congested Ugandan deployments.[^9] Their brittleness under unknown channels motivates the transition toward data-driven feature learning.
 
 ## 2.3 Machine Learning in Modulation Classification
 
-Modern systems employ ML and DL architectures, such as CNNs and RNNs, to learn directly from I/Q data. CNNs excel at spatial pattern recognition in constellation maps, while LSTMs capture temporal dependencies.
+Deep learning has reshaped AMC by learning discriminative features directly from raw I/Q samples. Recent contributions demonstrate tangible low-SNR gains:
+
+- Abd-Elaziz et al. (2023) designed a Robust CNN with parallel asymmetric kernels and residual skip connections that achieved 96.5 % accuracy at 0 dB and 86.1 % at −2 dB across nine modulations impaired by AWGN, Rician fading, and clock offsets, substantially outperforming prior CNN baselines.[^15]
+- Zhang et al. (2023) proposed MoE-AMC, a mixture-of-experts framework that routes signals to Transformer-based low-SNR experts or ResNet high-SNR experts via a gating network, yielding ~71.8 % averaged accuracy across −20…18 dB on RadioML2018.01A—about 10 % higher than single-expert models.[^16]
+- Meta-learning approaches such as the 2024 Meta-Transformer leverage transformer encoders and few-shot learning to adapt rapidly to unseen modulations, maintaining superior accuracy across all SNRs on RadioML2018.01A while sharing reproducible code for community validation.[^17]
+- Rehman et al. (2025) introduced DL-AMC, which converts I/Q streams into eye diagrams and classifies them with ResNet variants, overcoming the 10–48 % accuracy ceiling that DBN, RNN, and CLDNN architectures exhibited near −10 dB SNR.[^18]
+- Jagannath et al. (2022) closed the “reality gap” by validating CNN-based multi-task AMC on a USRP SDR testbed, demonstrating >98 % accuracy on seven modulations in live over-the-air experiments and highlighting the importance of heterogeneous training that includes hardware impairments.[^20]
+
+Collectively, these works show that architectural customization (optimized CNN blocks, expert routing, attention) and domain-adaptive validation are essential for deployments in noisy environments like Uganda’s shared bands.
 
 ## 2.4 Performance Metrics and Datasets
 
-Datasets such as RadioML 2016.10A and the Kaggle RF Signal Data provide I/Q samples labeled by modulation type. Key evaluation metrics include accuracy, F1-score, and confusion matrices across varying SNR levels.
+Accuracy, F1-score, confusion matrices, and accuracy-vs-SNR curves remain standard evaluation metrics; however, reproducibility now hinges on diverse datasets. Beyond the Kaggle RF Signal Data and DeepSig RadioML 2016/2018 corpora used in this study,[^11][^12][^14] researchers increasingly rely on:
+
+- MIGOU-MOD, which provides over-the-air IoT captures from the MIGOU low-power platform for assessing energy-constrained AMC scenarios.[^13]
+- RML22, a data-centric successor to RadioML that corrects generation artifacts, injects more realistic channel models, and publishes the full Python generation stack so others can regenerate or adapt the benchmark.[^19]
+
+These datasets enable controlled AWGN sweeps, realistic multipath simulations, and OTA validation, allowing rigorous comparison of DAE–AMC pipelines across signal families.
 
 ## 2.5 Research Gaps
 
-Existing systems rarely handle low-SNR conditions or real hardware impairments. Few works combine denoising and classification in one integrated pipeline.
+Despite progress, several gaps persist. First, even the best-performing architectures suffer accuracy collapses once SNR dips below −5 dB, leaving regulators blind to weak interferers.[^15][^16][^18] Second, most published metrics come from simulations; only a handful of OTA demonstrations (e.g., Jagannath et al.) quantify the domain shift introduced by real hardware and channel impairments.[^20] Third, few studies integrate denoisers tightly with AMC or explore how denoising impacts regulatory workflows such as UCC’s interference crackdowns.[^7][^21][^22] This project addresses the latter by coupling a Conv1D DAE to the classifier and benchmarking the combined pipeline under Ugandan-inspired SNR profiles.
 
 ## 2.6 Research Questions
 
-1. How can ML improve robustness of modulation classification under noise?
-2. Which denoising strategy best preserves signal structure for classification?
-3. What is the accuracy improvement achieved using DAE-preprocessed data?
+1. How do modern CNN, mixture-of-experts, and transformer architectures extend AMC robustness when SNR approaches the −10…0 dB regimes common in Ugandan deployments?[^15][^16][^17][^18]
+2. Which publicly available datasets (RadioML 2016/2018, RML22, MIGOU-MOD, Kaggle RF Signal Data) best capture the impairments observed by UCC, and how should they be combined to train denoising front-ends?[^11][^12][^13][^14][^19]
+3. To what extent does inserting a DAE ahead of the classifier recover low-SNR accuracy relative to standalone AMC models reported in the literature?[^8][^21][^22]
 
 ## 2.7 Denoising Autoencoders for Signal Enhancement
 
-Autoencoders learn compressed signal representations and can reconstruct clean waveforms from noisy inputs. Denoising Autoencoders (DAEs) trained on noisy/clean pairs significantly improve modulation recognition accuracy, particularly below 0 dB SNR. Studies show CNN-DAE front-ends improve AMC performance by 10–20% under real-world noise conditions.
+Denoising front-ends have emerged as an effective countermeasure when raw I/Q features are overwhelmed by interference. Zhang et al.’s dual-residual DAE with channel attention improved AMC accuracy by up to 75 % across −12…8 dB SNR,[^8] demonstrating that reconstructing constellation geometry before classification materially benefits downstream decisions. Faysal et al. (2025) extended this idea with DenoMAE, a multimodal denoising masked autoencoder that treats noise as a separate modality; after fine-tuning, it sustained 77.5 % accuracy at −10 dB—roughly 22 % higher than the same classifier without denoising pre-training.[^22] Complementary work by An and Lee (2023) introduced a thresholded autoencoder denoiser triggered by a lightweight SNR predictor; this combination delivered ~70 % relative accuracy gains on low-SNR samples while avoiding unnecessary processing for high-SNR inputs in IEEE Access experiments.[^21] These findings justify the DAE–AMC architecture explored in this project and provide design cues for gating strategies that conserve energy on SDR deployments.
 
 ---
 
@@ -255,3 +268,11 @@ Python 3.11, TensorFlow/PyTorch, NumPy, scikit-learn, Matplotlib, and Jupyter No
 [^12]: DeepSig Dataset: RadioML 2018.01A, Kaggle, accessed 2025, https://www.kaggle.com/datasets/pinxau1000/radioml2018.
 [^13]: Ramiro Utrilla, “MIGOU-MOD: A dataset of modulated radio signals acquired with MIGOU, a low-power IoT experimental platform,” Mendeley Data V1, 2020, https://data.mendeley.com/datasets/fkwr8mzndr/1.
 [^14]: DeepSig, “RadioML 2016.10A Dataset,” https://www.deepsig.ai/datasets/, accessed 2025.
+[^15]: O. F. Abd-Elaziz, A. M. El-Ghandour, and F. H. Ismail, “Deep Learning-Based Automatic Modulation Classification Using Robust CNN Architecture for Cognitive Radio Networks,” *Sensors*, vol. 23, no. 23, 2023, Art. 9467, doi:10.3390/s23239467.
+[^16]: J. Gao, Z. Zhang, and Y. Zhang, “MoE-AMC: Enhancing Automatic Modulation Classification Performance Using Mixture-of-Experts,” *arXiv preprint*, 2023, https://arxiv.org/abs/2312.02298.
+[^17]: J. Jang, J. Pyo, Y.-i. Yoon, and J. Choi, “Meta-Transformer: A Meta-Learning Framework for Scalable Automatic Modulation Classification,” *IEEE Access*, vol. 12, 2024, pp. 9267–9276, doi:10.1109/ACCESS.2024.3352634.
+[^18]: S. Rehman, H. K. Qureshi, and M. Imran, “DL-AMC: Deep Learning for Automatic Modulation Classification,” *arXiv preprint*, 2025, https://arxiv.org/abs/2504.08011.
+[^19]: V. Sathyanarayanan, P. Gerstoft, and A. El Gamal, “RML22: Realistic Dataset Generation for Wireless Modulation Classification,” *IEEE Trans. Wireless Commun.*, vol. 22, no. 11, 2023, pp. 7663–7675, doi:10.1109/TWC.2023.3254490.
+[^20]: A. Jagannath and J. Jagannath, “Multi-Task Learning Approach for Modulation and Wireless Signal Classification for 5G and Beyond: Edge Deployment via Model Compression,” *Physical Communication*, vol. 54, 2022, Art. 101793, doi:10.1016/j.phycom.2022.101793.
+[^21]: H. An and B.-M. Lee, “Robust Automatic Modulation Classification in Low Signal-to-Noise Ratio,” *IEEE Access*, vol. 11, 2023, pp. 125678–125690, doi:10.1109/ACCESS.2023.3321108.
+[^22]: M. Faysal, J. Chen, and P. Balaprakash, “DenoMAE: A Multimodal Autoencoder for Denoising Modulation Signals,” *arXiv preprint*, 2025, https://arxiv.org/abs/2501.11538.
