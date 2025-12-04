@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Intelligent Modulation Classification</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Rajdhani:wght@500;700&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+
+    <div class="background-layer">
+        <div class="frosted-overlay"></div>
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="grid-texture"></div>
+    </div>
+
+    <!-- Removed Status Bar as requested -->
+
+    <main class="slides-viewport" id="slidesContainer">
+
+        <!-- Slide 1: Title -->
+        <section class="slide active" id="slide-1" data-layout="impact">
+            <div class="layout-impact">
+                <div class="text-zone">
+                    <div class="uni-branding">
+                        <h3>KYAMBOGO UNIVERSITY</h3>
+                        <p>DEPARTMENT OF ELECTRICAL AND ELECTRONICS ENGINEERING</p>
+                    </div>
+                    <div class="tagline">FINAL YEAR PROJECT PROPOSAL</div>
+                    <h1 class="mega-title">INTELLIGENT<br>MODULATION<br>CLASSIFICATION</h1>
+                    <div class="subtitle-block">
+                        <p>& Signal Denoising Using Machine Learning</p>
+                        <div class="meta-info">
+                            <span><strong>Author:</strong> Ssemujju Sharif Abdukarim (18/U/ETD/181/GV)</span>
+                            <span><strong>Supervisor:</strong> Dr. Dickson Mugerwa</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="visual-zone">
+                    <img src="assets/hero_signal_viz.png" alt="3D Signal Visualization" class="hero-3d floating">
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 2: Introduction -->
+        <section class="slide" id="slide-2" data-layout="bento">
+            <div class="layout-bento">
+                <div class="bento-header">
+                    <h2>01 // INTRODUCTION</h2>
+                    <p>The Wireless Ecosystem & Connectivity Gap</p>
+                </div>
+                <div class="bento-box box-large">
+                    <h3>Explosive Growth</h3>
+                    <p>Uganda's wireless ecosystem is expanding rapidly. Mobile subscriptions hit 33.2M, pushing data
+                        traffic to 421M GB.</p>
+                    <div class="stat-row">
+                        <div class="stat">
+                            <span class="num">33.2M</span>
+                            <span class="label">Subscriptions</span>
+                        </div>
+                        <div class="stat">
+                            <span class="num">77%</span>
+                            <span class="label">Teledensity</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="bento-box box-medium visual-box">
+                    <img src="assets/telecom_tower_abstract.png" alt="Tower" class="bento-img">
+                    <div class="overlay-text">Coverage Expansion</div>
+                </div>
+                <div class="bento-box box-small alert">
+                    <h3>The Gap</h3>
+                    <p>62% of population offline.</p>
+                </div>
+                <div class="bento-box box-small">
+                    <h3>Challenge</h3>
+                    <p>Low SNR & Interference.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 3: Problem Statement -->
+        <section class="slide" id="slide-3" data-layout="split">
+            <div class="layout-split">
+                <div class="split-left danger-zone">
+                    <div class="content-block">
+                        <h2>THE PROBLEM</h2>
+                        <ul class="problem-list">
+                            <li>
+                                <span class="icon">⚠️</span>
+                                <div>
+                                    <strong>Marginal SINR</strong>
+                                    <p>Receivers operate at -90 dBm sensitivity limit.</p>
+                                </div>
+                            </li>
+                            <li>
+                                <span class="icon">📉</span>
+                                <div>
+                                    <strong>70% Call Failures</strong>
+                                    <p>Caused by same-frequency interference.</p>
+                                </div>
+                            </li>
+                            <li>
+                                <span class="icon">🚫</span>
+                                <div>
+                                    <strong>AMC Failure</strong>
+                                    <p>Conventional classifiers fail below 0 dB SNR.</p>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="split-right solution-zone">
+                    <div class="content-block">
+                        <h2>THE CONSEQUENCE</h2>
+                        <p class="lead">Without denoising, enforcement teams cannot meet national targets.</p>
+                        <div class="chart-mockup">
+                            <div class="bar" style="height: 30%"><span>Standard AMC</span></div>
+                            <div class="bar highlight" style="height: 85%"><span>Target Accuracy</span></div>
+                        </div>
+                        <p class="caption">Current Accuracy Gap</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 4: Objectives -->
+        <section class="slide" id="slide-4" data-layout="quadrant">
+            <div class="slide-header">
+                <h2>02 // OBJECTIVES</h2>
+            </div>
+            <div class="layout-quadrant">
+                <div class="quad-card">
+                    <div class="quad-icon">01</div>
+                    <h3>Review Strategies</h3>
+                    <p>Analyze low-SNR mitigation techniques relevant to Uganda.</p>
+                </div>
+                <div class="quad-card highlight">
+                    <div class="quad-icon">02</div>
+                    <h3>Develop DAE</h3>
+                    <p>Architect a Conv1D Denoising Autoencoder for signal reconstruction.</p>
+                </div>
+                <div class="quad-card">
+                    <div class="quad-icon">03</div>
+                    <h3>Implement AMC</h3>
+                    <p>Build a supervised classifier for modulation recognition.</p>
+                </div>
+                <div class="quad-card">
+                    <div class="quad-icon">04</div>
+                    <h3>Benchmark</h3>
+                    <p>Compare DAE-AMC pipeline against standalone baselines.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 5: Scope of Study -->
+        <section class="slide" id="slide-5" data-layout="split">
+            <div class="layout-split">
+                <div class="split-left">
+                    <div class="content-block">
+                        <h2>SCOPE OF STUDY</h2>
+                        <p class="lead">Offline experimentation using public I/Q corpora.</p>
+                        <ul class="problem-list">
+                            <li>
+                                <span class="icon">💾</span>
+                                <div>
+                                    <strong>Datasets</strong>
+                                    <p>Kaggle RF, RadioML 2018.01A, MIGOU-MOD.</p>
+                                </div>
+                            </li>
+                            <li>
+                                <span class="icon">🎛️</span>
+                                <div>
+                                    <strong>Conditions</strong>
+                                    <p>Synthetic AWGN (-12dB to +18dB).</p>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="split-right">
+                    <div class="content-block">
+                        <h3>Exclusions</h3>
+                        <p>No live SDR capture or hardware deployment in this phase.</p>
+                        <div class="bento-box box-medium"
+                            style="margin-top: 20px; height: 200px; border: 1px solid var(--accent-danger);">
+                            <h3 style="color: var(--accent-danger)">NOT IN SCOPE</h3>
+                            <p>Live Regulatory Compliance Testing</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 6: Significance -->
+        <section class="slide" id="slide-6" data-layout="bento">
+            <div class="layout-bento">
+                <div class="bento-header">
+                    <h2>SIGNIFICANCE</h2>
+                    <p>Why this matters for Uganda</p>
+                </div>
+                <div class="bento-box box-medium">
+                    <h3>Spectrum Surveillance</h3>
+                    <p>Enables detection of illegal transmitters even in high noise.</p>
+                </div>
+                <div class="bento-box box-medium">
+                    <h3>Rural Broadband</h3>
+                    <p>Supports reliable links in low-coverage areas (-90dBm).</p>
+                </div>
+                <div class="bento-box box-wide">
+                    <h3>Service Quality</h3>
+                    <p>Improves QoS for mobile money and e-government services by mitigating interference.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 7: Literature Review Overview -->
+        <section class="slide" id="slide-7" data-layout="split">
+            <div class="layout-split">
+                <div class="split-left">
+                    <div class="content-block">
+                        <h2>LITERATURE REVIEW</h2>
+                        <h3>Evolution of AMC</h3>
+                        <p>From statistical methods to deep learning.</p>
+                    </div>
+                </div>
+                <div class="split-right">
+                    <div class="content-block">
+                        <ul class="problem-list">
+                            <li>
+                                <span class="icon">1.0</span>
+                                <div>
+                                    <strong>Traditional</strong>
+                                    <p>Likelihood tests, Cumulants. Brittle below 0dB.</p>
+                                </div>
+                            </li>
+                            <li>
+                                <span class="icon">2.0</span>
+                                <div>
+                                    <strong>Machine Learning</strong>
+                                    <p>SVM, KNN. Feature engineering required.</p>
+                                </div>
+                            </li>
+                            <li>
+                                <span class="icon">3.0</span>
+                                <div>
+                                    <strong>Deep Learning</strong>
+                                    <p>CNNs, LSTMs. Learn directly from I/Q data.</p>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 8: Key Studies -->
+        <section class="slide" id="slide-8" data-layout="quadrant">
+            <div class="slide-header">
+                <h2>KEY STUDIES</h2>
+            </div>
+            <div class="layout-quadrant">
+                <div class="quad-card">
+                    <h3>Abd-Elaziz (2023)</h3>
+                    <p>Robust CNN with asymmetric kernels. 96.5% accuracy at 0dB.</p>
+                </div>
+                <div class="quad-card">
+                    <h3>Zhang et al. (2023)</h3>
+                    <p>MoE-AMC: Mixture of Experts. 71.8% avg accuracy across wide SNR.</p>
+                </div>
+                <div class="quad-card highlight">
+                    <h3>Zhang et al. (2023) - DAE</h3>
+                    <p>Dual-residual DAE. 75% gains in low SNR (-12dB to 8dB).</p>
+                </div>
+                <div class="quad-card">
+                    <h3>Jagannath (2022)</h3>
+                    <p>OTA Validation. >98% accuracy on USRP testbed.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 9: Research Gaps -->
+        <section class="slide" id="slide-9" data-layout="split">
+            <div class="layout-split">
+                <div class="split-left danger-zone">
+                    <div class="content-block">
+                        <h2>RESEARCH GAPS</h2>
+                        <div class="bento-box alert" style="margin-bottom: 20px;">
+                            <h3>Low SNR Collapse</h3>
+                            <p>Most models fail below -5dB.</p>
+                        </div>
+                        <div class="bento-box alert">
+                            <h3>Simulation Only</h3>
+                            <p>Lack of OTA validation in many studies.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="split-right">
+                    <div class="content-block">
+                        <h2>OUR APPROACH</h2>
+                        <p class="lead">Integrate Denoising Autoencoder (DAE) with AMC.</p>
+                        <p>Targeting the -90dBm sensitivity limit specific to Uganda's context.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 10: Methodology Overview -->
+        <section class="slide" id="slide-10" data-layout="flow">
+            <div class="slide-header">
+                <h2>03 // METHODOLOGY</h2>
+            </div>
+            <div class="layout-flow">
+                <div class="flow-step">
+                    <div class="step-header">INPUT</div>
+                    <div class="step-card">
+                        <h4>Raw I/Q Data</h4>
+                        <p>Kaggle RF, RadioML</p>
+                    </div>
+                </div>
+                <div class="connector"></div>
+                <div class="flow-step">
+                    <div class="step-header">PRE-PROCESS</div>
+                    <div class="step-card highlight-step">
+                        <h4>Denoising Autoencoder</h4>
+                        <p>Conv1D Architecture</p>
+                    </div>
+                </div>
+                <div class="connector"></div>
+                <div class="flow-step">
+                    <div class="step-header">CLASSIFY</div>
+                    <div class="step-card">
+                        <h4>CNN Classifier</h4>
+                        <p>Feature Extraction</p>
+                    </div>
+                </div>
+                <div class="connector"></div>
+                <div class="flow-step">
+                    <div class="step-header">OUTPUT</div>
+                    <div class="step-card success-step">
+                        <h4>Modulation Label</h4>
+                        <p>BPSK, QPSK, etc.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 11: Data Collection -->
+        <section class="slide" id="slide-11" data-layout="bento">
+            <div class="layout-bento">
+                <div class="bento-header">
+                    <h2>DATA COLLECTION & PREP</h2>
+                </div>
+                <div class="bento-box box-large">
+                    <h3>Datasets</h3>
+                    <ul style="list-style: none; margin-top: 10px;">
+                        <li style="margin-bottom: 10px;"><strong>RF Signal Data:</strong> Real SDR captures.</li>
+                        <li style="margin-bottom: 10px;"><strong>RadioML 2018.01A:</strong> Synthetic benchmark.</li>
+                        <li><strong>MIGOU-MOD:</strong> IoT OTA traces.</li>
+                    </ul>
+                </div>
+                <div class="bento-box box-wide">
+                    <h3>Preprocessing</h3>
+                    <p>Segmentation (1024 samples), Normalization (Zero-mean), Augmentation (AWGN, Fading).</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 12: Model Architecture -->
+        <section class="slide" id="slide-12" data-layout="split">
+            <div class="layout-split">
+                <div class="split-left">
+                    <div class="content-block">
+                        <h2>DAE ARCHITECTURE</h2>
+                        <p><strong>Type:</strong> Conv1D Encoder-Decoder</p>
+                        <p><strong>Blocks:</strong> 3 Downsampling, 3 Upsampling</p>
+                        <p><strong>Bottleneck:</strong> 128 dimensions</p>
+                        <p><strong>Loss:</strong> MSE + L1 Penalty</p>
+                    </div>
+                </div>
+                <div class="split-right">
+                    <div class="content-block">
+                        <h2>AMC CLASSIFIER</h2>
+                        <p><strong>Type:</strong> 1D CNN</p>
+                        <p><strong>Layers:</strong> 4 Convolutional Blocks</p>
+                        <p><strong>Features:</strong> Squeeze-and-Excitation (Channel Attention)</p>
+                        <p><strong>Output:</strong> Softmax (Modulation Class)</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 13: Evaluation Metrics -->
+        <section class="slide" id="slide-13" data-layout="quadrant">
+            <div class="slide-header">
+                <h2>EVALUATION METRICS</h2>
+            </div>
+            <div class="layout-quadrant">
+                <div class="quad-card">
+                    <h3>Denoising</h3>
+                    <p>MSE, PSNR, SSIM</p>
+                </div>
+                <div class="quad-card">
+                    <h3>Classification</h3>
+                    <p>Accuracy, F1-Score, Confusion Matrix</p>
+                </div>
+                <div class="quad-card highlight">
+                    <h3>Robustness</h3>
+                    <p>Accuracy vs SNR Curves (-12dB to +18dB)</p>
+                </div>
+                <div class="quad-card">
+                    <h3>Efficiency</h3>
+                    <p>FLOPs, Inference Latency</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 14: Expected Results -->
+        <section class="slide" id="slide-14" data-layout="dashboard">
+            <div class="slide-header">
+                <h2>04 // EXPECTED RESULTS</h2>
+            </div>
+            <div class="layout-dashboard">
+                <div class="dash-panel main-panel">
+                    <h3>Accuracy vs SNR</h3>
+                    <div class="graph-placeholder">
+                        <div class="line-chart">
+                            <svg viewBox="0 0 100 50">
+                                <path d="M0,50 Q25,45 50,20 T100,5" fill="none" stroke="#00f2ff" stroke-width="2" />
+                                <path d="M0,50 Q25,48 50,40 T100,30" fill="none" stroke="#555" stroke-width="2"
+                                    stroke-dasharray="4" />
+                            </svg>
+                        </div>
+                        <div class="legend">
+                            <span class="l-item"><span class="dot blue"></span>Proposed DAE-AMC</span>
+                            <span class="l-item"><span class="dot gray"></span>Standard AMC</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="dash-panel side-panel">
+                    <h3>Key Metrics</h3>
+                    <div class="metric-item">
+                        <span class="val">95%</span>
+                        <span class="lbl">Target Accuracy</span>
+                    </div>
+                    <div class="metric-item">
+                        <span class="val">-10dB</span>
+                        <span class="lbl">Robustness Floor</span>
+                    </div>
+                </div>
+                <div class="dash-panel bottom-panel">
+                    <h3>Impact</h3>
+                    <p>Reliable spectrum surveillance in congested urban environments.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 15: Conclusion -->
+        <section class="slide" id="slide-15" data-layout="impact">
+            <div class="layout-impact">
+                <div class="text-zone">
+                    <h1 class="mega-title">CONCLUSION</h1>
+                    <div class="subtitle-block">
+                        <p>Addressing Uganda's Connectivity Challenge</p>
+                    </div>
+                    <p style="margin-top: 20px; max-width: 600px;">
+                        By integrating Denoising Autoencoders with AMC, this project provides a robust solution for
+                        spectrum monitoring in low-SNR environments, directly supporting UCC's quality of service and
+                        enforcement mandates.
+                    </p>
+                </div>
+                <div class="visual-zone">
+                    <div class="bento-box box-medium"
+                        style="display: flex; align-items: center; justify-content: center; border: 1px solid var(--accent-cyan);">
+                        <h2 style="color: var(--accent-cyan);">THANK YOU</h2>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <div class="nav-controls">
+        <button id="prevBtn">PREV</button>
+        <button id="nextBtn">NEXT</button>
+    </div>
+
+    <div class="slide-indicators-container">
+        <div class="slide-indicators" id="slideIndicators">
+            <!-- Populated by JS -->
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
