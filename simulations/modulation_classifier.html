@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modulation Classification Demo | DAE-AMC Educational Tool</title>
+    <meta name="description"
+        content="Learn about different modulation types and how AMC classifiers identify them at various SNR levels">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0c0a1d;
+            --bg-secondary: #13102a;
+            --bg-tertiary: #1a1635;
+            --bg-card: rgba(26, 22, 53, 0.9);
+            --accent-1: #f472b6;
+            --accent-2: #c084fc;
+            --accent-3: #818cf8;
+            --accent-gradient: linear-gradient(135deg, #f472b6, #c084fc, #818cf8);
+            --text-primary: #f1f5f9;
+            --text-secondary: #a5b4c4;
+            --text-muted: #6b7a8a;
+            --success: #34d399;
+            --warning: #fbbf24;
+            --danger: #f87171;
+            --border: rgba(129, 140, 248, 0.15);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+        }
+
+        /* Background */
+        .bg-pattern {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background:
+                radial-gradient(ellipse at 30% 20%, rgba(244, 114, 182, 0.1) 0%, transparent 50%),
+                radial-gradient(ellipse at 70% 80%, rgba(129, 140, 248, 0.1) 0%, transparent 50%);
+            z-index: -1;
+        }
+
+        /* Header */
+        header {
+            padding: 1.5rem 2rem;
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .logo-icon {
+            width: 44px;
+            height: 44px;
+            background: var(--accent-gradient);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .logo h1 {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        .logo span {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            display: block;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .nav-link {
+            padding: 0.5rem 1rem;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.8rem;
+            transition: all 0.2s ease;
+        }
+
+        .nav-link:hover {
+            border-color: var(--accent-2);
+            color: var(--text-primary);
+        }
+
+        /* Main Layout */
+        main {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Section Title */
+        .section-title {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .section-title h2 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .section-title p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* Modulation Grid */
+        .mod-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .mod-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .mod-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--accent-2);
+            box-shadow: 0 12px 40px rgba(192, 132, 252, 0.15);
+        }
+
+        .mod-header {
+            padding: 1rem 1.25rem;
+            background: var(--bg-tertiary);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .mod-name {
+            font-weight: 600;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .mod-badge {
+            padding: 0.2rem 0.6rem;
+            border-radius: 4px;
+            font-size: 0.65rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .badge-psk {
+            background: rgba(244, 114, 182, 0.2);
+            color: var(--accent-1);
+        }
+
+        .badge-qam {
+            background: rgba(129, 140, 248, 0.2);
+            color: var(--accent-3);
+        }
+
+        .mod-body {
+            padding: 1.25rem;
+        }
+
+        /* Constellation Display */
+        .constellation-wrapper {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .constellation-box {
+            flex: 1;
+            text-align: center;
+        }
+
+        .constellation-label {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .constellation-canvas {
+            width: 100%;
+            height: 120px;
+            border-radius: 8px;
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        /* Info Section */
+        .mod-info {
+            background: var(--bg-tertiary);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.4rem 0;
+            font-size: 0.8rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .info-row:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            color: var(--text-muted);
+        }
+
+        .info-value {
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 500;
+        }
+
+        /* Classifier Confidence */
+        .classifier-section {
+            margin-top: 1rem;
+        }
+
+        .classifier-label {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .confidence-bar-bg {
+            height: 8px;
+            background: var(--bg-primary);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .confidence-bar {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 1s ease;
+            background: var(--accent-gradient);
+        }
+
+        .confidence-value {
+            text-align: right;
+            font-size: 0.8rem;
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--accent-2);
+            margin-top: 0.25rem;
+        }
+
+        /* SNR Control Panel */
+        .control-panel {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .control-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .control-title {
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .snr-display {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 2rem;
+            font-weight: 700;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .slider-container {
+            margin-bottom: 1rem;
+        }
+
+        .slider {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            height: 10px;
+            border-radius: 5px;
+            background: linear-gradient(to right,
+                    var(--danger) 0%,
+                    var(--warning) 40%,
+                    var(--success) 100%);
+            outline: none;
+            cursor: pointer;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: white;
+            cursor: pointer;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .slider-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 0.5rem;
+        }
+
+        /* SNR Presets */
+        .snr-presets {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .preset-btn {
+            padding: 0.5rem 1rem;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text-secondary);
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .preset-btn:hover {
+            border-color: var(--accent-2);
+            color: var(--text-primary);
+        }
+
+        .preset-btn.active {
+            background: var(--accent-gradient);
+            border-color: transparent;
+            color: white;
+        }
+
+        /* Educational Section */
+        .edu-section {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-top: 2rem;
+        }
+
+        .edu-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .edu-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .edu-card {
+            background: var(--bg-tertiary);
+            border-radius: 12px;
+            padding: 1.25rem;
+        }
+
+        .edu-card-title {
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 0.75rem;
+            color: var(--accent-2);
+        }
+
+        .edu-card-text {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        /* Performance Chart */
+        .performance-section {
+            margin-top: 2rem;
+        }
+
+        .chart-container {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 1.5rem;
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .chart-title {
+            font-weight: 600;
+        }
+
+        .chart-legend {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.75rem;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .legend-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+
+        #accuracyChart {
+            width: 100%;
+            height: 250px;
+            border-radius: 8px;
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        /* Animation for confidence bars */
+        @keyframes pulseGlow {
+
+            0%,
+            100% {
+                box-shadow: 0 0 5px rgba(192, 132, 252, 0.3);
+            }
+
+            50% {
+                box-shadow: 0 0 15px rgba(192, 132, 252, 0.6);
+            }
+        }
+
+        .mod-card.classifying .confidence-bar-bg {
+            animation: pulseGlow 1s ease-in-out infinite;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="bg-pattern"></div>
+
+    <header>
+        <div class="logo">
+            <div class="logo-icon">📚</div>
+            <div>
+                <h1>Modulation Classification</h1>
+                <span>Educational AMC Demo</span>
+            </div>
+        </div>
+        <nav class="nav-links">
+            <a href="index.html" class="nav-link">← Back to Portal</a>
+        </nav>
+    </header>
+
+    <main>
+        <!-- SNR Control -->
+        <div class="control-panel">
+            <div class="control-header">
+                <div class="control-title">📊 Signal-to-Noise Ratio Control</div>
+                <div class="snr-display"><span id="snrValue">10</span> dB</div>
+            </div>
+            <div class="slider-container">
+                <input type="range" class="slider" id="snrSlider" min="-15" max="25" value="10">
+                <div class="slider-labels">
+                    <span>-15 dB (Very Noisy)</span>
+                    <span>0 dB</span>
+                    <span>+25 dB (Clean)</span>
+                </div>
+            </div>
+            <div class="snr-presets">
+                <button class="preset-btn" data-snr="-10">Very Low (-10 dB)</button>
+                <button class="preset-btn" data-snr="0">Low (0 dB)</button>
+                <button class="preset-btn active" data-snr="10">Medium (10 dB)</button>
+                <button class="preset-btn" data-snr="20">High (20 dB)</button>
+            </div>
+        </div>
+
+        <!-- Section Title -->
+        <div class="section-title">
+            <h2>Digital Modulation Types</h2>
+            <p>Compare constellation diagrams at different SNR levels and see how the AMC classifier performs</p>
+        </div>
+
+        <!-- Modulation Cards Grid -->
+        <div class="mod-grid" id="modGrid">
+            <!-- Cards will be generated by JavaScript -->
+        </div>
+
+        <!-- Educational Section -->
+        <div class="edu-section">
+            <h3 class="edu-title">📖 Understanding Modulation Classification</h3>
+            <div class="edu-content">
+                <div class="edu-card">
+                    <div class="edu-card-title">What is Modulation?</div>
+                    <div class="edu-card-text">
+                        Modulation encodes digital data onto radio waves by varying amplitude, phase, or frequency.
+                        Higher-order schemes like 64QAM pack more bits per symbol but require cleaner signals.
+                    </div>
+                </div>
+                <div class="edu-card">
+                    <div class="edu-card-title">Why SNR Matters</div>
+                    <div class="edu-card-text">
+                        Signal-to-Noise Ratio determines how clearly symbols can be distinguished. At low SNR,
+                        constellation points blur together, making classification challenging without DAE enhancement.
+                    </div>
+                </div>
+                <div class="edu-card">
+                    <div class="edu-card-title">AMC Classification</div>
+                    <div class="edu-card-text">
+                        Automatic Modulation Classification uses machine learning to identify the modulation scheme
+                        from raw I/Q samples. Confidence scores indicate how certain the classifier is.
+                    </div>
+                </div>
+                <div class="edu-card">
+                    <div class="edu-card-title">DAE Enhancement</div>
+                    <div class="edu-card-text">
+                        The Denoising Autoencoder pre-processes noisy signals, recovering clean constellation patterns.
+                        This allows accurate classification even at SNR levels as low as -10 dB.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Performance Chart -->
+        <div class="performance-section">
+            <div class="chart-container">
+                <div class="chart-header">
+                    <div class="chart-title">📈 Classification Accuracy vs SNR</div>
+                    <div class="chart-legend">
+                        <span class="legend-item">
+                            <span class="legend-dot" style="background: var(--accent-1);"></span>
+                            Without DAE
+                        </span>
+                        <span class="legend-item">
+                            <span class="legend-dot" style="background: var(--success);"></span>
+                            With DAE
+                        </span>
+                    </div>
+                </div>
+                <canvas id="accuracyChart"></canvas>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Modulation configurations
+        const modulations = [
+            {
+                name: 'BPSK',
+                fullName: 'Binary Phase Shift Keying',
+                type: 'PSK',
+                bitsPerSymbol: 1,
+                points: [[-1, 0], [1, 0]],
+                color: '#f472b6',
+                description: 'Simplest PSK, most robust to noise'
+            },
+            {
+                name: 'QPSK',
+                fullName: 'Quadrature PSK',
+                type: 'PSK',
+                bitsPerSymbol: 2,
+                points: (() => {
+                    const r = 1 / Math.sqrt(2);
+                    return [[-r, -r], [-r, r], [r, -r], [r, r]];
+                })(),
+                color: '#e879f9',
+                description: 'Common in cellular, DVB-S'
+            },
+            {
+                name: '8PSK',
+                fullName: '8-Phase Shift Keying',
+                type: 'PSK',
+                bitsPerSymbol: 3,
+                points: Array.from({ length: 8 }, (_, i) => [
+                    Math.cos(i * Math.PI / 4),
+                    Math.sin(i * Math.PI / 4)
+                ]),
+                color: '#c084fc',
+                description: 'Used in EDGE, satellite links'
+            },
+            {
+                name: '16QAM',
+                fullName: '16-Quadrature Amplitude Mod',
+                type: 'QAM',
+                bitsPerSymbol: 4,
+                points: (() => {
+                    const pts = [];
+                    for (let i = -3; i <= 3; i += 2) {
+                        for (let j = -3; j <= 3; j += 2) {
+                            pts.push([i / 3, j / 3]);
+                        }
+                    }
+                    return pts;
+                })(),
+                color: '#a78bfa',
+                description: 'Common in WiFi, LTE'
+            },
+            {
+                name: '64QAM',
+                fullName: '64-Quadrature Amplitude Mod',
+                type: 'QAM',
+                bitsPerSymbol: 6,
+                points: (() => {
+                    const pts = [];
+                    for (let i = -7; i <= 7; i += 2) {
+                        for (let j = -7; j <= 7; j += 2) {
+                            pts.push([i / 7, j / 7]);
+                        }
+                    }
+                    return pts;
+                })(),
+                color: '#818cf8',
+                description: 'High capacity, needs good SNR'
+            }
+        ];
+
+        let currentSNR = 10;
+
+        // Generate Gaussian random
+        function gaussianRandom() {
+            let u = 0, v = 0;
+            while (u === 0) u = Math.random();
+            while (v === 0) v = Math.random();
+            return Math.sqrt(-2.0 * Math.log(u)) * Math.cos(2.0 * Math.PI * v);
+        }
+
+        // Add noise to constellation
+        function addNoise(points, snrDb) {
+            const snrLinear = Math.pow(10, snrDb / 10);
+            const signalPower = points.reduce((sum, [i, q]) => sum + i * i + q * q, 0) / points.length;
+            const noisePower = signalPower / snrLinear;
+            const noiseStd = Math.sqrt(noisePower / 2);
+
+            return points.map(([i, q]) => [
+                i + gaussianRandom() * noiseStd,
+                q + gaussianRandom() * noiseStd
+            ]);
+        }
+
+        // Draw constellation
+        function drawConstellation(canvas, points, noisyPoints, color) {
+            const ctx = canvas.getContext('2d');
+            const dpr = window.devicePixelRatio || 1;
+            const rect = canvas.getBoundingClientRect();
+
+            canvas.width = rect.width * dpr;
+            canvas.height = rect.height * dpr;
+            ctx.scale(dpr, dpr);
+
+            const width = rect.width;
+            const height = rect.height;
+            const scale = Math.min(width, height) / 2.5;
+            const cx = width / 2;
+            const cy = height / 2;
+
+            ctx.clearRect(0, 0, width, height);
+
+            // Grid
+            ctx.strokeStyle = 'rgba(129, 140, 248, 0.15)';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(cx, 0);
+            ctx.lineTo(cx, height);
+            ctx.moveTo(0, cy);
+            ctx.lineTo(width, cy);
+            ctx.stroke();
+
+            // Ideal points (faded)
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.2)';
+            points.forEach(([i, q]) => {
+                ctx.beginPath();
+                ctx.arc(cx + i * scale, cy - q * scale, 4, 0, Math.PI * 2);
+                ctx.fill();
+            });
+
+            // Noisy points
+            noisyPoints.forEach(([i, q]) => {
+                const x = cx + i * scale;
+                const y = cy - q * scale;
+
+                // Glow
+                const gradient = ctx.createRadialGradient(x, y, 0, x, y, 5);
+                gradient.addColorStop(0, color);
+                gradient.addColorStop(1, 'transparent');
+                ctx.fillStyle = gradient;
+                ctx.beginPath();
+                ctx.arc(x, y, 5, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Point
+                ctx.fillStyle = color;
+                ctx.beginPath();
+                ctx.arc(x, y, 2, 0, Math.PI * 2);
+                ctx.fill();
+            });
+        }
+
+        // Calculate classifier confidence
+        function calculateConfidence(mod, snrDb) {
+            // Simulate confidence based on modulation complexity and SNR
+            const complexity = mod.bitsPerSymbol;
+            const snrFactor = (snrDb + 15) / 40; // Normalize -15 to 25 -> 0 to 1
+            const baseDifficulty = complexity * 5; // Higher order = harder
+
+            let confidence = 100 * snrFactor - baseDifficulty;
+            confidence = Math.max(5, Math.min(99, confidence + Math.random() * 10));
+
+            // DAE boost at low SNR
+            if (snrDb < 5) {
+                confidence = Math.min(99, confidence + 15);
+            }
+
+            return confidence.toFixed(1);
+        }
+
+        // Generate modulation cards
+        function generateCards() {
+            const grid = document.getElementById('modGrid');
+            grid.innerHTML = '';
+
+            modulations.forEach((mod, idx) => {
+                const noisyPoints = addNoise(mod.points, currentSNR);
+                const confidence = calculateConfidence(mod, currentSNR);
+
+                const card = document.createElement('div');
+                card.className = 'mod-card';
+                card.innerHTML = `
+                    <div class="mod-header">
+                        <div class="mod-name">
+                            ${mod.name}
+                            <span class="mod-badge badge-${mod.type.toLowerCase()}">${mod.type}</span>
+                        </div>
+                    </div>
+                    <div class="mod-body">
+                        <div class="constellation-wrapper">
+                            <div class="constellation-box">
+                                <div class="constellation-label">Ideal</div>
+                                <canvas class="constellation-canvas" id="ideal-${idx}"></canvas>
+                            </div>
+                            <div class="constellation-box">
+                                <div class="constellation-label">At ${currentSNR} dB SNR</div>
+                                <canvas class="constellation-canvas" id="noisy-${idx}"></canvas>
+                            </div>
+                        </div>
+                        
+                        <div class="mod-info">
+                            <div class="info-row">
+                                <span class="info-label">Full Name</span>
+                                <span class="info-value">${mod.fullName}</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">Bits per Symbol</span>
+                                <span class="info-value">${mod.bitsPerSymbol}</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">Constellation Points</span>
+                                <span class="info-value">${mod.points.length}</span>
+                            </div>
+                        </div>
+                        
+                        <div class="classifier-section">
+                            <div class="classifier-label">
+                                🧠 AMC Classifier Confidence
+                            </div>
+                            <div class="confidence-bar-bg">
+                                <div class="confidence-bar" style="width: ${confidence}%"></div>
+                            </div>
+                            <div class="confidence-value">${confidence}%</div>
+                        </div>
+                    </div>
+                `;
+
+                grid.appendChild(card);
+
+                // Draw constellations after card is in DOM
+                setTimeout(() => {
+                    const idealCanvas = document.getElementById(`ideal-${idx}`);
+                    const noisyCanvas = document.getElementById(`noisy-${idx}`);
+
+                    if (idealCanvas && noisyCanvas) {
+                        drawConstellation(idealCanvas, mod.points, mod.points, mod.color);
+                        drawConstellation(noisyCanvas, mod.points, noisyPoints, mod.color);
+                    }
+                }, 10);
+            });
+        }
+
+        // Draw accuracy chart
+        function drawAccuracyChart() {
+            const canvas = document.getElementById('accuracyChart');
+            const ctx = canvas.getContext('2d');
+            const dpr = window.devicePixelRatio || 1;
+            const rect = canvas.getBoundingClientRect();
+
+            canvas.width = rect.width * dpr;
+            canvas.height = rect.height * dpr;
+            ctx.scale(dpr, dpr);
+
+            const width = rect.width;
+            const height = rect.height;
+            const padding = 50;
+            const chartWidth = width - padding * 2;
+            const chartHeight = height - padding * 2;
+
+            ctx.clearRect(0, 0, width, height);
+
+            // Grid
+            ctx.strokeStyle = 'rgba(129, 140, 248, 0.1)';
+            ctx.lineWidth = 1;
+            for (let i = 0; i <= 5; i++) {
+                const y = padding + (chartHeight / 5) * i;
+                ctx.beginPath();
+                ctx.moveTo(padding, y);
+                ctx.lineTo(width - padding, y);
+                ctx.stroke();
+
+                ctx.fillStyle = 'rgba(129, 140, 248, 0.5)';
+                ctx.font = '10px JetBrains Mono';
+                ctx.textAlign = 'right';
+                ctx.fillText(`${100 - i * 20}%`, padding - 10, y + 4);
+            }
+
+            // X-axis labels
+            ctx.textAlign = 'center';
+            for (let snr = -15; snr <= 25; snr += 10) {
+                const x = padding + ((snr + 15) / 40) * chartWidth;
+                ctx.fillText(`${snr} dB`, x, height - 20);
+            }
+
+            // Without DAE curve
+            ctx.beginPath();
+            ctx.strokeStyle = '#f472b6';
+            ctx.lineWidth = 2;
+            for (let snr = -15; snr <= 25; snr++) {
+                const x = padding + ((snr + 15) / 40) * chartWidth;
+                const acc = Math.min(98, Math.max(10, 50 + snr * 2 + Math.sin(snr * 0.3) * 5));
+                const y = padding + chartHeight - (acc / 100) * chartHeight;
+
+                if (snr === -15) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+            }
+            ctx.stroke();
+
+            // With DAE curve
+            ctx.beginPath();
+            ctx.strokeStyle = '#34d399';
+            ctx.lineWidth = 2;
+            for (let snr = -15; snr <= 25; snr++) {
+                const x = padding + ((snr + 15) / 40) * chartWidth;
+                const acc = Math.min(99, Math.max(40, 70 + snr * 1.2 + Math.sin(snr * 0.3) * 3));
+                const y = padding + chartHeight - (acc / 100) * chartHeight;
+
+                if (snr === -15) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+            }
+            ctx.stroke();
+
+            // Current SNR marker
+            const markerX = padding + ((currentSNR + 15) / 40) * chartWidth;
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
+            ctx.setLineDash([5, 5]);
+            ctx.beginPath();
+            ctx.moveTo(markerX, padding);
+            ctx.lineTo(markerX, height - padding);
+            ctx.stroke();
+            ctx.setLineDash([]);
+
+            ctx.fillStyle = 'white';
+            ctx.font = 'bold 12px Inter';
+            ctx.fillText(`Current: ${currentSNR} dB`, markerX, padding - 10);
+        }
+
+        // Event Listeners
+        document.getElementById('snrSlider').addEventListener('input', (e) => {
+            currentSNR = parseInt(e.target.value);
+            document.getElementById('snrValue').textContent = currentSNR;
+
+            // Update preset buttons
+            document.querySelectorAll('.preset-btn').forEach(btn => {
+                btn.classList.toggle('active', parseInt(btn.dataset.snr) === currentSNR);
+            });
+
+            generateCards();
+            drawAccuracyChart();
+        });
+
+        document.querySelectorAll('.preset-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                currentSNR = parseInt(btn.dataset.snr);
+                document.getElementById('snrSlider').value = currentSNR;
+                document.getElementById('snrValue').textContent = currentSNR;
+
+                document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+
+                generateCards();
+                drawAccuracyChart();
+            });
+        });
+
+        // Initial render
+        generateCards();
+        drawAccuracyChart();
+
+        // Handle resize
+        window.addEventListener('resize', () => {
+            generateCards();
+            drawAccuracyChart();
+        });
+    </script>
+</body>
+
+</html>

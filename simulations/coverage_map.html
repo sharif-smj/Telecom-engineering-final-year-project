@@ -1,0 +1,1061 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DAE-AMC Coverage Extension Map - Uganda</title>
+    <meta name="description"
+        content="Interactive visualization of how DAE technology extends cellular coverage in rural Uganda">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0f1419;
+            --bg-secondary: #15202b;
+            --bg-tertiary: #192734;
+            --bg-card: rgba(25, 39, 52, 0.95);
+            --accent-primary: #1d9bf0;
+            --accent-secondary: #8ecdf7;
+            --accent-gradient: linear-gradient(135deg, #1d9bf0, #8ecdf7);
+            --text-primary: #e7e9ea;
+            --text-secondary: #8899a6;
+            --text-muted: #6e767d;
+            --success: #00ba7c;
+            --warning: #ffad1f;
+            --danger: #f4212e;
+            --border: rgba(56, 68, 77, 0.8);
+            --coverage-standard: rgba(29, 155, 240, 0.25);
+            --coverage-enhanced: rgba(0, 186, 124, 0.35);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Layout */
+        .app-container {
+            display: grid;
+            grid-template-columns: 1fr 380px;
+            min-height: 100vh;
+        }
+
+        @media (max-width: 1024px) {
+            .app-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Map Container */
+        .map-container {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            background: radial-gradient(ellipse at center, #1a2634 0%, #0f1419 100%);
+        }
+
+        .map-header {
+            padding: 1.5rem 2rem;
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .logo-icon {
+            width: 44px;
+            height: 44px;
+            background: var(--accent-gradient);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .logo h1 {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        .logo span {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            display: block;
+        }
+
+        .toggle-container {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            background: var(--bg-tertiary);
+            padding: 0.5rem;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+        }
+
+        .toggle-label {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            padding: 0 0.5rem;
+        }
+
+        .toggle-btn {
+            padding: 0.625rem 1.25rem;
+            border-radius: 8px;
+            border: none;
+            font-weight: 500;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: transparent;
+            color: var(--text-secondary);
+        }
+
+        .toggle-btn.active {
+            background: var(--accent-gradient);
+            color: white;
+            box-shadow: 0 4px 15px rgba(29, 155, 240, 0.3);
+        }
+
+        .toggle-btn.enhanced.active {
+            background: linear-gradient(135deg, #00ba7c, #00d68f);
+            box-shadow: 0 4px 15px rgba(0, 186, 124, 0.3);
+        }
+
+        /* SVG Map */
+        .map-area {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            position: relative;
+        }
+
+        #ugandaMap {
+            max-width: 100%;
+            max-height: 100%;
+            filter: drop-shadow(0 8px 32px rgba(0, 0, 0, 0.4));
+        }
+
+        /* Coverage circles */
+        .coverage-circle {
+            fill: var(--coverage-standard);
+            stroke: var(--accent-primary);
+            stroke-width: 1;
+            transition: all 0.8s ease;
+        }
+
+        .coverage-circle.enhanced {
+            fill: var(--coverage-enhanced);
+            stroke: var(--success);
+        }
+
+        /* Tower markers */
+        .tower-marker {
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .tower-marker:hover {
+            transform: scale(1.2);
+        }
+
+        .tower-base {
+            fill: var(--accent-primary);
+        }
+
+        .tower-base.rural {
+            fill: var(--warning);
+        }
+
+        /* Region labels */
+        .region-label {
+            font-size: 8px;
+            fill: var(--text-muted);
+            pointer-events: none;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            background: var(--bg-secondary);
+            border-left: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+
+        .sidebar-header {
+            padding: 1.5rem;
+            background: var(--bg-tertiary);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .sidebar-title {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .sidebar-subtitle {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        .sidebar-content {
+            padding: 1.5rem;
+            flex: 1;
+        }
+
+        /* Stats Cards */
+        .stats-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .stat-card {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card.highlight {
+            border-color: var(--success);
+            background: rgba(0, 186, 124, 0.1);
+        }
+
+        .stat-value {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--accent-primary);
+            transition: color 0.3s ease;
+        }
+
+        .stat-value.enhanced {
+            color: var(--success);
+        }
+
+        .stat-label {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-top: 0.25rem;
+        }
+
+        .stat-change {
+            font-size: 0.75rem;
+            color: var(--success);
+            margin-top: 0.5rem;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .stat-change.visible {
+            opacity: 1;
+        }
+
+        /* Section */
+        .section {
+            margin-bottom: 1.5rem;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+
+        .section-title {
+            font-size: 0.875rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Region List */
+        .region-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .region-item {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .region-item:hover {
+            border-color: var(--accent-primary);
+            background: rgba(29, 155, 240, 0.05);
+        }
+
+        .region-item.selected {
+            border-color: var(--accent-primary);
+            background: rgba(29, 155, 240, 0.1);
+        }
+
+        .region-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .region-name {
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+
+        .region-type {
+            font-size: 0.65rem;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .region-type.urban {
+            background: rgba(29, 155, 240, 0.15);
+            color: var(--accent-primary);
+        }
+
+        .region-type.rural {
+            background: rgba(255, 173, 31, 0.15);
+            color: var(--warning);
+        }
+
+        .region-stats {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        .region-stat {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        /* Coverage Bar */
+        .coverage-bar-container {
+            margin-top: 0.75rem;
+        }
+
+        .coverage-bar-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            margin-bottom: 0.25rem;
+        }
+
+        .coverage-bar {
+            height: 6px;
+            background: var(--bg-primary);
+            border-radius: 3px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .coverage-bar-fill {
+            height: 100%;
+            border-radius: 3px;
+            transition: width 0.8s ease, background 0.3s ease;
+        }
+
+        .coverage-bar-fill.standard {
+            background: var(--accent-primary);
+        }
+
+        .coverage-bar-fill.enhanced {
+            background: var(--success);
+        }
+
+        /* Scenario Panel */
+        .scenario-card {
+            background: linear-gradient(135deg, rgba(255, 173, 31, 0.1), rgba(255, 173, 31, 0.05));
+            border: 1px solid var(--warning);
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .scenario-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .scenario-icon {
+            font-size: 1.5rem;
+        }
+
+        .scenario-title {
+            font-weight: 600;
+            font-size: 0.875rem;
+            color: var(--warning);
+        }
+
+        .scenario-desc {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        /* Legend */
+        .legend {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 1rem;
+        }
+
+        .legend-title {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 0.75rem;
+        }
+
+        .legend-items {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        .legend-color {
+            width: 24px;
+            height: 12px;
+            border-radius: 3px;
+        }
+
+        .legend-color.standard {
+            background: var(--coverage-standard);
+            border: 1px solid var(--accent-primary);
+        }
+
+        .legend-color.enhanced {
+            background: var(--coverage-enhanced);
+            border: 1px solid var(--success);
+        }
+
+        .legend-color.tower {
+            background: var(--accent-primary);
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .legend-color.tower-rural {
+            background: var(--warning);
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        /* Animation for coverage expansion */
+        @keyframes expandCoverage {
+            0% {
+                r: 0;
+                opacity: 0;
+            }
+
+            100% {
+                opacity: 1;
+            }
+        }
+
+        .coverage-animate {
+            animation: expandCoverage 0.8s ease-out forwards;
+        }
+
+        /* Impact Banner */
+        .impact-banner {
+            background: linear-gradient(135deg, rgba(0, 186, 124, 0.2), rgba(0, 186, 124, 0.1));
+            border: 1px solid var(--success);
+            border-radius: 12px;
+            padding: 1.25rem;
+            margin-bottom: 1.5rem;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.5s ease;
+        }
+
+        .impact-banner.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .impact-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .impact-icon {
+            font-size: 1.5rem;
+        }
+
+        .impact-title {
+            font-weight: 600;
+            color: var(--success);
+        }
+
+        .impact-text {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        .impact-metric {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            background: rgba(0, 186, 124, 0.2);
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 600;
+            color: var(--success);
+        }
+
+        /* Map annotations */
+        .map-annotation {
+            position: absolute;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+            font-size: 0.75rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            pointer-events: none;
+            opacity: 0;
+            transform: translateY(5px);
+            transition: all 0.3s ease;
+        }
+
+        .map-annotation.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .annotation-title {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .annotation-value {
+            color: var(--success);
+            font-family: 'JetBrains Mono', monospace;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Map Area -->
+        <div class="map-container">
+            <div class="map-header">
+                <div class="logo">
+                    <div class="logo-icon">🗺️</div>
+                    <div>
+                        <h1>Coverage Extension Map</h1>
+                        <span>DAE-AMC Rural Connectivity Impact</span>
+                    </div>
+                </div>
+
+                <div class="toggle-container">
+                    <span class="toggle-label">View Mode:</span>
+                    <button class="toggle-btn active" id="standardBtn" onclick="setMode('standard')">
+                        📡 Standard
+                    </button>
+                    <button class="toggle-btn enhanced" id="enhancedBtn" onclick="setMode('enhanced')">
+                        ✨ DAE Enhanced
+                    </button>
+                </div>
+            </div>
+
+            <div class="map-area">
+                <svg id="ugandaMap" viewBox="0 0 400 500" preserveAspectRatio="xMidYMid meet">
+                    <!-- Background -->
+                    <defs>
+                        <radialGradient id="coverageGradient" cx="50%" cy="50%" r="50%">
+                            <stop offset="0%" style="stop-color:rgba(29, 155, 240, 0.4)" />
+                            <stop offset="100%" style="stop-color:rgba(29, 155, 240, 0)" />
+                        </radialGradient>
+                        <radialGradient id="coverageGradientEnhanced" cx="50%" cy="50%" r="50%">
+                            <stop offset="0%" style="stop-color:rgba(0, 186, 124, 0.4)" />
+                            <stop offset="100%" style="stop-color:rgba(0, 186, 124, 0)" />
+                        </radialGradient>
+                        <filter id="glow">
+                            <feGaussianBlur stdDeviation="2" result="coloredBlur" />
+                            <feMerge>
+                                <feMergeNode in="coloredBlur" />
+                                <feMergeNode in="SourceGraphic" />
+                            </feMerge>
+                        </filter>
+                    </defs>
+
+                    <!-- Uganda outline (simplified) -->
+                    <path id="ugandaOutline" d="
+                        M 200 40 
+                        L 280 60 L 340 100 L 360 160 L 350 220 
+                        L 370 280 L 350 340 L 320 380 L 280 420 
+                        L 220 460 L 160 450 L 100 420 L 60 380 
+                        L 50 320 L 60 260 L 80 200 L 100 140 
+                        L 140 80 L 200 40 Z
+                    " fill="#1a2634" stroke="#38444d" stroke-width="2" />
+
+                    <!-- Lake Victoria (partial) -->
+                    <ellipse cx="280" cy="420" rx="60" ry="40" fill="#0d2137" stroke="#1d9bf0" stroke-width="1"
+                        opacity="0.5" />
+                    <text x="280" y="425" text-anchor="middle" class="region-label" fill="#1d9bf0" font-size="8">Lake
+                        Victoria</text>
+
+                    <!-- Coverage circles (will be animated) -->
+                    <g id="coverageCircles"></g>
+
+                    <!-- Cell Towers -->
+                    <g id="towerMarkers"></g>
+
+                    <!-- Region Labels -->
+                    <text x="200" y="150" text-anchor="middle" class="region-label">NORTHERN</text>
+                    <text x="300" y="200" text-anchor="middle" class="region-label">EASTERN</text>
+                    <text x="100" y="280" text-anchor="middle" class="region-label">WESTERN</text>
+                    <text x="200" y="350" text-anchor="middle" class="region-label">CENTRAL</text>
+
+                    <!-- Major Cities -->
+                    <g id="cities">
+                        <circle cx="200" cy="320" r="8" fill="#e7e9ea" stroke="#1d9bf0" stroke-width="2" />
+                        <text x="200" y="340" text-anchor="middle" fill="#e7e9ea" font-size="10"
+                            font-weight="600">KAMPALA</text>
+
+                        <circle cx="290" cy="250" r="5" fill="#8899a6" />
+                        <text x="290" y="265" text-anchor="middle" class="region-label" fill="#8899a6">Jinja</text>
+
+                        <circle cx="120" cy="320" r="5" fill="#8899a6" />
+                        <text x="120" y="335" text-anchor="middle" class="region-label" fill="#8899a6">Mbarara</text>
+
+                        <circle cx="200" cy="120" r="5" fill="#8899a6" />
+                        <text x="200" y="135" text-anchor="middle" class="region-label" fill="#8899a6">Gulu</text>
+                    </g>
+                </svg>
+
+                <!-- Map Annotation (shows on hover) -->
+                <div class="map-annotation" id="mapAnnotation">
+                    <div class="annotation-title">Coverage Extension</div>
+                    <div class="annotation-value">+15 km range</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-title">Coverage Analytics</div>
+                <div class="sidebar-subtitle">DAE-enhanced network simulation</div>
+            </div>
+
+            <div class="sidebar-content">
+                <!-- Impact Banner (shows in enhanced mode) -->
+                <div class="impact-banner" id="impactBanner">
+                    <div class="impact-header">
+                        <span class="impact-icon">🚀</span>
+                        <span class="impact-title">DAE Impact Active</span>
+                    </div>
+                    <div class="impact-text">
+                        Denoising Autoencoder extends effective receiver sensitivity by
+                        <span class="impact-metric">+12 dB</span>, translating to
+                        <span class="impact-metric">+40%</span> additional coverage area.
+                    </div>
+                </div>
+
+                <!-- Stats Grid -->
+                <div class="stats-row">
+                    <div class="stat-card" id="popCard">
+                        <div class="stat-value" id="popCovered">67</div>
+                        <div class="stat-label">% Population</div>
+                        <div class="stat-change" id="popChange">↑ +18% with DAE</div>
+                    </div>
+                    <div class="stat-card" id="areaCard">
+                        <div class="stat-value" id="areaCovered">52</div>
+                        <div class="stat-label">% Land Area</div>
+                        <div class="stat-change" id="areaChange">↑ +23% with DAE</div>
+                    </div>
+                </div>
+
+                <div class="stats-row">
+                    <div class="stat-card">
+                        <div class="stat-value" id="towerCount">24</div>
+                        <div class="stat-label">Cell Towers</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="rangeExt">0</div>
+                        <div class="stat-label">Avg Range +km</div>
+                    </div>
+                </div>
+
+                <!-- Scenario -->
+                <div class="scenario-card">
+                    <div class="scenario-header">
+                        <span class="scenario-icon">🌾</span>
+                        <span class="scenario-title">Rural Renaissance Scenario</span>
+                    </div>
+                    <div class="scenario-desc">
+                        A farmer in a remote sub-county at -90 dBm signal strength. Toggle to "DAE Enhanced" to see how
+                        the DAE-AMC system extends coverage to reach previously unserved areas.
+                    </div>
+                </div>
+
+                <!-- Region List -->
+                <div class="section">
+                    <div class="section-header">
+                        <div class="section-title">📍 Regional Coverage</div>
+                    </div>
+
+                    <div class="region-list" id="regionList">
+                        <!-- Regions will be populated by JS -->
+                    </div>
+                </div>
+
+                <!-- Legend -->
+                <div class="legend">
+                    <div class="legend-title">MAP LEGEND</div>
+                    <div class="legend-items">
+                        <div class="legend-item">
+                            <div class="legend-color standard"></div>
+                            <span>Standard Coverage</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color enhanced"></div>
+                            <span>DAE Enhanced Coverage</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color tower"></div>
+                            <span>Urban Cell Tower</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color tower-rural"></div>
+                            <span>Rural Cell Tower</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ===== Configuration =====
+        const config = {
+            mode: 'standard', // 'standard' or 'enhanced'
+            enhancementFactor: 1.4, // 40% range increase
+        };
+
+        // Tower data
+        const towers = [
+            // Urban towers (Kampala area)
+            { x: 200, y: 320, range: 25, type: 'urban', name: 'Kampala Central' },
+            { x: 220, y: 300, range: 22, type: 'urban', name: 'Kampala East' },
+            { x: 180, y: 340, range: 22, type: 'urban', name: 'Kampala West' },
+
+            // Regional urban
+            { x: 290, y: 250, range: 20, type: 'urban', name: 'Jinja' },
+            { x: 120, y: 320, range: 18, type: 'urban', name: 'Mbarara' },
+            { x: 200, y: 120, range: 18, type: 'urban', name: 'Gulu' },
+            { x: 250, y: 380, range: 15, type: 'urban', name: 'Entebbe' },
+
+            // Rural towers (smaller range, will benefit most from DAE)
+            { x: 150, y: 180, range: 12, type: 'rural', name: 'Lira Rural' },
+            { x: 280, y: 150, range: 10, type: 'rural', name: 'Soroti' },
+            { x: 320, y: 280, range: 11, type: 'rural', name: 'Mbale' },
+            { x: 80, y: 350, range: 10, type: 'rural', name: 'Kasese' },
+            { x: 100, y: 250, range: 9, type: 'rural', name: 'Fort Portal' },
+            { x: 160, y: 400, range: 12, type: 'rural', name: 'Masaka' },
+            { x: 250, y: 180, range: 8, type: 'rural', name: 'Kapchorwa' },
+            { x: 140, y: 120, range: 9, type: 'rural', name: 'Arua' },
+            { x: 300, y: 350, range: 10, type: 'rural', name: 'Iganga' },
+            { x: 220, y: 220, range: 11, type: 'rural', name: 'Nakasongola' },
+
+            // Remote outposts
+            { x: 330, y: 180, range: 7, type: 'rural', name: 'Moroto' },
+            { x: 70, y: 200, range: 8, type: 'rural', name: 'Bundibugyo' },
+            { x: 180, y: 80, range: 8, type: 'rural', name: 'Kitgum' },
+            { x: 100, y: 400, range: 9, type: 'rural', name: 'Rukungiri' },
+            { x: 340, y: 250, range: 7, type: 'rural', name: 'Tororo' },
+            { x: 240, y: 420, range: 10, type: 'rural', name: 'Mukono' },
+            { x: 160, y: 280, range: 10, type: 'rural', name: 'Hoima' },
+            { x: 270, y: 100, range: 7, type: 'rural', name: 'Kotido' },
+        ];
+
+        // Region data
+        const regions = [
+            {
+                name: 'Central Region',
+                type: 'urban',
+                population: 10.5,
+                standardCoverage: 85,
+                enhancedCoverage: 96
+            },
+            {
+                name: 'Eastern Region',
+                type: 'rural',
+                population: 9.8,
+                standardCoverage: 58,
+                enhancedCoverage: 82
+            },
+            {
+                name: 'Northern Region',
+                type: 'rural',
+                population: 7.2,
+                standardCoverage: 42,
+                enhancedCoverage: 71
+            },
+            {
+                name: 'Western Region',
+                type: 'rural',
+                population: 9.1,
+                standardCoverage: 55,
+                enhancedCoverage: 78
+            },
+        ];
+
+        // ===== Drawing Functions =====
+        function drawCoverageCircles() {
+            const container = document.getElementById('coverageCircles');
+            container.innerHTML = '';
+
+            towers.forEach((tower, idx) => {
+                const range = config.mode === 'enhanced'
+                    ? tower.range * config.enhancementFactor
+                    : tower.range;
+
+                const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                circle.setAttribute('cx', tower.x);
+                circle.setAttribute('cy', tower.y);
+                circle.setAttribute('r', range);
+                circle.setAttribute('class', `coverage-circle ${config.mode === 'enhanced' ? 'enhanced' : ''}`);
+                circle.style.animationDelay = `${idx * 30}ms`;
+
+                // Set fill based on mode
+                if (config.mode === 'enhanced') {
+                    circle.setAttribute('fill', 'url(#coverageGradientEnhanced)');
+                    circle.setAttribute('stroke', '#00ba7c');
+                } else {
+                    circle.setAttribute('fill', 'url(#coverageGradient)');
+                    circle.setAttribute('stroke', '#1d9bf0');
+                }
+
+                circle.classList.add('coverage-animate');
+                container.appendChild(circle);
+            });
+        }
+
+        function drawTowers() {
+            const container = document.getElementById('towerMarkers');
+            container.innerHTML = '';
+
+            towers.forEach(tower => {
+                const group = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+                group.setAttribute('class', 'tower-marker');
+                group.setAttribute('transform', `translate(${tower.x}, ${tower.y})`);
+
+                // Tower icon (triangle)
+                const polygon = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+                polygon.setAttribute('points', '0,-8 -5,4 5,4');
+                polygon.setAttribute('class', `tower-base ${tower.type}`);
+                polygon.setAttribute('filter', 'url(#glow)');
+
+                // Small circle at base
+                const base = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                base.setAttribute('cx', 0);
+                base.setAttribute('cy', 4);
+                base.setAttribute('r', 3);
+                base.setAttribute('fill', tower.type === 'rural' ? '#ffad1f' : '#1d9bf0');
+
+                group.appendChild(polygon);
+                group.appendChild(base);
+
+                // Hover effect
+                group.addEventListener('mouseenter', () => showAnnotation(tower));
+                group.addEventListener('mouseleave', hideAnnotation);
+
+                container.appendChild(group);
+            });
+        }
+
+        function showAnnotation(tower) {
+            const annotation = document.getElementById('mapAnnotation');
+            const rangeIncrease = Math.round((tower.range * config.enhancementFactor) - tower.range);
+
+            annotation.innerHTML = `
+                <div class="annotation-title">${tower.name}</div>
+                <div style="color: var(--text-secondary); font-size: 0.7rem; margin-bottom: 0.25rem;">
+                    ${tower.type === 'rural' ? '🌾 Rural Tower' : '🏙️ Urban Tower'}
+                </div>
+                <div class="annotation-value">
+                    ${config.mode === 'enhanced'
+                    ? `Range: ${Math.round(tower.range * config.enhancementFactor)} km (+${rangeIncrease} km)`
+                    : `Range: ${tower.range} km`
+                }
+                </div>
+            `;
+            annotation.classList.add('visible');
+        }
+
+        function hideAnnotation() {
+            document.getElementById('mapAnnotation').classList.remove('visible');
+        }
+
+        // ===== Region List =====
+        function renderRegions() {
+            const container = document.getElementById('regionList');
+
+            container.innerHTML = regions.map(region => {
+                const coverage = config.mode === 'enhanced'
+                    ? region.enhancedCoverage
+                    : region.standardCoverage;
+
+                return `
+                    <div class="region-item">
+                        <div class="region-header">
+                            <span class="region-name">${region.name}</span>
+                            <span class="region-type ${region.type}">${region.type}</span>
+                        </div>
+                        <div class="region-stats">
+                            <span class="region-stat">👥 ${region.population}M people</span>
+                            <span class="region-stat">📊 ${coverage}% covered</span>
+                        </div>
+                        <div class="coverage-bar-container">
+                            <div class="coverage-bar-label">
+                                <span>Coverage</span>
+                                <span>${coverage}%</span>
+                            </div>
+                            <div class="coverage-bar">
+                                <div class="coverage-bar-fill ${config.mode}" style="width: ${coverage}%"></div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // ===== Stats Update =====
+        function updateStats() {
+            const isEnhanced = config.mode === 'enhanced';
+
+            // Population covered
+            const popCovered = isEnhanced ? 85 : 67;
+            const areaCovered = isEnhanced ? 75 : 52;
+            const avgRangeExt = isEnhanced ? 5.2 : 0;
+
+            // Animate numbers
+            animateValue('popCovered', parseInt(document.getElementById('popCovered').textContent), popCovered, 500);
+            animateValue('areaCovered', parseInt(document.getElementById('areaCovered').textContent), areaCovered, 500);
+            animateValue('rangeExt', parseFloat(document.getElementById('rangeExt').textContent), avgRangeExt, 500, true);
+
+            // Update stat card styling
+            document.getElementById('popCovered').classList.toggle('enhanced', isEnhanced);
+            document.getElementById('areaCovered').classList.toggle('enhanced', isEnhanced);
+            document.getElementById('rangeExt').classList.toggle('enhanced', isEnhanced);
+
+            document.getElementById('popCard').classList.toggle('highlight', isEnhanced);
+            document.getElementById('areaCard').classList.toggle('highlight', isEnhanced);
+
+            // Show/hide change indicators
+            document.getElementById('popChange').classList.toggle('visible', isEnhanced);
+            document.getElementById('areaChange').classList.toggle('visible', isEnhanced);
+
+            // Impact banner
+            document.getElementById('impactBanner').classList.toggle('visible', isEnhanced);
+        }
+
+        function animateValue(elementId, start, end, duration, isFloat = false) {
+            const element = document.getElementById(elementId);
+            const startTime = performance.now();
+
+            function update(currentTime) {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                const eased = 1 - Math.pow(1 - progress, 3); // Ease out cubic
+
+                const current = start + (end - start) * eased;
+                element.textContent = isFloat ? current.toFixed(1) : Math.round(current);
+
+                if (progress < 1) {
+                    requestAnimationFrame(update);
+                }
+            }
+
+            requestAnimationFrame(update);
+        }
+
+        // ===== Mode Toggle =====
+        function setMode(mode) {
+            config.mode = mode;
+
+            // Update button states
+            document.getElementById('standardBtn').classList.toggle('active', mode === 'standard');
+            document.getElementById('enhancedBtn').classList.toggle('active', mode === 'enhanced');
+
+            // Redraw everything
+            drawCoverageCircles();
+            renderRegions();
+            updateStats();
+        }
+
+        // ===== Initialization =====
+        function init() {
+            drawCoverageCircles();
+            drawTowers();
+            renderRegions();
+            updateStats();
+        }
+
+        init();
+    </script>
+</body>
+
+</html>
