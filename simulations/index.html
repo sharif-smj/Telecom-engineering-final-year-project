@@ -377,6 +377,31 @@
             }
         }
 
+        /* Card 6: Terrain animation */
+        .card-6 .card-preview-anim {
+            background:
+                linear-gradient(180deg,
+                    rgba(26, 71, 42, 0.4) 0%,
+                    rgba(74, 124, 35, 0.3) 30%,
+                    rgba(139, 105, 20, 0.3) 60%,
+                    rgba(160, 160, 160, 0.2) 100%);
+            animation: terrain 4s ease-in-out infinite;
+        }
+
+        @keyframes terrain {
+
+            0%,
+            100% {
+                transform: translateY(10px) scale(1.1);
+                opacity: 0.3;
+            }
+
+            50% {
+                transform: translateY(-10px) scale(1);
+                opacity: 0.5;
+            }
+        }
+
         .card-content {
             padding: 2rem;
             flex: 1;
@@ -571,7 +596,7 @@
         <div class="container">
             <div class="section-header">
                 <p class="section-title">Explore the Simulations</p>
-                <h2 class="section-heading">Five Interactive Demonstrations</h2>
+                <h2 class="section-heading">Six Interactive Demonstrations</h2>
             </div>
 
             <div class="simulations-grid">
@@ -698,6 +723,32 @@
                             <span class="tag">NN Architecture</span>
                             <span class="tag">Metrics</span>
                             <span class="tag highlight">Pipeline</span>
+                        </div>
+                        <span class="card-cta">
+                            Launch Demo <span>→</span>
+                        </span>
+                    </div>
+                </a>
+
+                <!-- Card 6: Uganda Telecom Terrain -->
+                <a href="uganda_terrain_map.html" class="simulation-card card-6">
+                    <div class="card-preview">
+                        <div class="card-preview-anim"></div>
+                        <span>🗺️</span>
+                    </div>
+                    <div class="card-content">
+                        <span class="card-number">SIMULATION 06</span>
+                        <h3 class="card-title">Uganda Telecom Terrain</h3>
+                        <p class="card-desc">
+                            Explore Uganda's telecommunications landscape on an interactive 3D
+                            terrain map. View real network statistics, tower locations, and
+                            operator coverage across 15+ major cities.
+                        </p>
+                        <div class="card-tags">
+                            <span class="tag">3D Terrain</span>
+                            <span class="tag">Real Data</span>
+                            <span class="tag">Interactive</span>
+                            <span class="tag highlight">45.7M Users</span>
                         </div>
                         <span class="card-cta">
                             Launch Demo <span>→</span>

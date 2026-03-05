@@ -1,0 +1,1640 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Uganda Telecom Terrain Map | 3D Interactive Visualization</title>
+    <meta name="description"
+        content="Interactive 3D terrain map of Uganda showing telecommunications infrastructure, coverage, and network statistics">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0a0e17;
+            --bg-secondary: #0f172a;
+            --bg-tertiary: #1e293b;
+            --bg-glass: rgba(15, 23, 42, 0.85);
+            --accent-mtn: #00d4ff;
+            --accent-airtel: #ef4444;
+            --accent-shared: #22c55e;
+            --accent-fiber: #a855f7;
+            --terrain-low: #1a472a;
+            --terrain-mid: #4a7c23;
+            --terrain-high: #8b6914;
+            --terrain-peak: #a0a0a0;
+            --water: #0d3b66;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --border: rgba(0, 212, 255, 0.15);
+            --glow: rgba(0, 212, 255, 0.4);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Canvas Container */
+        #canvas-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+
+        /* Header */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            padding: 1rem 2rem;
+            background: linear-gradient(to bottom, rgba(10, 14, 23, 0.98), transparent);
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo-icon {
+            width: 52px;
+            height: 52px;
+            background: linear-gradient(135deg, var(--terrain-mid), var(--accent-mtn));
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.75rem;
+            box-shadow: 0 4px 24px var(--glow);
+        }
+
+        .logo h1 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #fff, var(--accent-mtn));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .logo span {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            display: block;
+            font-weight: 400;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .btn {
+            padding: 0.7rem 1.4rem;
+            border-radius: 10px;
+            font-weight: 500;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            border: 1px solid var(--border);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-secondary {
+            background: var(--bg-glass);
+            color: var(--text-primary);
+            backdrop-filter: blur(12px);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--accent-mtn);
+            box-shadow: 0 0 24px var(--glow);
+            transform: translateY(-2px);
+        }
+
+        /* Stats Panel - Left Side */
+        .stats-panel {
+            position: fixed;
+            left: 2rem;
+            top: 50%;
+            transform: translateY(-50%);
+            background: var(--bg-glass);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 1.5rem;
+            z-index: 100;
+            width: 280px;
+        }
+
+        .panel-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1.25rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .panel-header h2 {
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .stat-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .stat-card {
+            background: rgba(0, 0, 0, 0.35);
+            border-radius: 12px;
+            padding: 1rem;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            border-color: var(--accent-mtn);
+            transform: scale(1.02);
+        }
+
+        .stat-card.full-width {
+            grid-column: span 2;
+        }
+
+        .stat-value {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-value.mtn {
+            color: var(--accent-mtn);
+        }
+
+        .stat-value.airtel {
+            color: var(--accent-airtel);
+        }
+
+        .stat-value.shared {
+            color: var(--accent-shared);
+        }
+
+        .stat-value.fiber {
+            color: var(--accent-fiber);
+        }
+
+        .stat-label {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* Operator breakdown */
+        .operator-section {
+            margin-bottom: 1rem;
+        }
+
+        .operator-title {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.75rem;
+        }
+
+        .operator-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.6rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .operator-item:last-child {
+            border-bottom: none;
+        }
+
+        .operator-info {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .operator-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+
+        .operator-dot.mtn {
+            background: var(--accent-mtn);
+            box-shadow: 0 0 8px var(--accent-mtn);
+        }
+
+        .operator-dot.airtel {
+            background: var(--accent-airtel);
+            box-shadow: 0 0 8px var(--accent-airtel);
+        }
+
+        .operator-name {
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .operator-stat {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        /* Control Panel - Right Side */
+        .control-panel {
+            position: fixed;
+            right: 2rem;
+            top: 50%;
+            transform: translateY(-50%);
+            background: var(--bg-glass);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 1.5rem;
+            z-index: 100;
+            width: 260px;
+        }
+
+        .control-section {
+            margin-bottom: 1.25rem;
+        }
+
+        .control-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .control-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.75rem;
+            display: block;
+        }
+
+        .toggle-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .toggle-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.6rem 0.75rem;
+            background: rgba(0, 0, 0, 0.25);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .toggle-item:hover {
+            background: rgba(0, 0, 0, 0.4);
+        }
+
+        .toggle-item.active {
+            background: rgba(0, 212, 255, 0.1);
+            border: 1px solid rgba(0, 212, 255, 0.3);
+        }
+
+        .toggle-text {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.85rem;
+        }
+
+        .toggle-switch {
+            width: 36px;
+            height: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .toggle-switch::after {
+            content: '';
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            background: white;
+            border-radius: 50%;
+            top: 2px;
+            left: 2px;
+            transition: all 0.3s ease;
+        }
+
+        .toggle-item.active .toggle-switch {
+            background: var(--accent-mtn);
+        }
+
+        .toggle-item.active .toggle-switch::after {
+            left: 18px;
+        }
+
+        /* Legend */
+        .legend {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
+            padding: 1rem;
+        }
+
+        .legend-title {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.75rem;
+        }
+
+        .legend-items {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .legend-color {
+            width: 14px;
+            height: 14px;
+            border-radius: 4px;
+        }
+
+        .legend-color.terrain-low {
+            background: linear-gradient(135deg, var(--terrain-low), var(--terrain-mid));
+        }
+
+        .legend-color.terrain-high {
+            background: linear-gradient(135deg, var(--terrain-mid), var(--terrain-peak));
+        }
+
+        .legend-color.water {
+            background: var(--water);
+        }
+
+        .legend-color.city {
+            background: #fbbf24;
+            box-shadow: 0 0 6px #fbbf24;
+        }
+
+        /* City Tooltip */
+        .tooltip {
+            position: fixed;
+            background: var(--bg-glass);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1rem 1.25rem;
+            z-index: 200;
+            pointer-events: none;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.2s ease;
+            min-width: 200px;
+        }
+
+        .tooltip.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .tooltip-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .tooltip-city {
+            font-weight: 700;
+            font-size: 1rem;
+        }
+
+        .tooltip-badge {
+            font-size: 0.65rem;
+            padding: 0.2rem 0.5rem;
+            background: rgba(251, 191, 36, 0.2);
+            color: #fbbf24;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+
+        .tooltip-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.5rem;
+        }
+
+        .tooltip-stat {
+            font-size: 0.8rem;
+        }
+
+        .tooltip-stat-label {
+            color: var(--text-muted);
+            font-size: 0.7rem;
+        }
+
+        .tooltip-stat-value {
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 600;
+            color: var(--accent-mtn);
+        }
+
+        /* Loading Screen */
+        .loading {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--bg-primary);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            transition: opacity 0.6s ease;
+        }
+
+        .loading.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .loading-terrain {
+            position: relative;
+            width: 120px;
+            height: 80px;
+            margin-bottom: 2rem;
+        }
+
+        .loading-terrain::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 40px;
+            background: linear-gradient(to top, var(--terrain-mid), transparent);
+            border-radius: 50% 50% 0 0;
+            animation: terrainPulse 2s ease-in-out infinite;
+        }
+
+        .loading-terrain::after {
+            content: '🗻';
+            position: absolute;
+            font-size: 4rem;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: mountainBob 1.5s ease-in-out infinite;
+        }
+
+        @keyframes terrainPulse {
+
+            0%,
+            100% {
+                opacity: 0.3;
+                transform: scaleX(0.9);
+            }
+
+            50% {
+                opacity: 0.6;
+                transform: scaleX(1.1);
+            }
+        }
+
+        @keyframes mountainBob {
+
+            0%,
+            100% {
+                transform: translateX(-50%) translateY(0);
+            }
+
+            50% {
+                transform: translateX(-50%) translateY(-8px);
+            }
+        }
+
+        .loading-text {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            font-weight: 500;
+        }
+
+        .loading-subtext {
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            margin-top: 0.5rem;
+        }
+
+        /* Controls Hint */
+        .controls-hint {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--bg-glass);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 0.75rem 1.5rem;
+            z-index: 100;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .controls-hint kbd {
+            background: var(--bg-tertiary);
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            margin: 0 0.25rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .stats-panel {
+                left: 1rem;
+                width: 240px;
+                padding: 1rem;
+            }
+
+            .control-panel {
+                right: 1rem;
+                width: 220px;
+                padding: 1rem;
+            }
+        }
+
+        @media (max-width: 900px) {
+
+            .stats-panel,
+            .control-panel {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Loading Screen -->
+    <div class="loading" id="loading">
+        <div class="loading-terrain"></div>
+        <div class="loading-text">Generating Uganda Terrain</div>
+        <div class="loading-subtext">Loading telecom infrastructure data...</div>
+    </div>
+
+    <!-- Three.js Canvas -->
+    <div id="canvas-container"></div>
+
+    <!-- Header -->
+    <header>
+        <div class="logo">
+            <div class="logo-icon">🗺️</div>
+            <div>
+                <h1>Uganda Telecom Terrain</h1>
+                <span>3D Interactive Network Visualization</span>
+            </div>
+        </div>
+        <nav class="nav-links">
+            <a href="coverage_map_3d.html" class="btn btn-secondary">🌐 Coverage 3D</a>
+            <a href="index.html" class="btn btn-secondary">← Back to Portal</a>
+        </nav>
+    </header>
+
+    <!-- Stats Panel - Left -->
+    <div class="stats-panel">
+        <div class="panel-header">
+            <span style="font-size: 1.5rem;">📊</span>
+            <h2>Network Statistics</h2>
+        </div>
+
+        <div class="stat-grid">
+            <div class="stat-card">
+                <div class="stat-value shared">45.7M</div>
+                <div class="stat-label">Subscribers</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value mtn">4,300+</div>
+                <div class="stat-label">Base Stations</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value fiber">17,774</div>
+                <div class="stat-label">Fiber (km)</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">17M</div>
+                <div class="stat-label">Internet Users</div>
+            </div>
+        </div>
+
+        <div class="operator-section">
+            <div class="operator-title">Operators</div>
+            <div class="operator-item">
+                <div class="operator-info">
+                    <span class="operator-dot mtn"></span>
+                    <span class="operator-name">MTN Uganda</span>
+                </div>
+                <span class="operator-stat" style="color: var(--accent-mtn);">22M</span>
+            </div>
+            <div class="operator-item">
+                <div class="operator-info">
+                    <span class="operator-dot airtel"></span>
+                    <span class="operator-name">Airtel Uganda</span>
+                </div>
+                <span class="operator-stat" style="color: var(--accent-airtel);">17.9M</span>
+            </div>
+        </div>
+
+        <div class="operator-section">
+            <div class="operator-title">Coverage</div>
+            <div class="operator-item">
+                <span class="operator-name">MTN 4G</span>
+                <span class="operator-stat" style="color: var(--accent-mtn);">87.9%</span>
+            </div>
+            <div class="operator-item">
+                <span class="operator-name">Airtel Population</span>
+                <span class="operator-stat" style="color: var(--accent-airtel);">99%</span>
+            </div>
+            <div class="operator-item">
+                <span class="operator-name">MTN 5G</span>
+                <span class="operator-stat" style="color: var(--accent-shared);">15.3%</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Control Panel - Right -->
+    <div class="control-panel">
+        <div class="panel-header">
+            <span style="font-size: 1.25rem;">⚙️</span>
+            <h2>Layers</h2>
+        </div>
+
+        <div class="control-section">
+            <span class="control-label">Toggle Visibility</span>
+            <div class="toggle-group">
+                <div class="toggle-item active" onclick="toggleLayer('cities')" id="toggle-cities">
+                    <span class="toggle-text">🏙️ Cities</span>
+                    <span class="toggle-switch"></span>
+                </div>
+                <div class="toggle-item active" onclick="toggleLayer('towers')" id="toggle-towers">
+                    <span class="toggle-text">📡 Towers</span>
+                    <span class="toggle-switch"></span>
+                </div>
+                <div class="toggle-item active" onclick="toggleLayer('coverage')" id="toggle-coverage">
+                    <span class="toggle-text">📶 Coverage</span>
+                    <span class="toggle-switch"></span>
+                </div>
+                <div class="toggle-item" onclick="toggleLayer('fiber')" id="toggle-fiber">
+                    <span class="toggle-text">🔮 Fiber Routes</span>
+                    <span class="toggle-switch"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="control-section">
+            <div class="legend">
+                <div class="legend-title">Terrain Legend</div>
+                <div class="legend-items">
+                    <div class="legend-item">
+                        <span class="legend-color terrain-low"></span>
+                        <span>Lowlands (600-1200m)</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-color terrain-high"></span>
+                        <span>Highlands (1200-5000m)</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-color water"></span>
+                        <span>Lakes & Water</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-color city"></span>
+                        <span>Major Cities</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- City Tooltip -->
+    <div class="tooltip" id="tooltip">
+        <div class="tooltip-header">
+            <span class="tooltip-city" id="tooltip-city">Kampala</span>
+            <span class="tooltip-badge" id="tooltip-badge">Capital</span>
+        </div>
+        <div class="tooltip-stats">
+            <div class="tooltip-stat">
+                <div class="tooltip-stat-label">Population</div>
+                <div class="tooltip-stat-value" id="tooltip-pop">1.65M</div>
+            </div>
+            <div class="tooltip-stat">
+                <div class="tooltip-stat-label">Towers</div>
+                <div class="tooltip-stat-value" id="tooltip-towers">450+</div>
+            </div>
+            <div class="tooltip-stat">
+                <div class="tooltip-stat-label">4G Speed</div>
+                <div class="tooltip-stat-value" id="tooltip-speed">24 Mbps</div>
+            </div>
+            <div class="tooltip-stat">
+                <div class="tooltip-stat-label">Coverage</div>
+                <div class="tooltip-stat-value" id="tooltip-coverage">99%</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Controls Hint -->
+    <div class="controls-hint">
+        <span><kbd>Drag</kbd> Rotate</span>
+        <span><kbd>Scroll</kbd> Zoom</span>
+        <span><kbd>Shift+Drag</kbd> Pan</span>
+        <span><kbd>Click</kbd> City Details</span>
+    </div>
+
+    <!-- Three.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/SVGLoader.js"></script>
+    <script src="uganda_svg_data.js"></script>
+
+    <script>
+        // ===== Uganda Geographic & Telecom Data =====
+        const ugandaData = {
+            // Bounding box: approx -1.5 to 4.2 lat, 29.5 to 35 lon
+            // Center: ~1.35, 32.25
+            bounds: { minLat: -1.5, maxLat: 4.2, minLon: 29.5, maxLon: 35 },
+            center: { lat: 1.35, lon: 32.25 },
+
+            cities: [
+                { name: 'Kampala', lat: 0.3476, lon: 32.5825, pop: 1650000, type: 'capital', towers: 450, speed: 24, coverage: 99 },
+                { name: 'Gulu', lat: 2.7747, lon: 32.2990, pop: 150000, type: 'major', towers: 85, speed: 21.7, coverage: 95 },
+                { name: 'Lira', lat: 2.2499, lon: 32.8999, pop: 100000, type: 'major', towers: 60, speed: 18, coverage: 92 },
+                { name: 'Mbarara', lat: -0.6077, lon: 30.6545, pop: 195000, type: 'major', towers: 95, speed: 22, coverage: 96 },
+                { name: 'Jinja', lat: 0.4244, lon: 33.2041, pop: 300000, type: 'major', towers: 120, speed: 26, coverage: 98 },
+                { name: 'Mbale', lat: 1.0750, lon: 34.1750, pop: 96000, type: 'city', towers: 55, speed: 24.3, coverage: 94 },
+                { name: 'Fort Portal', lat: 0.6710, lon: 30.2750, pop: 55000, type: 'city', towers: 40, speed: 16, coverage: 88 },
+                { name: 'Kasese', lat: 0.1830, lon: 30.0665, pop: 101000, type: 'city', towers: 45, speed: 15, coverage: 85 },
+                { name: 'Soroti', lat: 1.7150, lon: 33.6111, pop: 66000, type: 'city', towers: 38, speed: 17, coverage: 90 },
+                { name: 'Arua', lat: 3.0200, lon: 30.9100, pop: 62000, type: 'city', towers: 42, speed: 14, coverage: 82 },
+                { name: 'Entebbe', lat: 0.0512, lon: 32.4637, pop: 70000, type: 'city', towers: 65, speed: 28, coverage: 99 },
+                { name: 'Masaka', lat: -0.3136, lon: 31.7321, pop: 103000, type: 'city', towers: 50, speed: 19, coverage: 93 },
+                { name: 'Hoima', lat: 1.4330, lon: 31.3521, pop: 100000, type: 'city', towers: 48, speed: 16, coverage: 87 },
+                { name: 'Moroto', lat: 2.5333, lon: 34.6667, pop: 14000, type: 'town', towers: 15, speed: 8, coverage: 65 },
+                { name: 'Kabale', lat: -1.2500, lon: 29.9833, pop: 50000, type: 'city', towers: 35, speed: 14, coverage: 80 }
+            ],
+
+            // Lakes for water features
+            lakes: [
+                { name: 'Lake Victoria', centerLat: -0.5, centerLon: 33.0, radius: 1.8 },
+                { name: 'Lake Albert', centerLat: 1.6, centerLon: 30.8, radiusX: 0.4, radiusY: 1.2 },
+                { name: 'Lake Kyoga', centerLat: 1.5, centerLon: 33.0, radiusX: 0.8, radiusY: 0.3 },
+                { name: 'Lake Edward', centerLat: -0.3, centerLon: 29.6, radius: 0.35 }
+            ],
+
+            // Mountain regions for elevation
+            mountains: [
+                { name: 'Rwenzori', lat: 0.4, lon: 29.9, elevation: 5109, radius: 0.5 },
+                { name: 'Mt. Elgon', lat: 1.1, lon: 34.5, elevation: 4321, radius: 0.6 },
+                { name: 'Virunga', lat: -1.4, lon: 29.5, elevation: 4507, radius: 0.4 }
+            ],
+
+            // Neighboring countries for labels
+            neighbors: [
+                { name: 'SOUTH SUDAN', lat: 4.5, lon: 32.0 },
+                { name: 'KENYA', lat: 1.0, lon: 35.5 },
+                { name: 'TANZANIA', lat: -2.0, lon: 33.0 },
+                { name: 'RWANDA', lat: -1.8, lon: 29.8 },
+                { name: 'D.R. CONGO', lat: 1.0, lon: 28.5 }
+            ]
+        };
+
+        // ===== Layer Visibility =====
+        const layers = {
+            cities: true,
+            towers: true,
+            coverage: true,
+            fiber: false
+        };
+
+        // ===== Three.js Setup =====
+        let scene, camera, renderer, controls;
+        let terrain, cityMeshes = [], towerMeshes = [], coverageMeshes = [], fiberLines = [];
+        let raycaster, mouse;
+        let hoveredCity = null;
+
+        function init() {
+            // Scene
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(0x0a0e17);
+            scene.fog = new THREE.Fog(0x0a0e17, 20, 50);
+
+            // Camera
+            camera = new THREE.PerspectiveCamera(55, window.innerWidth / window.innerHeight, 0.1, 200);
+            camera.position.set(0, 12, 15);
+            camera.lookAt(0, 0, 0);
+
+            // Renderer
+            renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            renderer.shadowMap.enabled = true;
+            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+            document.getElementById('canvas-container').appendChild(renderer.domElement);
+
+            // Controls
+            controls = new THREE.OrbitControls(camera, renderer.domElement);
+            controls.enableDamping = true;
+            controls.dampingFactor = 0.05;
+            controls.minDistance = 6;
+            controls.maxDistance = 35;
+            controls.maxPolarAngle = Math.PI / 2.1;
+            controls.target.set(0, 0, 0);
+
+            // Raycaster for interactions
+            raycaster = new THREE.Raycaster();
+            mouse = new THREE.Vector2();
+
+            // Lighting
+            setupLighting();
+
+            // Create scene elements
+            createTerrain();
+            createLakes();
+            createCities();
+            createTowerNetwork();
+            createCoverageZones();
+            createFiberRoutes();
+            createGrid();
+            createStars();
+
+            // Event listeners
+            window.addEventListener('resize', onWindowResize);
+            window.addEventListener('mousemove', onMouseMove);
+            window.addEventListener('click', onMouseClick);
+
+            // Hide loading screen
+            setTimeout(() => {
+                document.getElementById('loading').classList.add('hidden');
+            }, 1500);
+
+            animate();
+        }
+
+        function setupLighting() {
+            // Ambient light
+            const ambient = new THREE.AmbientLight(0x404060, 0.4);
+            scene.add(ambient);
+
+            // Directional light (sun)
+            const sun = new THREE.DirectionalLight(0xffffff, 0.8);
+            sun.position.set(10, 20, 10);
+            sun.castShadow = true;
+            sun.shadow.mapSize.width = 2048;
+            sun.shadow.mapSize.height = 2048;
+            sun.shadow.camera.near = 0.5;
+            sun.shadow.camera.far = 50;
+            scene.add(sun);
+
+            // Cyan accent light
+            const cyanLight = new THREE.PointLight(0x00d4ff, 0.6, 30);
+            cyanLight.position.set(-8, 8, 8);
+            scene.add(cyanLight);
+
+            // Green accent light
+            const greenLight = new THREE.PointLight(0x22c55e, 0.4, 25);
+            greenLight.position.set(8, 6, -8);
+            scene.add(greenLight);
+
+            // Purple mountain glow
+            const purpleLight = new THREE.PointLight(0xa855f7, 0.3, 15);
+            purpleLight.position.set(-6, 3, -3);
+            scene.add(purpleLight);
+        }
+
+        // Convert lat/lon to 3D coordinates
+        function latLonTo3D(lat, lon) {
+            const bounds = ugandaData.bounds;
+            const x = ((lon - ugandaData.center.lon) / (bounds.maxLon - bounds.minLon)) * 12;
+            const z = ((ugandaData.center.lat - lat) / (bounds.maxLat - bounds.minLat)) * 12;
+            return { x, z };
+        }
+
+        // Get terrain height at position - FLAT for now
+        function getTerrainHeight(x, z) {
+            return 0.3; // Flat terrain
+        }
+
+        // Uganda SVG embedded inline to avoid CORS issues
+        function getUgandaSVG() {
+            // Returns the complete Uganda districts SVG from external file
+            return UGANDA_SVG;
+<path d="m 91.57486,470.05287 0,0 1.57,-0.31 0.82,-1.36 0.37,-1.38 1.09,-0.84 2.28,-0.47 1.95,0.78 -1.11,6.23 0.4,7.08 -3.09,2.98 0.31,3.49 -13.74,1.12 -1.23,3.67 -4.49,-1.63 -7.35,-4.08 -7.76,-2.05 0.81,-11.43 2.45,-2.05 4.91,-2.85 6.94,-1.64 4.2,-3.44 8.81,5.84 0.73,1.38 1.13,0.96 z"/>
+<path d="m 75.63486,518.41287 0,0 -3.61,0.09 -3.01,-0.65 -2.27,-2.58 0.97,-3.8 -3.26,-5.72 8.57,-0.82 6.95,-0.82 1.22,-6.12 0,-6.95 1.23,-3.67 13.74,-1.12 -0.12,4.31 -2.3,7.63 -0.66,3.31 -1.59,3.94 -9.02,8.73 -6.84,4.24 z"/>
+<path d="m 49.33486,496.76287 0,0 3.27,-0.81 3.27,0 2.45,2.45 0.82,3.26 1.22,2.86 4.09,1.23 3.26,5.72 -0.97,3.8 -3.16,-0.88 -2.54,2.03 -2.37,2.26 -2.77,-0.19 -2.59,0.45 -6.19,-4.5 -1.92,-4.48 -3,-3.44 -3.97,-1.99 -1.66,-3.9 1.39,-0.8 1.58,-0.59 0.28,-1.51 1.22,-2.43 0.23,-2.9 4.39,3.14 3.67,1.22 z"/>
+<path d="m 68.74486,448.09287 0,0 -0.49,0.92 -0.4,0.99 5.38,2.32 2.29,3.51 1.08,4.03 1.56,0.19 2.74,1.82 -4.2,3.44 -6.94,1.64 -4.91,2.85 -2.45,2.05 -0.81,11.43 -4.9,-1.63 -3.68,-4.49 -3.27,-0.82 -4.08,2.04 -4.09,2.45 -3.26,0.82 -7.1,-3.28 -21.03,-1.27 0.74,-4.33 0.32,-1.82 1.72,-10.21 0.63,-3.72 0.48,-2.83 8.31,1.73 7.76,0.41 11.21,1.69 6.35,-0.06 13.36,-10.26 5.35,0 2.33,0.39 z"/>
+</svg >`;
+        }
+
+        function createTerrain() {
+            // Parse embedded SVG using SVGLoader
+            const loader = new THREE.SVGLoader();
+            const svgData = loader.parse(getUgandaSVG());
+
+            const paths = svgData.paths;
+            const group = new THREE.Group();
+
+            // Create material for Uganda terrain
+            const material = new THREE.MeshStandardMaterial({
+                color: 0x2d5a27,  // Uganda green
+                roughness: 0.7,
+                metalness: 0.1,
+                side: THREE.DoubleSide
+            });
+
+            // Process each path (district) from the SVG
+            paths.forEach((path) => {
+                const shapes = THREE.SVGLoader.createShapes(path);
+
+                shapes.forEach((shape) => {
+                    // Extrude settings for 3D effect
+                    const extrudeSettings = {
+                        steps: 1,
+                        depth: 0.15,
+                        bevelEnabled: true,
+                        bevelThickness: 0.03,
+                        bevelSize: 0.02,
+                        bevelSegments: 1
+                    };
+
+                    const geometry = new THREE.ExtrudeGeometry(shape, extrudeSettings);
+                    const mesh = new THREE.Mesh(geometry, material);
+                    mesh.receiveShadow = true;
+                    mesh.castShadow = true;
+                    group.add(mesh);
+                });
+            });
+
+            // Scale and position the group
+            const svgWidth = 568.54;
+            const svgHeight = 593.64;
+            const targetSize = 12;
+
+            const scale = targetSize / Math.max(svgWidth, svgHeight);
+            group.scale.set(scale, scale, 1);
+
+            // Rotate to lay flat (SVG is in XY, we want XZ)
+            group.rotation.x = Math.PI / 2;
+            group.rotation.z = Math.PI;
+
+            // Center the group
+            group.position.set(svgWidth * scale / 2, 0, svgHeight * scale / 2);
+
+            terrain = group;
+            scene.add(group);
+
+            // Create border outline
+            createBorderFromSVG(svgData);
+        }
+
+        function createBorderFromSVG(data) {
+            // Create a glowing outline from all SVG paths
+            const outlineMaterial = new THREE.LineBasicMaterial({
+                color: 0x00d4ff,
+                transparent: true,
+                opacity: 0.6
+            });
+
+            const svgWidth = 568.54;
+            const svgHeight = 593.64;
+            const targetSize = 12;
+            const scale = targetSize / Math.max(svgWidth, svgHeight);
+
+            data.paths.forEach((path) => {
+                const shapes = THREE.SVGLoader.createShapes(path);
+                shapes.forEach((shape) => {
+                    const points = shape.getPoints(50);
+                    const geometry = new THREE.BufferGeometry().setFromPoints(points);
+
+                    const line = new THREE.Line(geometry, outlineMaterial);
+                    line.scale.set(scale, scale, 1);
+                    line.rotation.x = Math.PI / 2;
+                    line.rotation.z = Math.PI;
+                    line.position.set(svgWidth * scale / 2, 0.2, svgHeight * scale / 2);
+
+                    scene.add(line);
+                });
+            });
+        }
+
+        function createFallbackTerrain() {
+            // Fallback: use coordinate-based terrain if SVG fails
+            const shape = new THREE.Shape();
+            const border = getUgandaBorderPoints();
+
+            shape.moveTo(border[0].x, border[0].z);
+            for (let i = 1; i < border.length; i++) {
+                shape.lineTo(border[i].x, border[i].z);
+            }
+            shape.closePath();
+
+            const extrudeSettings = {
+                steps: 1,
+                depth: 0.15,
+                bevelEnabled: true,
+                bevelThickness: 0.05,
+                bevelSize: 0.05,
+                bevelSegments: 2
+            };
+
+            const geometry = new THREE.ExtrudeGeometry(shape, extrudeSettings);
+            geometry.rotateX(-Math.PI / 2);
+
+            const material = new THREE.MeshStandardMaterial({
+                color: 0x2d5a27,
+                roughness: 0.7,
+                metalness: 0.1
+            });
+
+            terrain = new THREE.Mesh(geometry, material);
+            terrain.receiveShadow = true;
+            terrain.castShadow = true;
+            scene.add(terrain);
+
+            createBorder();
+        }
+
+        function isInsideUganda(x, z) {
+            // Use accurate Uganda border polygon with point-in-polygon test
+            const border = getUgandaBorderPoints();
+            return pointInPolygon(x, z, border);
+        }
+
+        // Accurate Uganda border coordinates - PRECISELY traced from reference map
+        // Key features: straight N Sudan border, sharp NE Karamoja angle, 
+        // Lake Victoria curve in SE, sharp SW Rwanda corner, Lake Albert indent on W
+        function getUgandaBorderPoints() {
+            const borderLatLon = [
+                // === NORTHWEST CORNER (DRC/South Sudan tripoint) ===
+                { lat: 2.95, lon: 30.42 },
+
+                // === NORTHERN BORDER WITH SOUTH SUDAN (fairly straight) ===
+                { lat: 3.15, lon: 30.60 },
+                { lat: 3.35, lon: 30.88 },
+                { lat: 3.48, lon: 31.25 },
+                { lat: 3.52, lon: 31.60 },
+                { lat: 3.58, lon: 32.00 },
+                { lat: 3.68, lon: 32.35 },
+                { lat: 3.75, lon: 32.70 },
+                { lat: 3.70, lon: 33.00 },
+                { lat: 3.58, lon: 33.35 },
+                { lat: 3.48, lon: 33.75 },
+                { lat: 3.52, lon: 34.05 },
+
+                // === NORTHEAST CORNER - KARAMOJA (sharp angular point) ===
+                { lat: 4.20, lon: 33.98 },
+                { lat: 4.22, lon: 34.40 },
+                { lat: 3.98, lon: 34.45 },
+                { lat: 3.55, lon: 34.42 },
+
+                // === EASTERN BORDER WITH KENYA (runs south) ===
+                { lat: 3.20, lon: 34.38 },
+                { lat: 2.80, lon: 34.42 },
+                { lat: 2.40, lon: 34.45 },
+                { lat: 2.00, lon: 34.48 },
+                { lat: 1.60, lon: 34.52 },
+
+                // === MT. ELGON BULGE (small eastward protrusion) ===
+                { lat: 1.30, lon: 34.72 },
+                { lat: 1.10, lon: 34.78 },
+                { lat: 0.90, lon: 34.68 },
+                { lat: 0.70, lon: 34.28 },
+                { lat: 0.50, lon: 34.08 },
+                { lat: 0.30, lon: 33.95 },
+
+                // === SOUTHEAST - LAKE VICTORIA CURVE (big indentation) ===
+                { lat: 0.08, lon: 34.00 },
+                { lat: -0.10, lon: 33.85 },
+                { lat: -0.30, lon: 33.60 },
+                { lat: -0.50, lon: 33.25 },
+                { lat: -0.70, lon: 32.90 },
+                { lat: -0.92, lon: 32.50 },
+                { lat: -1.00, lon: 32.10 },
+
+                // === SOUTH BORDER - LAKE VICTORIA SHORE ===
+                { lat: -1.05, lon: 31.75 },
+                { lat: -0.95, lon: 31.38 },
+                { lat: -1.05, lon: 31.10 },
+                { lat: -1.18, lon: 30.85 },
+
+                // === SOUTHWEST CORNER - RWANDA (sharp angle) ===
+                { lat: -1.38, lon: 30.48 },
+                { lat: -1.42, lon: 30.02 },
+                { lat: -1.25, lon: 29.68 },
+
+                // === WEST BORDER - LAKE EDWARD AREA ===
+                { lat: -0.95, lon: 29.52 },
+                { lat: -0.62, lon: 29.45 },
+                { lat: -0.28, lon: 29.55 },
+                { lat: 0.05, lon: 29.62 },
+
+                // === RWENZORI MOUNTAINS AREA ===
+                { lat: 0.35, lon: 29.72 },
+                { lat: 0.60, lon: 29.88 },
+
+                // === LAKE ALBERT - WESTERN BORDER (indent) ===
+                { lat: 0.90, lon: 30.12 },
+                { lat: 1.18, lon: 30.35 },
+                { lat: 1.45, lon: 30.60 },
+                { lat: 1.72, lon: 30.75 },
+                { lat: 2.00, lon: 30.85 },
+                { lat: 2.25, lon: 30.92 },
+                { lat: 2.50, lon: 31.05 },
+
+                // === BACK TO NORTHWEST - NILE REGION ===
+                { lat: 2.72, lon: 30.85 },
+                { lat: 2.88, lon: 30.58 },
+                { lat: 2.95, lon: 30.42 }  // Close polygon
+            ];
+
+            // Convert to 3D coordinates
+            return borderLatLon.map(p => {
+                const pos = latLonTo3D(p.lat, p.lon);
+                return { x: pos.x, z: pos.z };
+            });
+        }
+
+        // Point-in-polygon test using ray casting algorithm
+        function pointInPolygon(x, z, polygon) {
+            let inside = false;
+            const n = polygon.length;
+
+            for (let i = 0, j = n - 1; i < n; j = i++) {
+                const xi = polygon[i].x, zi = polygon[i].z;
+                const xj = polygon[j].x, zj = polygon[j].z;
+
+                if (((zi > z) !== (zj > z)) &&
+                    (x < (xj - xi) * (z - zi) / (zj - zi) + xi)) {
+                    inside = !inside;
+                }
+            }
+
+            return inside;
+        }
+
+        function createBorder() {
+            // Use accurate border polygon
+            const borderPoints = getUgandaBorderPoints();
+            const points = borderPoints.map(p => new THREE.Vector3(p.x, 0.6, p.z));
+
+            // Close the polygon
+            points.push(points[0].clone());
+
+            const borderGeometry = new THREE.BufferGeometry().setFromPoints(points);
+            const borderMaterial = new THREE.LineBasicMaterial({
+                color: 0x00d4ff,
+                transparent: true,
+                opacity: 0.6,
+                linewidth: 2
+            });
+
+            const border = new THREE.Line(borderGeometry, borderMaterial);
+            scene.add(border);
+
+            // Add a glowing effect by duplicating with slight offset
+            const glowMaterial = new THREE.LineBasicMaterial({
+                color: 0x00d4ff,
+                transparent: true,
+                opacity: 0.2
+            });
+            const glowBorder = new THREE.Line(borderGeometry.clone(), glowMaterial);
+            glowBorder.position.y = 0.55;
+            scene.add(glowBorder);
+        }
+
+        function createLakes() {
+            ugandaData.lakes.forEach(lake => {
+                const pos = latLonTo3D(lake.centerLat, lake.centerLon);
+
+                let geometry;
+                if (lake.radiusX) {
+                    // Ellipse for elongated lakes
+                    const curve = new THREE.EllipseCurve(0, 0, lake.radiusX * 3, lake.radiusY * 3);
+                    const points = curve.getPoints(50);
+                    const shape = new THREE.Shape(points);
+                    geometry = new THREE.ShapeGeometry(shape);
+                } else {
+                    // Circle for round lakes
+                    geometry = new THREE.CircleGeometry(lake.radius * 3, 48);
+                }
+
+                const material = new THREE.MeshStandardMaterial({
+                    color: 0x0d3b66,
+                    roughness: 0.2,
+                    metalness: 0.7,
+                    transparent: true,
+                    opacity: 0.9
+                });
+
+                const lakeMesh = new THREE.Mesh(geometry, material);
+                lakeMesh.rotation.x = -Math.PI / 2;
+                lakeMesh.position.set(pos.x, 0.35, pos.z);
+                scene.add(lakeMesh);
+
+                // Lake glow
+                const glowGeometry = new THREE.CircleGeometry((lake.radius || lake.radiusX) * 3.2, 48);
+                const glowMaterial = new THREE.MeshBasicMaterial({
+                    color: 0x00d4ff,
+                    transparent: true,
+                    opacity: 0.1
+                });
+                const glow = new THREE.Mesh(glowGeometry, glowMaterial);
+                glow.rotation.x = -Math.PI / 2;
+                glow.position.set(pos.x, 0.33, pos.z);
+                scene.add(glow);
+            });
+        }
+
+        function createCities() {
+            ugandaData.cities.forEach(city => {
+                const pos = latLonTo3D(city.lat, city.lon);
+                const height = getTerrainHeight(pos.x, pos.z);
+
+                // City marker size based on population
+                const scale = city.type === 'capital' ? 0.35 :
+                    city.type === 'major' ? 0.25 :
+                        city.type === 'city' ? 0.18 : 0.12;
+
+                // Base cylinder
+                const baseGeometry = new THREE.CylinderGeometry(scale * 0.6, scale * 0.8, 0.15, 16);
+                const baseMaterial = new THREE.MeshStandardMaterial({
+                    color: 0xfbbf24,
+                    emissive: 0xfbbf24,
+                    emissiveIntensity: 0.3
+                });
+                const base = new THREE.Mesh(baseGeometry, baseMaterial);
+                base.position.set(pos.x, height + 0.1, pos.z);
+                base.castShadow = true;
+                base.userData = { type: 'city', data: city };
+                scene.add(base);
+                cityMeshes.push(base);
+
+                // Glowing sphere on top
+                const sphereGeometry = new THREE.SphereGeometry(scale * 0.5, 16, 16);
+                const sphereMaterial = new THREE.MeshStandardMaterial({
+                    color: 0xfbbf24,
+                    emissive: 0xfbbf24,
+                    emissiveIntensity: city.type === 'capital' ? 0.8 : 0.5
+                });
+                const sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
+                sphere.position.set(pos.x, height + 0.3, pos.z);
+                sphere.userData = { type: 'city', data: city };
+                scene.add(sphere);
+                cityMeshes.push(sphere);
+
+                // Point light for glow
+                if (city.type === 'capital' || city.type === 'major') {
+                    const light = new THREE.PointLight(0xfbbf24, 0.4, 3);
+                    light.position.set(pos.x, height + 0.5, pos.z);
+                    scene.add(light);
+                }
+            });
+        }
+
+        function createTowerNetwork() {
+            // Create tower markers at city locations (simplified)
+            ugandaData.cities.forEach(city => {
+                const pos = latLonTo3D(city.lat, city.lon);
+                const height = getTerrainHeight(pos.x, pos.z);
+
+                // Tower pin
+                const poleGeometry = new THREE.CylinderGeometry(0.02, 0.02, 0.5, 8);
+                const poleMaterial = new THREE.MeshStandardMaterial({
+                    color: 0x00d4ff,
+                    emissive: 0x00d4ff,
+                    emissiveIntensity: 0.3
+                });
+                const pole = new THREE.Mesh(poleGeometry, poleMaterial);
+                pole.position.set(pos.x + 0.15, height + 0.35, pos.z + 0.15);
+                scene.add(pole);
+                towerMeshes.push(pole);
+
+                // Tower top
+                const topGeometry = new THREE.OctahedronGeometry(0.08, 0);
+                const topMaterial = new THREE.MeshStandardMaterial({
+                    color: 0x00d4ff,
+                    emissive: 0x00d4ff,
+                    emissiveIntensity: 0.6
+                });
+                const top = new THREE.Mesh(topGeometry, topMaterial);
+                top.position.set(pos.x + 0.15, height + 0.65, pos.z + 0.15);
+                scene.add(top);
+                towerMeshes.push(top);
+            });
+        }
+
+        function createCoverageZones() {
+            ugandaData.cities.forEach(city => {
+                const pos = latLonTo3D(city.lat, city.lon);
+                const height = getTerrainHeight(pos.x, pos.z);
+
+                // Coverage radius based on city type
+                const radius = city.type === 'capital' ? 2.5 :
+                    city.type === 'major' ? 1.8 :
+                        city.type === 'city' ? 1.2 : 0.6;
+
+                // Coverage ring
+                const ringGeometry = new THREE.RingGeometry(radius - 0.05, radius, 48);
+                const ringMaterial = new THREE.MeshBasicMaterial({
+                    color: 0x00d4ff,
+                    transparent: true,
+                    opacity: 0.2,
+                    side: THREE.DoubleSide
+                });
+                const ring = new THREE.Mesh(ringGeometry, ringMaterial);
+                ring.rotation.x = -Math.PI / 2;
+                ring.position.set(pos.x, height + 0.05, pos.z);
+                scene.add(ring);
+                coverageMeshes.push(ring);
+
+                // Fill circle
+                const circleGeometry = new THREE.CircleGeometry(radius, 48);
+                const circleMaterial = new THREE.MeshBasicMaterial({
+                    color: 0x00d4ff,
+                    transparent: true,
+                    opacity: 0.05,
+                    side: THREE.DoubleSide
+                });
+                const circle = new THREE.Mesh(circleGeometry, circleMaterial);
+                circle.rotation.x = -Math.PI / 2;
+                circle.position.set(pos.x, height + 0.03, pos.z);
+                scene.add(circle);
+                coverageMeshes.push(circle);
+            });
+        }
+
+        function createFiberRoutes() {
+            // Create fiber backbone connecting major cities
+            const majorCities = ugandaData.cities.filter(c => c.type === 'capital' || c.type === 'major');
+            const capital = ugandaData.cities.find(c => c.type === 'capital');
+            const capitalPos = latLonTo3D(capital.lat, capital.lon);
+
+            majorCities.forEach(city => {
+                if (city.type === 'capital') return;
+
+                const cityPos = latLonTo3D(city.lat, city.lon);
+                const capHeight = getTerrainHeight(capitalPos.x, capitalPos.z);
+                const cityHeight = getTerrainHeight(cityPos.x, cityPos.z);
+
+                // Create curved line
+                const curve = new THREE.QuadraticBezierCurve3(
+                    new THREE.Vector3(capitalPos.x, capHeight + 0.3, capitalPos.z),
+                    new THREE.Vector3(
+                        (capitalPos.x + cityPos.x) / 2,
+                        Math.max(capHeight, cityHeight) + 1,
+                        (capitalPos.z + cityPos.z) / 2
+                    ),
+                    new THREE.Vector3(cityPos.x, cityHeight + 0.3, cityPos.z)
+                );
+
+                const points = curve.getPoints(30);
+                const geometry = new THREE.BufferGeometry().setFromPoints(points);
+                const material = new THREE.LineBasicMaterial({
+                    color: 0xa855f7,
+                    transparent: true,
+                    opacity: 0.6
+                });
+
+                const line = new THREE.Line(geometry, material);
+                line.visible = layers.fiber;
+                scene.add(line);
+                fiberLines.push(line);
+            });
+        }
+
+        function createGrid() {
+            const gridHelper = new THREE.GridHelper(30, 60, 0x1e3a5f, 0x0f1729);
+            gridHelper.position.y = -0.1;
+            scene.add(gridHelper);
+        }
+
+        function createStars() {
+            const starsGeometry = new THREE.BufferGeometry();
+            const starPositions = [];
+
+            for (let i = 0; i < 800; i++) {
+                starPositions.push(
+                    (Math.random() - 0.5) * 150,
+                    Math.random() * 60 + 15,
+                    (Math.random() - 0.5) * 150
+                );
+            }
+
+            starsGeometry.setAttribute('position', new THREE.Float32BufferAttribute(starPositions, 3));
+
+            const starsMaterial = new THREE.PointsMaterial({
+                color: 0xffffff,
+                size: 0.15,
+                transparent: true,
+                opacity: 0.7
+            });
+
+            const stars = new THREE.Points(starsGeometry, starsMaterial);
+            scene.add(stars);
+        }
+
+        // ===== Interactivity =====
+        function onMouseMove(event) {
+            mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+            mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+            raycaster.setFromCamera(mouse, camera);
+            const intersects = raycaster.intersectObjects(cityMeshes);
+
+            const tooltip = document.getElementById('tooltip');
+
+            if (intersects.length > 0) {
+                const obj = intersects[0].object;
+                if (obj.userData.type === 'city') {
+                    showTooltip(obj.userData.data, event.clientX, event.clientY);
+                    document.body.style.cursor = 'pointer';
+                    return;
+                }
+            }
+
+            hideTooltip();
+            document.body.style.cursor = 'default';
+        }
+
+        function onMouseClick(event) {
+            raycaster.setFromCamera(mouse, camera);
+            const intersects = raycaster.intersectObjects(cityMeshes);
+
+            if (intersects.length > 0) {
+                const obj = intersects[0].object;
+                if (obj.userData.type === 'city') {
+                    const city = obj.userData.data;
+                    const pos = latLonTo3D(city.lat, city.lon);
+
+                    // Animate camera to city
+                    const targetPosition = { x: pos.x + 3, y: 5, z: pos.z + 3 };
+                    animateCamera(targetPosition, { x: pos.x, y: 0, z: pos.z });
+                }
+            }
+        }
+
+        function animateCamera(position, target) {
+            const duration = 1000;
+            const startPos = { x: camera.position.x, y: camera.position.y, z: camera.position.z };
+            const startTarget = { x: controls.target.x, y: controls.target.y, z: controls.target.z };
+            const startTime = Date.now();
+
+            function update() {
+                const elapsed = Date.now() - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                const eased = 1 - Math.pow(1 - progress, 3); // Ease out cubic
+
+                camera.position.x = startPos.x + (position.x - startPos.x) * eased;
+                camera.position.y = startPos.y + (position.y - startPos.y) * eased;
+                camera.position.z = startPos.z + (position.z - startPos.z) * eased;
+
+                controls.target.x = startTarget.x + (target.x - startTarget.x) * eased;
+                controls.target.y = startTarget.y + (target.y - startTarget.y) * eased;
+                controls.target.z = startTarget.z + (target.z - startTarget.z) * eased;
+
+                if (progress < 1) {
+                    requestAnimationFrame(update);
+                }
+            }
+
+            update();
+        }
+
+        function showTooltip(city, x, y) {
+            const tooltip = document.getElementById('tooltip');
+            document.getElementById('tooltip-city').textContent = city.name;
+            document.getElementById('tooltip-badge').textContent = city.type.charAt(0).toUpperCase() + city.type.slice(1);
+            document.getElementById('tooltip-pop').textContent = (city.pop / 1000000).toFixed(2) + 'M';
+            document.getElementById('tooltip-towers').textContent = city.towers + '+';
+            document.getElementById('tooltip-speed').textContent = city.speed + ' Mbps';
+            document.getElementById('tooltip-coverage').textContent = city.coverage + '%';
+
+            tooltip.style.left = (x + 20) + 'px';
+            tooltip.style.top = (y - 20) + 'px';
+            tooltip.classList.add('visible');
+        }
+
+        function hideTooltip() {
+            document.getElementById('tooltip').classList.remove('visible');
+        }
+
+        // ===== Layer Toggles =====
+        function toggleLayer(layerName) {
+            layers[layerName] = !layers[layerName];
+
+            const toggleElement = document.getElementById('toggle-' + layerName);
+            toggleElement.classList.toggle('active', layers[layerName]);
+
+            switch (layerName) {
+                case 'cities':
+                    cityMeshes.forEach(m => m.visible = layers.cities);
+                    break;
+                case 'towers':
+                    towerMeshes.forEach(m => m.visible = layers.towers);
+                    break;
+                case 'coverage':
+                    coverageMeshes.forEach(m => m.visible = layers.coverage);
+                    break;
+                case 'fiber':
+                    fiberLines.forEach(l => l.visible = layers.fiber);
+                    break;
+            }
+        }
+
+        // ===== Animation Loop =====
+        function animate() {
+            requestAnimationFrame(animate);
+
+            controls.update();
+
+            // Animate tower lights
+            const time = Date.now() * 0.001;
+            towerMeshes.forEach((mesh, i) => {
+                if (mesh.geometry.type === 'OctahedronGeometry') {
+                    mesh.rotation.y = time + i * 0.5;
+                    mesh.material.emissiveIntensity = 0.4 + Math.sin(time * 2 + i) * 0.2;
+                }
+            });
+
+            // Animate coverage rings
+            coverageMeshes.forEach((mesh, i) => {
+                if (mesh.geometry.type === 'RingGeometry') {
+                    mesh.material.opacity = 0.15 + Math.sin(time + i * 0.5) * 0.05;
+                }
+            });
+
+            renderer.render(scene, camera);
+        }
+
+        // ===== Resize Handler =====
+        function onWindowResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+
+        // ===== Initialize =====
+        init();
+    </script>
+</body>
+
+</html>

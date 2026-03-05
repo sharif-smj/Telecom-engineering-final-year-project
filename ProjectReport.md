@@ -87,7 +87,7 @@ Executive Summary
 
 ## Executive Summary
 
-Rural Uganda faces a critical connectivity challenge: while 2G/GSM networks remain the lifeline for voice and mobile money services in underserved areas, signal quality in UCUSAF-designated sub-counties frequently falls below the −90 dBm threshold due to persistent interference from illegal signal boosters, unlicensed "Bizindaalo" broadcasters, and tropical rain fade. This project proposes a Denoising Autoencoder–Automatic Modulation Classification (DAE–AMC) pipeline specifically designed for GSM/GMSK signal recovery in these challenging environments. By training the denoiser on noise profiles characteristic of Ugandan networks—wideband oscillation from illegal boosters, harmonic distortion from unfiltered FM transmitters, and time-varying rain attenuation—the system aims to maintain reliable modulation recognition where conventional classifiers fail. The contribution is the first documented application of DAE preprocessing to Uganda's unique GSM interference landscape, providing UCC spectrum monitors with a software-based tool to detect weak emitters and support coverage expansion in the country's most underserved communities.
+Rural Uganda faces a critical connectivity challenge: while 2G/GSM networks remain the lifeline for voice and mobile money services in underserved areas, signal quality in UCUSAF-designated sub-counties frequently falls below the −90 dBm threshold due to persistent interference from illegal signal boosters, unlicensed "Bizindaalo" broadcasters, and tropical rain fade. We propose a Denoising Autoencoder–Automatic Modulation Classification (DAE–AMC) pipeline specifically designed for GSM/GMSK signal recovery in these challenging environments. By training the denoiser on noise profiles characteristic of Ugandan networks—wideband oscillation from illegal boosters, harmonic distortion from unfiltered FM transmitters, and time-varying rain attenuation—our system aims to maintain reliable modulation recognition where conventional classifiers fail. Our contribution is the first documented application of DAE preprocessing to Uganda's unique GSM interference landscape, providing UCC spectrum monitors with a software-based tool to detect weak emitters and support coverage expansion in the country's most underserved communities.
 
 ---
 
@@ -105,7 +105,7 @@ However, GSM networks in Uganda face severe electromagnetic interference that de
 
 3. **Tropical Rain Fade**: Uganda's equatorial location introduces severe atmospheric attenuation during rainstorms exceeding 100mm/h. Microwave backhaul links lose connectivity, and even the GSM radio path experiences time-varying signal degradation [26].
 
-Automatic Modulation Classification (AMC) is critical for spectrum surveillance and interference mitigation because it enables detection of unauthorized transmitters without prior coordination. Machine Learning approaches have improved AMC accuracy, but performance collapses at low SNR unless the front end is robust to noise. Recent work on Denoising Autoencoders (DAEs), such as the dual-residual architecture by Zhang et al., demonstrated 67–75% classification-accuracy gains across −12 dB to 8 dB SNR [8]. This project adapts the DAE–AMC approach specifically for Uganda's GSM interference profile, training on noise patterns characteristic of booster oscillation, harmonic distortion, and rain fade to maintain reliable GMSK recognition in UCUSAF edge environments.
+Automatic Modulation Classification (AMC) is critical for spectrum surveillance and interference mitigation because it enables detection of unauthorized transmitters without prior coordination. Machine Learning approaches have improved AMC accuracy, but performance collapses at low SNR unless the front end is robust to noise. Recent work on Denoising Autoencoders (DAEs), such as the dual-residual architecture by Zhang et al., demonstrated 67–75% classification-accuracy gains across −12 dB to 8 dB SNR [8]. We adapt the DAE–AMC approach specifically for Uganda's GSM interference profile, training on noise patterns characteristic of booster oscillation, harmonic distortion, and rain fade to maintain reliable GMSK recognition in UCUSAF edge environments.
 
 ---
 
@@ -119,7 +119,7 @@ Secondary interference comes from unlicensed "Bizindaalo" broadcasters whose FM 
 
 Conventional AMC approaches—likelihood-ratio tests, cumulant extractors, and even modern neural classifiers—degrade sharply under these conditions. State-of-the-art mixture-of-experts architectures achieve only 71.76% average accuracy across SNR sweeps, far below what UCC's QoS mandates require for reliable spectrum monitoring [10], [16]. Without a front-end that suppresses Uganda-specific noise before classification, enforcement teams cannot reliably detect weak illegal emitters, and network operators cannot diagnose interference affecting UCUSAF coverage expansion sites.
 
-This project addresses the gap by designing a DAE–AMC pipeline specifically trained on noise profiles matching illegal booster oscillation, Bizindaalo harmonics, and rain fade—enabling stable GSM/GMSK modulation recognition at the −90 dBm coverage floor where rural Ugandan networks must operate.
+We address this gap by designing a DAE–AMC pipeline specifically trained on noise profiles matching illegal booster oscillation, Bizindaalo harmonics, and rain fade—enabling stable GSM/GMSK modulation recognition at the −90 dBm coverage floor where rural Ugandan networks must operate.
 
 ---
 
@@ -137,19 +137,19 @@ To design, implement, and empirically evaluate a hybrid Denoising Autoencoder–
 
 ### 1.3.2 Contribution Statement
 
-This project makes the following novel contributions:
+We make the following novel contributions:
 
 1. **Domain-Specific Application**: First documented application of Denoising Autoencoder (DAE) preprocessing to the specific noise profile of Ugandan GSM networks, characterized by illegal booster oscillation, Bizindaalo harmonic interference, and tropical rain fade.
 
-2. **GMSK-Focused Pipeline**: Unlike prior DAE–AMC work that targets diverse modulation families (BPSK, QPSK, 16QAM, 64QAM, etc.), this study narrows to GSM/GMSK signals—the de facto standard for rural Uganda where feature phones remain predominant and Mobile Money services are essential.
+2. **GMSK-Focused Pipeline**: Unlike prior DAE–AMC work that targets diverse modulation families (BPSK, QPSK, 16QAM, 64QAM, etc.), we narrow our focus to GSM/GMSK signals—the de facto standard for rural Uganda where feature phones remain predominant and Mobile Money services are essential.
 
 3. **UCUSAF Edge-Case Design**: The DAE is explicitly trained on SNR conditions matching UCUSAF's −90 dBm coverage floor, addressing the "near-far" interference documented by UCC QoS audits rather than generic low-SNR scenarios.
 
-4. **Practical Deployment Pathway**: The methodology includes lightweight model architectures (< 500K parameters) suitable for resource-constrained SDR deployments in rural base stations, with documented integration steps for UCC enforcement workflows.
+4. **Practical Deployment Pathway**: Our methodology includes lightweight model architectures (< 500K parameters) suitable for resource-constrained SDR deployments in rural base stations, with documented integration steps for UCC enforcement workflows.
 
 **Distinction from Prior Work**:
 
-| Prior Work | Focus | This Project's Distinction |
+| Prior Work | Focus | Our Distinction |
 |------------|-------|---------------------------|
 | Zhang et al. (2023) [8] | General DAE for AMC across modulations | GMSK-specific DAE for Ugandan noise profile |
 | Faysal et al. (DenoMAE) [22] | Multimodal denoising, synthetic datasets | Real-world Ugandan interference patterns |
@@ -160,24 +160,24 @@ This project makes the following novel contributions:
 
 ## 1.4 Scope of the Study
 
-This investigation is limited to offline experimentation using two publicly available I/Q corpora: the DeepSig RadioML 2018.01A benchmark (synthetic, well-characterized SNR labels) and the RF Signal Data collection on Kaggle (real SDR captures providing hardware impairment realism) [11], [12]. No live SDR capture, hardware deployment, or regulatory compliance testing is undertaken.
+We limit our investigation to offline experimentation using two publicly available I/Q corpora: the DeepSig RadioML 2018.01A benchmark (synthetic, well-characterized SNR labels) and the RF Signal Data collection on Kaggle (real SDR captures providing hardware impairment realism) [11], [12]. No live SDR capture, hardware deployment, or regulatory compliance testing is undertaken.
 
-**Modulation Focus**: The study targets GSM-family modulations—specifically GMSK (the GSM standard), GFSK (common in Bluetooth/IoT devices sharing similar frequency bands), and QPSK (as a reference comparison). This narrowed scope reflects the rural Ugandan context where 2G/GSM remains the primary connectivity technology.
+**Modulation Focus**: We target GSM-family modulations—specifically GMSK (the GSM standard), GFSK (common in Bluetooth/IoT devices sharing similar frequency bands), and QPSK (as a reference comparison). This narrowed scope reflects the rural Ugandan context where 2G/GSM remains the primary connectivity technology.
 
-**Noise Modeling**: Rather than generic AWGN, the project injects Uganda-specific noise profiles:
+**Noise Modeling**: Rather than generic AWGN, we inject Uganda-specific noise profiles:
 - **Booster oscillation noise**: High-power wideband impulses simulating illegal repeater feedback
 - **Bizindaalo harmonics**: Narrowband tones at 2nd/3rd harmonics of FM frequencies (200 MHz, 300 MHz sidebands leaking into 900 MHz)
 - **Rain fade attenuation**: Time-varying SNR reduction modeling tropical storm conditions (100+ mm/h rainfall rates)
 
 **SNR Range**: Training and evaluation target the −90 dBm to −60 dBm signal strength range corresponding to UCUSAF coverage-floor conditions, with controlled sweeps from −12 dB to +12 dB SNR.
 
-Findings and metrics reflect these synthetic scenarios rather than live network measurements; the goal is to demonstrate DAE–AMC feasibility for Uganda's specific interference environment before potential field deployment.
+Findings and metrics reflect these synthetic scenarios rather than live network measurements; our goal is to demonstrate DAE–AMC feasibility for Uganda's specific interference environment before potential field deployment.
 
 ---
 
 ## 1.5 Significance of the Study
 
-By keeping modulation recognition stable when SNR collapses toward UCUSAF's −90 dBm coverage floor, the proposed DAE–AMC pipeline offers a practical response to the congestion, interference, and illegal-transmitter issues highlighted by UCC QoS audits and GSMA connectivity surveys. It bolsters spectrum surveillance, rural broadband, aviation safety, and mobile money services that depend on reliable radio links in Uganda's noisy bands [5], [6], [7], [9].
+By keeping modulation recognition stable when SNR collapses toward UCUSAF's −90 dBm coverage floor, our proposed DAE–AMC pipeline offers a practical response to the congestion, interference, and illegal-transmitter issues highlighted by UCC QoS audits and GSMA connectivity surveys. It bolsters spectrum surveillance, rural broadband, aviation safety, and mobile money services that depend on reliable radio links in Uganda's noisy bands [5], [6], [7], [9].
 
 ---
 
@@ -242,7 +242,7 @@ Despite progress, several gaps persist. First, even the best-performing architec
 
 ## 2.7 Denoising Autoencoders for Signal Enhancement
 
-Denoising front-ends have emerged as an effective countermeasure when raw I/Q features are overwhelmed by interference. Zhang et al.'s dual-residual DAE with channel attention improved AMC accuracy by up to 75% across −12…8 dB SNR [8], demonstrating that reconstructing constellation geometry before classification materially benefits downstream decisions. Faysal et al. (2025) extended this idea with DenoMAE, a multimodal denoising masked autoencoder that treats noise as a separate modality; after fine-tuning, it sustained 77.5% accuracy at −10 dB—roughly 22% higher than the same classifier without denoising pre-training [22]. Complementary work by An and Lee (2023) introduced a thresholded autoencoder denoiser triggered by a lightweight SNR predictor; this combination delivered ~70% relative accuracy gains on low-SNR samples while avoiding unnecessary processing for high-SNR inputs in IEEE Access experiments [21]. These findings justify the DAE–AMC architecture explored in this project and provide design cues for gating strategies that conserve energy on SDR deployments.
+Denoising front-ends have emerged as an effective countermeasure when raw I/Q features are overwhelmed by interference. Zhang et al.'s dual-residual DAE with channel attention improved AMC accuracy by up to 75% across −12…8 dB SNR [8], demonstrating that reconstructing constellation geometry before classification materially benefits downstream decisions. Faysal et al. (2025) extended this idea with DenoMAE, a multimodal denoising masked autoencoder that treats noise as a separate modality; after fine-tuning, it sustained 77.5% accuracy at −10 dB—roughly 22% higher than the same classifier without denoising pre-training [22]. Complementary work by An and Lee (2023) introduced a thresholded autoencoder denoiser triggered by a lightweight SNR predictor; this combination delivered ~70% relative accuracy gains on low-SNR samples while avoiding unnecessary processing for high-SNR inputs in IEEE Access experiments [21]. These findings justify the DAE–AMC architecture we explore and provide design cues for gating strategies that conserve energy on SDR deployments.
 
 ## 2.8 GSM Noise Mitigation in African Networks
 
@@ -252,7 +252,7 @@ While DAE-based signal enhancement has been extensively studied in academic sett
 
 **Technical Countermeasures**: Modern 4G/5G deployments in Uganda utilize Massive MIMO and beamforming to spatially filter interference [27]. However, these technologies are not available for legacy 2G/GSM infrastructure in rural areas. The primary technical remedy for GSM networks remains the National Backbone Infrastructure (NBI) fiber expansion, which reduces reliance on weather-susceptible microwave backhaul [23]. For the radio access network itself, adaptive power control helps reduce overall noise pollution, but does not address the fundamental challenge of classifying weak signals in high-interference environments [27].
 
-**The Research Gap**: No published work has applied machine learning-based denoising specifically to the GSM interference profile documented by UCC—namely, the combination of booster oscillation (wideband impulse noise), Bizindaalo harmonics (narrowband tones in the 900 MHz band), and tropical rain fade (time-varying attenuation). This project fills that gap by training a DAE on synthetic noise profiles matching these documented interference vectors, enabling GMSK classification at SNR levels where conventional approaches fail.
+**The Research Gap**: No published work has applied machine learning-based denoising specifically to the GSM interference profile documented by UCC—namely, the combination of booster oscillation (wideband impulse noise), Bizindaalo harmonics (narrowband tones in the 900 MHz band), and tropical rain fade (time-varying attenuation). We fill that gap by training a DAE on synthetic noise profiles matching these documented interference vectors, enabling GMSK classification at SNR levels where conventional approaches fail.
 
 ---
 
@@ -273,11 +273,11 @@ We adopt an experimental research design anchored in reproducible data processin
 
 ## 3.2 Research Paradigm
 
-A post-positivist paradigm guides the study: hypotheses about low-SNR robustness are tested empirically, while acknowledging that experimental results are provisional and must be corroborated by replication on additional datasets or field captures. All code, hyperparameters, and preprocessing steps will be version-controlled to enable independent verification.
+A post-positivist paradigm guides our study: hypotheses about low-SNR robustness are tested empirically, while acknowledging that experimental results are provisional and must be corroborated by replication on additional datasets or field captures. All code, hyperparameters, and preprocessing steps will be version-controlled to enable independent verification.
 
 ## 3.3 Research Approach
 
-The approach is data-driven and bifurcated into complementary learning stages:
+Our approach is data-driven and bifurcated into complementary learning stages:
 
 - **Unsupervised denoising stage** – the DAE learns to reconstruct clean I/Q tensors from synthetically corrupted inputs, capturing noise statistics without label supervision.
 - **Supervised classification stage** – the AMC head consumes either raw I/Q data or DAE outputs to predict modulation classes via cross-entropy training. This stage emphasizes generalization across modulation families and SNR bins.
@@ -362,7 +362,7 @@ Deployment will target a Python microservice (FastAPI) that serves ONNX-exported
 
 ## 3.12 Ethical Considerations
 
-All datasets are open-source and redistributed only under their respective licenses (Kaggle Terms of Service, DeepSig EULA, Mendeley Data licenses). The study avoids collecting personal or sensitive information and stresses that the resulting models are intended for lawful spectrum monitoring and academic exploration. Any deployment with live SDR captures will require operator consent and compliance with Uganda’s Communications Act to prevent inadvertent interception of protected communications.
+All datasets are open-source and redistributed only under their respective licenses (Kaggle Terms of Service, DeepSig EULA, Mendeley Data licenses). We avoid collecting personal or sensitive information and stress that the resulting models are intended for lawful spectrum monitoring and academic exploration. Any deployment with live SDR captures will require operator consent and compliance with Uganda's Communications Act to prevent inadvertent interception of protected communications.
 
 ## 3.13 Tools and Software Requirements
 
