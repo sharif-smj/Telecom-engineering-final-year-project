@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Uganda 3D Topological Map</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #05121a;
+            --panel: rgba(8, 26, 36, 0.84);
+            --line: rgba(170, 212, 226, 0.14);
+            --text: #eef8fb;
+            --muted: #99b2bc;
+            --water: #58b6db;
+            --peak: #ff8d5c;
+            --contour: #ffd99a;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            color: var(--text);
+            background:
+                radial-gradient(circle at 20% 10%, rgba(88, 182, 219, 0.12), transparent 28%),
+                radial-gradient(circle at 80% 15%, rgba(255, 141, 92, 0.08), transparent 22%),
+                linear-gradient(180deg, #08141c, #03090d);
+            overflow: hidden;
+        }
+        #scene-root { position: fixed; inset: 0; }
+        header, .panel, .hud, .tooltip { position: fixed; z-index: 20; }
+        header {
+            top: 0; left: 0; right: 0;
+            display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+            padding: 1rem 1.25rem;
+            background: linear-gradient(180deg, rgba(3, 9, 13, 0.92), rgba(3, 9, 13, 0.2));
+        }
+        .brand { display: flex; gap: 0.9rem; align-items: center; }
+        .mark {
+            width: 48px; height: 48px; border-radius: 14px; display: grid; place-items: center;
+            font-weight: 700; color: #071118; background: linear-gradient(135deg, #58b6db, #d8b46d);
+        }
+        .brand h1 { font-size: 1.35rem; }
+        .brand p, .muted { color: var(--muted); }
+        .back {
+            color: var(--text); text-decoration: none; padding: 0.7rem 0.95rem; border-radius: 999px;
+            border: 1px solid var(--line); background: rgba(7, 22, 30, 0.6);
+        }
+        .panel {
+            width: min(320px, calc(100vw - 2rem));
+            padding: 1rem;
+            border: 1px solid var(--line);
+            border-radius: 22px;
+            background: var(--panel);
+            backdrop-filter: blur(16px);
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.28);
+        }
+        .left { left: 1rem; top: 5.8rem; }
+        .right { right: 1rem; top: 5.8rem; }
+        .eyebrow {
+            font-size: 0.74rem;
+            text-transform: uppercase;
+            letter-spacing: 0.14em;
+            color: var(--muted);
+            margin-bottom: 0.75rem;
+        }
+        .left h2 { font-size: 1.35rem; line-height: 1.08; margin-bottom: 0.6rem; }
+        .left p { color: var(--muted); line-height: 1.55; font-size: 0.9rem; margin-bottom: 0.9rem; }
+        .stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.65rem; margin-bottom: 0.95rem; }
+        .card, .toggle { background: rgba(10, 31, 43, 0.82); border: 1px solid rgba(170, 212, 226, 0.08); border-radius: 16px; }
+        .card { padding: 0.85rem; }
+        .card strong { display: block; font-size: 1.2rem; color: #dfbf7e; margin-bottom: 0.15rem; }
+        .card span, .detail span:first-child { color: var(--muted); }
+        .details { display: grid; gap: 0.5rem; }
+        .detail { display: flex; justify-content: space-between; gap: 0.75rem; padding: 0.65rem 0; border-bottom: 1px solid rgba(170, 212, 226, 0.08); font-size: 0.82rem; }
+        .detail:last-child { border-bottom: 0; }
+        .toggle-list { display: grid; gap: 0.5rem; margin-bottom: 1rem; }
+        .toggle {
+            width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 0.7rem;
+            padding: 0.8rem 0.9rem; color: var(--text); cursor: pointer; text-align: left;
+        }
+        .toggle small { display: block; color: var(--muted); margin-top: 0.15rem; }
+        .pill { width: 44px; height: 24px; border-radius: 999px; background: rgba(255, 255, 255, 0.12); position: relative; flex-shrink: 0; }
+        .pill::after { content: ''; position: absolute; top: 3px; left: 3px; width: 18px; height: 18px; border-radius: 50%; background: #fff; transition: transform 0.2s ease; }
+        .toggle.active .pill { background: rgba(216, 180, 109, 0.68); }
+        .toggle.active .pill::after { transform: translateX(20px); }
+        .legend { display: grid; gap: 0.45rem; font-size: 0.8rem; color: var(--muted); }
+        .legend div { display: flex; gap: 0.65rem; align-items: center; }
+        .chip { width: 16px; height: 16px; border-radius: 5px; flex-shrink: 0; }
+        .c-low { background: #235344; }
+        .c-mid { background: #7b7e43; }
+        .c-high { background: #a96a44; }
+        .c-water { background: var(--water); }
+        .c-contour { background: var(--contour); }
+        .c-peak { background: var(--peak); }
+        .hud {
+            left: 50%; bottom: 1rem; transform: translateX(-50%);
+            display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center;
+            padding: 0.8rem 1rem; border-radius: 999px; border: 1px solid var(--line);
+            background: rgba(7, 22, 30, 0.74); color: var(--muted); font-size: 0.78rem;
+        }
+        .hud code { font-family: 'IBM Plex Mono', monospace; color: var(--text); }
+        .tooltip {
+            max-width: 260px; padding: 0.9rem 1rem; border-radius: 16px;
+            border: 1px solid var(--line); background: rgba(7, 22, 30, 0.96);
+            opacity: 0; transform: translateY(6px); pointer-events: none; transition: 0.15s ease;
+        }
+        .tooltip.visible { opacity: 1; transform: translateY(0); }
+        .tooltip h3 { font-size: 0.94rem; margin-bottom: 0.35rem; }
+        .tooltip p { font-size: 0.8rem; color: var(--muted); line-height: 1.45; }
+        @media (max-width: 760px) {
+            .panel { left: 1rem; right: 1rem; width: auto; }
+            .left { top: 5.4rem; }
+            .right { top: auto; bottom: 5.5rem; }
+            .brand p { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <div id="scene-root"></div>
+    <header>
+        <div class="brand">
+            <div class="mark">UG</div>
+            <div>
+                <h1>Uganda 3D Topological Map</h1>
+                <p>Terrain relief, contours, lakes, peaks, and city anchors for presentation use</p>
+            </div>
+        </div>
+        <a class="back" href="index.html">Back to Portal</a>
+    </header>
+
+    <aside class="panel left">
+        <div class="eyebrow">Topography Snapshot</div>
+        <h2>Show the land before you explain the system.</h2>
+        <p>This standalone scene focuses on Uganda's physical relief so you can orient your audience visually before moving into telecom or machine-learning content.</p>
+        <div class="stats">
+            <div class="card"><strong>5,109 m</strong><span>Rwenzori peak zone</span></div>
+            <div class="card"><strong>4,321 m</strong><span>Mt. Elgon zone</span></div>
+            <div class="card"><strong>4</strong><span>Major lakes shown</span></div>
+            <div class="card"><strong>15</strong><span>Reference cities</span></div>
+        </div>
+        <div class="details">
+            <div class="detail"><span>Western relief</span><span>Albertine Rift and Rwenzori</span></div>
+            <div class="detail"><span>Eastern relief</span><span>Elgon and Karamoja uplands</span></div>
+            <div class="detail"><span>Southern basin</span><span>Lake Victoria shoreline</span></div>
+            <div class="detail"><span>Use in slides</span><span>Rotate, zoom, click markers</span></div>
+        </div>
+    </aside>
+
+    <aside class="panel right">
+        <div class="eyebrow">Display Controls</div>
+        <div class="toggle-list">
+            <button class="toggle active" data-layer="contours" type="button"><span>Contour lines<small>Show elevation bands</small></span><span class="pill"></span></button>
+            <button class="toggle active" data-layer="lakes" type="button"><span>Lakes<small>Victoria, Albert, Kyoga, Edward</small></span><span class="pill"></span></button>
+            <button class="toggle active" data-layer="cities" type="button"><span>Cities<small>Orientation anchors</small></span><span class="pill"></span></button>
+            <button class="toggle active" data-layer="peaks" type="button"><span>Peak markers<small>Mountain systems</small></span><span class="pill"></span></button>
+            <button class="toggle" data-layer="autorotate" type="button"><span>Auto-rotate<small>Passive display mode</small></span><span class="pill"></span></button>
+        </div>
+        <div class="eyebrow">Legend</div>
+        <div class="legend">
+            <div><span class="chip c-low"></span><span>Lowlands and basin floor</span></div>
+            <div><span class="chip c-mid"></span><span>Plateau and mid-elevation terrain</span></div>
+            <div><span class="chip c-high"></span><span>Highland and escarpment relief</span></div>
+            <div><span class="chip c-water"></span><span>Lake systems</span></div>
+            <div><span class="chip c-contour"></span><span>Contour lines</span></div>
+            <div><span class="chip c-peak"></span><span>Mountain peak markers</span></div>
+        </div>
+    </aside>
+
+    <div class="hud">
+        <span><code>Drag</code> rotate</span>
+        <span><code>Scroll</code> zoom</span>
+        <span><code>Shift+Drag</code> pan</span>
+        <span><code>Click</code> inspect cities and peaks</span>
+    </div>
+
+    <div class="tooltip" id="tooltip"></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/SVGLoader.js"></script>
+    <script>
+        const data = {
+            bounds: { minLat: -1.5, maxLat: 4.25, minLon: 29.45, maxLon: 35.0 },
+            center: { lat: 1.35, lon: 32.225 },
+            border: [
+                { lat: 2.95, lon: 30.42 }, { lat: 3.15, lon: 30.60 }, { lat: 3.35, lon: 30.88 }, { lat: 3.48, lon: 31.25 },
+                { lat: 3.52, lon: 31.60 }, { lat: 3.58, lon: 32.00 }, { lat: 3.68, lon: 32.35 }, { lat: 3.75, lon: 32.70 },
+                { lat: 3.70, lon: 33.00 }, { lat: 3.58, lon: 33.35 }, { lat: 3.48, lon: 33.75 }, { lat: 3.52, lon: 34.05 },
+                { lat: 4.20, lon: 33.98 }, { lat: 4.22, lon: 34.40 }, { lat: 3.98, lon: 34.45 }, { lat: 3.55, lon: 34.42 },
+                { lat: 3.20, lon: 34.38 }, { lat: 2.80, lon: 34.42 }, { lat: 2.40, lon: 34.45 }, { lat: 2.00, lon: 34.48 },
+                { lat: 1.60, lon: 34.52 }, { lat: 1.30, lon: 34.72 }, { lat: 1.10, lon: 34.78 }, { lat: 0.90, lon: 34.68 },
+                { lat: 0.70, lon: 34.28 }, { lat: 0.50, lon: 34.08 }, { lat: 0.30, lon: 33.95 }, { lat: 0.08, lon: 34.00 },
+                { lat: -0.10, lon: 33.85 }, { lat: -0.30, lon: 33.60 }, { lat: -0.50, lon: 33.25 }, { lat: -0.70, lon: 32.90 },
+                { lat: -0.92, lon: 32.50 }, { lat: -1.00, lon: 32.10 }, { lat: -1.05, lon: 31.75 }, { lat: -0.95, lon: 31.38 },
+                { lat: -1.05, lon: 31.10 }, { lat: -1.18, lon: 30.85 }, { lat: -1.38, lon: 30.48 }, { lat: -1.42, lon: 30.02 },
+                { lat: -1.25, lon: 29.68 }, { lat: -0.95, lon: 29.52 }, { lat: -0.62, lon: 29.45 }, { lat: -0.28, lon: 29.55 },
+                { lat: 0.05, lon: 29.62 }, { lat: 0.35, lon: 29.72 }, { lat: 0.60, lon: 29.88 }, { lat: 0.90, lon: 30.12 },
+                { lat: 1.18, lon: 30.35 }, { lat: 1.45, lon: 30.60 }, { lat: 1.72, lon: 30.75 }, { lat: 2.00, lon: 30.85 },
+                { lat: 2.25, lon: 30.92 }, { lat: 2.50, lon: 31.05 }, { lat: 2.72, lon: 30.85 }, { lat: 2.88, lon: 30.58 }
+            ],
+            lakes: [
+                { name: 'Lake Victoria', lat: -0.54, lon: 33.0, radiusX: 3.25, radiusZ: 1.85 },
+                { name: 'Lake Albert', lat: 1.58, lon: 30.84, radiusX: 0.48, radiusZ: 1.4 },
+                { name: 'Lake Kyoga', lat: 1.48, lon: 33.04, radiusX: 1.45, radiusZ: 0.48 },
+                { name: 'Lake Edward', lat: -0.26, lon: 29.65, radiusX: 0.35, radiusZ: 0.4 }
+            ],
+            peaks: [
+                { name: 'Rwenzori Mountains', lat: 0.38, lon: 29.88, elevation: 5109, description: 'Western high-relief zone and Uganda\'s highest mountain system.' },
+                { name: 'Mount Elgon', lat: 1.15, lon: 34.55, elevation: 4321, description: 'Eastern volcanic massif near the Kenya border.' },
+                { name: 'Virunga Highlands', lat: -1.38, lon: 29.72, elevation: 4507, description: 'Southwestern volcanic highland influence near Rwanda and DRC.' },
+                { name: 'Karamoja Uplands', lat: 2.85, lon: 34.15, elevation: 3083, description: 'Northeastern elevated zone shaping Uganda\'s eastern relief.' }
+            ],
+            cities: [
+                { name: 'Kampala', lat: 0.3476, lon: 32.5825, description: 'Capital city and central reference point.' },
+                { name: 'Gulu', lat: 2.7747, lon: 32.2990, description: 'Northern plateau anchor.' },
+                { name: 'Lira', lat: 2.2499, lon: 32.8999, description: 'North-central transition zone.' },
+                { name: 'Mbarara', lat: -0.6077, lon: 30.6545, description: 'Southwestern highland anchor.' },
+                { name: 'Jinja', lat: 0.4244, lon: 33.2041, description: 'Eastern Lake Victoria outlet reference.' },
+                { name: 'Mbale', lat: 1.0750, lon: 34.1750, description: 'Near the Mt. Elgon relief zone.' },
+                { name: 'Fort Portal', lat: 0.6710, lon: 30.2750, description: 'Western escarpment reference.' },
+                { name: 'Kasese', lat: 0.1830, lon: 30.0665, description: 'Near Rwenzori foothill terrain.' },
+                { name: 'Soroti', lat: 1.7150, lon: 33.6111, description: 'Eastern plateau reference.' },
+                { name: 'Arua', lat: 3.0200, lon: 30.9100, description: 'Northwestern highland transition.' },
+                { name: 'Entebbe', lat: 0.0512, lon: 32.4637, description: 'Lake Victoria shoreline reference.' },
+                { name: 'Masaka', lat: -0.3136, lon: 31.7321, description: 'South-central plateau reference.' },
+                { name: 'Hoima', lat: 1.4330, lon: 31.3521, description: 'Albertine Rift corridor anchor.' },
+                { name: 'Moroto', lat: 2.5333, lon: 34.6667, description: 'Karamoja upland reference.' },
+                { name: 'Kabale', lat: -1.25, lon: 29.9833, description: 'Southwestern high-relief reference.' }
+            ]
+        };
+
+        const state = { contours: true, lakes: true, cities: true, peaks: true, autorotate: false };
+        const cfg = { size: 14, gridX: 120, gridZ: 140, base: 0.12, scale: 1.1 };
+        let scene, camera, renderer, controls, raycaster, mouse, borderWorld;
+        let terrainMesh, contourLines, lakeGroup, peakGroup, cityGroup, terrainGroup, districtLines;
+        const targets = [];
+
+        const clamp = (v, min, max) => Math.min(Math.max(v, min), max);
+        const gaussian = (lat, lon, clat, clon, slat, slon) => Math.exp(-((((lat - clat) / slat) ** 2) + (((lon - clon) / slon) ** 2)));
+        const color = (hex) => new THREE.Color(hex);
+
+        function latLonToWorld(lat, lon) {
+            return {
+                x: ((lon - data.center.lon) / (data.bounds.maxLon - data.bounds.minLon)) * cfg.size,
+                z: ((data.center.lat - lat) / (data.bounds.maxLat - data.bounds.minLat)) * cfg.size
+            };
+        }
+
+        function worldToLatLon(x, z) {
+            return {
+                lon: data.center.lon + (x / cfg.size) * (data.bounds.maxLon - data.bounds.minLon),
+                lat: data.center.lat - (z / cfg.size) * (data.bounds.maxLat - data.bounds.minLat)
+            };
+        }
+
+        function inside(point, polygon) {
+            let hit = false;
+            for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
+                const a = polygon[i], b = polygon[j];
+                const cross = ((a.z > point.z) !== (b.z > point.z)) && (point.x < (b.x - a.x) * (point.z - a.z) / (b.z - a.z) + a.x);
+                if (cross) hit = !hit;
+            }
+            return hit;
+        }
+
+        function relief(lat, lon) {
+            const value = 0.12
+                + 1.0 * gaussian(lat, lon, 0.38, 29.88, 0.52, 0.42)
+                + 0.88 * gaussian(lat, lon, 1.10, 34.48, 0.55, 0.46)
+                + 0.78 * gaussian(lat, lon, -1.35, 29.72, 0.42, 0.42)
+                + 0.46 * gaussian(lat, lon, 2.85, 34.05, 0.95, 0.68)
+                + 0.34 * gaussian(lat, lon, 1.25, 30.15, 1.65, 0.60)
+                + 0.22 * gaussian(lat, lon, 0.95, 32.25, 1.9, 1.4)
+                - 0.72 * gaussian(lat, lon, -0.55, 33.0, 0.86, 1.4)
+                - 0.34 * gaussian(lat, lon, 1.52, 33.05, 0.62, 0.95)
+                - 0.28 * gaussian(lat, lon, 1.52, 30.82, 1.25, 0.36);
+            return clamp(value, 0, 1.28);
+        }
+
+        function heightAt(x, z) {
+            if (!inside({ x, z }, borderWorld)) return null;
+            const latLon = worldToLatLon(x, z);
+            return cfg.base + relief(latLon.lat, latLon.lon) * cfg.scale;
+        }
+
+        function heightColor(y) {
+            const t = clamp((y - cfg.base) / cfg.scale, 0, 1);
+            const low = color('#235344');
+            const mid = color('#7b7e43');
+            const high = color('#a96a44');
+            const top = color('#dcc7ab');
+            const c = new THREE.Color();
+            if (t < 0.35) c.copy(low).lerp(mid, t / 0.35);
+            else if (t < 0.75) c.copy(mid).lerp(high, (t - 0.35) / 0.4);
+            else c.copy(high).lerp(top, (t - 0.75) / 0.25);
+            return c;
+        }
+
+        function buildSamples() {
+            const rows = [];
+            const span = cfg.size * 1.16;
+            const minX = -span / 2, maxX = span / 2, minZ = -span / 2, maxZ = span / 2;
+            for (let r = 0; r <= cfg.gridZ; r += 1) {
+                const row = [];
+                const z = minZ + (r / cfg.gridZ) * (maxZ - minZ);
+                for (let c = 0; c <= cfg.gridX; c += 1) {
+                    const x = minX + (c / cfg.gridX) * (maxX - minX);
+                    const y = heightAt(x, z);
+                    row.push({ x, z, y, inside: y !== null });
+                }
+                rows.push(row);
+            }
+            return rows;
+        }
+
+        function addTri(pos, col, a, b, c) {
+            [a, b, c].forEach((v) => {
+                pos.push(v.x, v.y, v.z);
+                const tone = heightColor(v.y);
+                col.push(tone.r, tone.g, tone.b);
+            });
+        }
+
+        function createTerrain(samples) {
+            const pos = [], col = [];
+            for (let r = 0; r < samples.length - 1; r += 1) {
+                for (let c = 0; c < samples[r].length - 1; c += 1) {
+                    const a = samples[r][c], b = samples[r][c + 1], d = samples[r + 1][c], e = samples[r + 1][c + 1];
+                    if (a.inside && b.inside && d.inside && e.inside) {
+                        addTri(pos, col, { x: a.x, y: a.y, z: a.z }, { x: b.x, y: b.y, z: b.z }, { x: e.x, y: e.y, z: e.z });
+                        addTri(pos, col, { x: a.x, y: a.y, z: a.z }, { x: e.x, y: e.y, z: e.z }, { x: d.x, y: d.y, z: d.z });
+                    }
+                }
+            }
+            const geometry = new THREE.BufferGeometry();
+            geometry.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+            geometry.setAttribute('color', new THREE.Float32BufferAttribute(col, 3));
+            geometry.computeVertexNormals();
+            terrainMesh = new THREE.Mesh(geometry, new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.86, metalness: 0.08 }));
+            terrainMesh.castShadow = true;
+            terrainMesh.receiveShadow = true;
+            scene.add(terrainMesh);
+        }
+
+        function parseGeoMeta(svgText) {
+            const svgDoc = new DOMParser().parseFromString(svgText, 'image/svg+xml');
+            const root = svgDoc.documentElement;
+            const geoViewBox = (root.getAttribute('mapsvg:geoViewBox')
+                || root.getAttributeNS('http://mapsvg.com', 'geoViewBox')
+                || '').trim();
+            const width = parseFloat(root.getAttribute('width')) || 568.54413;
+            const height = parseFloat(root.getAttribute('height')) || 593.63672;
+
+            if (geoViewBox) {
+                const values = geoViewBox.split(/\s+/).map(Number);
+                if (values.length === 4 && values.every(Number.isFinite)) {
+                    const [minLon, maxLat, maxLon, minLat] = values;
+                    data.bounds = { minLat, maxLat, minLon, maxLon };
+                    data.center = { lat: (minLat + maxLat) / 2, lon: (minLon + maxLon) / 2 };
+                }
+            }
+
+            return { width, height };
+        }
+
+        function svgCoordToLatLon(x, y, width, height) {
+            return {
+                lon: data.bounds.minLon + (x / width) * (data.bounds.maxLon - data.bounds.minLon),
+                lat: data.bounds.maxLat - (y / height) * (data.bounds.maxLat - data.bounds.minLat)
+            };
+        }
+
+        async function createTerrainFromSvg() {
+            try {
+                const response = await fetch('../assets/maps/uganda.svg');
+                if (!response.ok) return false;
+
+                const svgText = await response.text();
+                const svgMeta = parseGeoMeta(svgText);
+                const svgData = new THREE.SVGLoader().parse(svgText);
+
+                terrainGroup = new THREE.Group();
+                districtLines = new THREE.Group();
+
+                svgData.paths.forEach((path) => {
+                    const shapes = THREE.SVGLoader.createShapes(path);
+                    shapes.forEach((shape) => {
+                        const geometry = new THREE.ShapeGeometry(shape, 10);
+                        const positions = geometry.attributes.position;
+                        const colors = [];
+
+                        for (let index = 0; index < positions.count; index += 1) {
+                            const latLon = svgCoordToLatLon(
+                                positions.getX(index),
+                                positions.getY(index),
+                                svgMeta.width,
+                                svgMeta.height
+                            );
+                            const world = latLonToWorld(latLon.lat, latLon.lon);
+                            const y = cfg.base + relief(latLon.lat, latLon.lon) * cfg.scale;
+
+                            positions.setXYZ(index, world.x, y, world.z);
+                            const tone = heightColor(y);
+                            colors.push(tone.r, tone.g, tone.b);
+                        }
+
+                        geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+                        geometry.computeVertexNormals();
+
+                        const mesh = new THREE.Mesh(
+                            geometry,
+                            new THREE.MeshStandardMaterial({
+                                vertexColors: true,
+                                roughness: 0.84,
+                                metalness: 0.06,
+                                side: THREE.DoubleSide
+                            })
+                        );
+                        mesh.castShadow = true;
+                        mesh.receiveShadow = true;
+                        terrainGroup.add(mesh);
+
+                        const outlinePoints = shape.getPoints(72).map((point) => {
+                            const latLon = svgCoordToLatLon(point.x, point.y, svgMeta.width, svgMeta.height);
+                            const world = latLonToWorld(latLon.lat, latLon.lon);
+                            return new THREE.Vector3(
+                                world.x,
+                                cfg.base + relief(latLon.lat, latLon.lon) * cfg.scale + 0.03,
+                                world.z
+                            );
+                        });
+
+                        if (outlinePoints.length > 2) {
+                            outlinePoints.push(outlinePoints[0].clone());
+                            districtLines.add(
+                                new THREE.Line(
+                                    new THREE.BufferGeometry().setFromPoints(outlinePoints),
+                                    new THREE.LineBasicMaterial({
+                                        color: 0x8cd4e8,
+                                        transparent: true,
+                                        opacity: 0.18
+                                    })
+                                )
+                            );
+                        }
+                    });
+                });
+
+                scene.add(terrainGroup);
+                scene.add(districtLines);
+                return true;
+            } catch (error) {
+                console.error('Unable to load Uganda SVG terrain:', error);
+                return false;
+            }
+        }
+
+        function contourPoint(a, b, level) {
+            const t = (level - a.y) / (b.y - a.y);
+            return { x: a.x + (b.x - a.x) * t, y: level + 0.025, z: a.z + (b.z - a.z) * t };
+        }
+
+        function createContours(samples) {
+            const pos = [];
+            for (let level = cfg.base + 0.25; level <= cfg.base + cfg.scale * 0.92; level += 0.28) {
+                for (let r = 0; r < samples.length - 1; r += 1) {
+                    for (let c = 0; c < samples[r].length - 1; c += 1) {
+                        const a = samples[r][c], b = samples[r][c + 1], d = samples[r + 1][c], e = samples[r + 1][c + 1];
+                        if (!(a.inside && b.inside && d.inside && e.inside)) continue;
+                        const edges = [[a, b], [b, e], [e, d], [d, a]];
+                        const hits = [];
+                        edges.forEach(([p1, p2]) => {
+                            const cross = (p1.y <= level && p2.y >= level) || (p1.y >= level && p2.y <= level);
+                            if (cross && p1.y !== p2.y) hits.push(contourPoint(p1, p2, level));
+                        });
+                        if (hits.length === 2) pos.push(hits[0].x, hits[0].y, hits[0].z, hits[1].x, hits[1].y, hits[1].z);
+                        else if (hits.length === 4) pos.push(hits[0].x, hits[0].y, hits[0].z, hits[1].x, hits[1].y, hits[1].z, hits[2].x, hits[2].y, hits[2].z, hits[3].x, hits[3].y, hits[3].z);
+                    }
+                }
+            }
+            const geometry = new THREE.BufferGeometry();
+            geometry.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+            contourLines = new THREE.LineSegments(geometry, new THREE.LineBasicMaterial({ color: 0xffd99a, transparent: true, opacity: 0.42 }));
+            scene.add(contourLines);
+        }
+
+        function createBorder() {
+            const points = borderWorld.map((p) => new THREE.Vector3(p.x, cfg.base + 0.08, p.z));
+            points.push(points[0].clone());
+            const geometry = new THREE.BufferGeometry().setFromPoints(points);
+            scene.add(new THREE.Line(geometry, new THREE.LineBasicMaterial({ color: 0x8ee7ff, transparent: true, opacity: 0.84 })));
+        }
+
+        function createLakes() {
+            lakeGroup = new THREE.Group();
+            data.lakes.forEach((lake) => {
+                const origin = latLonToWorld(lake.lat, lake.lon);
+                const curve = new THREE.EllipseCurve(0, 0, lake.radiusX, lake.radiusZ, 0, Math.PI * 2);
+                const shape = new THREE.Shape(curve.getPoints(72));
+                const mesh = new THREE.Mesh(new THREE.ShapeGeometry(shape), new THREE.MeshStandardMaterial({ color: 0x58b6db, transparent: true, opacity: 0.92, roughness: 0.22, metalness: 0.6 }));
+                mesh.rotation.x = -Math.PI / 2;
+                mesh.position.set(origin.x, cfg.base + 0.055, origin.z);
+                lakeGroup.add(mesh);
+            });
+            scene.add(lakeGroup);
+        }
+
+        function createMarkers(items, groupName, material, geometryFactory, formatter) {
+            const group = new THREE.Group();
+            items.forEach((item) => {
+                const origin = latLonToWorld(item.lat, item.lon);
+                const y = heightAt(origin.x, origin.z) || cfg.base;
+                const marker = new THREE.Mesh(geometryFactory(item), material);
+                marker.position.set(origin.x, y + (item.elevation ? 0.18 : 0.14), origin.z);
+                marker.castShadow = true;
+                marker.userData = formatter(item);
+                group.add(marker);
+                targets.push(marker);
+            });
+            scene.add(group);
+            return group;
+        }
+
+        function setupScene() {
+            scene = new THREE.Scene();
+            scene.fog = new THREE.Fog(0x05121a, 18, 36);
+            camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 120);
+            camera.position.set(0, 7.6, 12.5);
+            renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            renderer.shadowMap.enabled = true;
+            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+            document.getElementById('scene-root').appendChild(renderer.domElement);
+            controls = new THREE.OrbitControls(camera, renderer.domElement);
+            controls.enableDamping = true;
+            controls.dampingFactor = 0.05;
+            controls.target.set(0, 1.05, 0);
+            controls.minDistance = 7;
+            controls.maxDistance = 24;
+            controls.maxPolarAngle = Math.PI / 2.08;
+            raycaster = new THREE.Raycaster();
+            mouse = new THREE.Vector2();
+            scene.add(new THREE.AmbientLight(0xadc4cd, 0.52));
+            const sun = new THREE.DirectionalLight(0xfff6de, 1.1);
+            sun.position.set(8, 15, 10);
+            sun.castShadow = true;
+            sun.shadow.mapSize.width = 2048;
+            sun.shadow.mapSize.height = 2048;
+            scene.add(sun);
+        }
+
+        function setupLights() {
+            const cyan = new THREE.PointLight(0x58b6db, 0.55, 35);
+            cyan.position.set(-9, 6, 4);
+            scene.add(cyan);
+            const warm = new THREE.PointLight(0xd8b46d, 0.42, 25);
+            warm.position.set(7, 4, -8);
+            scene.add(warm);
+            const floor = new THREE.Mesh(new THREE.CircleGeometry(18, 96), new THREE.MeshBasicMaterial({ color: 0x09161d, transparent: true, opacity: 0.82 }));
+            floor.rotation.x = -Math.PI / 2;
+            scene.add(floor);
+        }
+
+        function applyState() {
+            if (contourLines) contourLines.visible = state.contours;
+            if (lakeGroup) lakeGroup.visible = state.lakes;
+            if (cityGroup) cityGroup.visible = state.cities;
+            if (peakGroup) peakGroup.visible = state.peaks;
+        }
+
+        function tooltip(content, x, y) {
+            const el = document.getElementById('tooltip');
+            el.innerHTML = `<h3>${content.title}</h3><p>${content.description}</p>`;
+            el.style.left = `${Math.min(x + 18, window.innerWidth - 280)}px`;
+            el.style.top = `${Math.min(y + 18, window.innerHeight - 150)}px`;
+            el.classList.add('visible');
+        }
+
+        function hideTooltip() { document.getElementById('tooltip').classList.remove('visible'); }
+
+        function onMove(event) {
+            mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+            mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+            raycaster.setFromCamera(mouse, camera);
+            const hits = raycaster.intersectObjects(targets, false);
+            if (hits.length) {
+                document.body.style.cursor = 'pointer';
+                tooltip(hits[0].object.userData, event.clientX, event.clientY);
+            } else {
+                document.body.style.cursor = 'default';
+                hideTooltip();
+            }
+        }
+
+        function onResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            if (state.autorotate) {
+                const radius = Math.hypot(camera.position.x, camera.position.z);
+                const angle = Math.atan2(camera.position.z, camera.position.x) + 0.0015;
+                camera.position.x = Math.cos(angle) * radius;
+                camera.position.z = Math.sin(angle) * radius;
+                camera.lookAt(controls.target);
+            }
+            controls.update();
+            renderer.render(scene, camera);
+        }
+
+        async function init() {
+            setupScene();
+            setupLights();
+            const svgLoaded = await createTerrainFromSvg();
+            borderWorld = data.border.map((point) => latLonToWorld(point.lat, point.lon));
+            const samples = buildSamples();
+            if (!svgLoaded) createTerrain(samples);
+            createContours(samples);
+            if (!svgLoaded) createBorder();
+            createLakes();
+            peakGroup = createMarkers(
+                data.peaks,
+                'peaks',
+                new THREE.MeshStandardMaterial({ color: 0xff8d5c, emissive: 0xff8d5c, emissiveIntensity: 0.35 }),
+                () => new THREE.ConeGeometry(0.10, 0.32, 10),
+                (item) => ({ title: `${item.name} (${item.elevation.toLocaleString()} m)`, description: item.description })
+            );
+            cityGroup = createMarkers(
+                data.cities,
+                'cities',
+                new THREE.MeshStandardMaterial({ color: 0xf8f2c9, emissive: 0xf8f2c9, emissiveIntensity: 0.28 }),
+                () => new THREE.SphereGeometry(0.09, 16, 16),
+                (item) => ({ title: item.name, description: item.description })
+            );
+            applyState();
+            document.querySelectorAll('.toggle').forEach((button) => {
+                button.addEventListener('click', () => {
+                    const key = button.dataset.layer;
+                    state[key] = !state[key];
+                    button.classList.toggle('active', state[key]);
+                    applyState();
+                });
+            });
+            window.addEventListener('resize', onResize);
+            window.addEventListener('pointermove', onMove);
+            animate();
+        }
+
+        init();
+    </script>
+</body>
+</html>
