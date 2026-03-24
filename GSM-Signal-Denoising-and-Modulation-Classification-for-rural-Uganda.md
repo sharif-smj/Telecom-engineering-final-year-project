@@ -34,22 +34,22 @@ Improving Connectivity in Underserved Areas Using Machine Learning
 ## Background
 
 - UCC reports that network subscriptions reached **33.2 million** by the end of 2022, and mobile data traffic doubled from **217 million GB** in 2020 to **421.5 million GB** in 2022, showing exponential growth in network service demand. [1]
-- Unfortunately, network expansion is failing to keep pace with this demand. Only **31% of the population** and **24% of the landmass** have 4G coverage, and **62% of the population** (30 million people) still lacks mobile internet access and lives in low-SNR, high-interference environments where the signal is weak. When the signal is weak (below `-90 dBm`), the noise becomes louder than the message, making it impossible for standard tools to understand what is being sent. [3][4][5][6]
+- Unfortunately, network expansion is failing to keep pace with this demand. Only **31% of the population** and **24% of the landmass** have 4G coverage, and **62% of the population** (30 million people) still lacks mobile internet access. UCC's 2024 coverage framework assesses 2G/GSM service using a minimum outdoor signal threshold of `-90 dBm` (`RxLEV`), while UCC and UCUSAF documents still report black spots and underserved sub-counties, showing that some rural locations do not consistently meet this threshold. In such weak-signal conditions, reliable signal identification and decoding become more difficult. [3][4][5][6][27]
 - Many people in rural Uganda still use basic phones for calls and Mobile Money, but the signal is often very weak and is further blocked or "noised up" by illegal boosters, unlicensed community radios (Bizindaalo), and heavy tropical rain. [7][23][24][25]
 
 ### Background Continuation
 
 - Automatic Modulation Classification (AMC) is crucial for regulators to monitor the spectrum, manage interference, and identify illegal broadcasters that threaten critical services like aviation. [7]
-- We propose using a Denoising Autoencoder (DAE) combined with an AMC system that takes a marginal signal, for example at `-90 dBm` or even lower, and actively cleans it by removing noise before trying to classify or demodulate it. [5][8][15][26]
+- We propose using a Denoising Autoencoder (DAE) combined with an AMC system that takes a marginal signal near the UCC coverage threshold of `-90 dBm`, and actively cleans it by removing noise before trying to classify or demodulate it. [5][8][15][26][27]
 - Instead of just trying to read a noisy signal, our system first cleans the signal to make it clear again, ensuring that even in the most remote sub-counties, the network can still identify and process signals correctly. [8][15][26]
 
 ## Problem Statement
 
-- Many people in rural Uganda still use basic phones for calls and Mobile Money, but the signal is often very weak. When the signal is weak (below `-90 dBm`), the noise becomes louder than the message, making it impossible for standard tools to understand what is being sent. [5][6]
-- Other signals are being blocked or noised up by illegal boosters, unlicensed community radios (Bizindaalo), and heavy tropical rain. [7][23][24][25]
-- The Uganda Communications Commission (UCC) finds it hard to catch illegal broadcasters because the current tools cannot see through all this noise. [7][23]
-- This leads to dropped calls, failed Mobile Money transactions, and poor service for over 30 million Ugandans. [3][6]
-- Over 70% of call failures in some areas are due to this interference, yet we lack a smart way to clean the signal before processing it. [27]
+- UCC's 2024 coverage framework defines 2G/GSM service using a minimum outdoor signal threshold of `-90 dBm` (`RxLEV`). However, UCC and UCUSAF documents show that black spots and underserved sub-counties still exist, meaning some rural locations do not consistently meet this threshold. In such weak-signal conditions, even current monitoring approaches such as field measurements, drive tests, walk tests, and coverage simulations can confirm weak coverage but still leave reliable signal identification and classification difficult when transmissions are buried in interference and noise. [5][27]
+- Signal quality is further degraded by illegal boosters, unlicensed community radios (Bizindaalo), and heavy tropical rain. Illegal boosters raise interference, unlicensed transmitters can inject harmful harmonics, and rain fade attenuates the radio path and microwave backhaul. [7][23][24][25]
+- The Uganda Communications Commission (UCC) therefore finds it difficult to detect illegal broadcasters and diagnose interference when both legitimate and harmful signals are buried in low-SNR, interference-heavy conditions. [7][23][27]
+- This leads to dropped calls, failed Mobile Money transactions, and poor service in areas where reliable connectivity is most needed. [3][6][27]
+- We therefore lack a robust preprocessing mechanism that can clean weak GSM-family signals before modulation classification and further signal analysis. [8][15][26]
 
 ## Main Objective
 
@@ -63,25 +63,25 @@ To design, implement, and empirically evaluate a hybrid **Denoising Autoencoder-
 
 ## Justification and Significance
 
+### Meeting UCC Mandates
+
+UCC's 2024 coverage framework defines 2G/GSM service using a minimum outdoor signal threshold of `-90 dBm` (`RxLEV`), while UCC QoS reporting tracks service thresholds such as blocked and dropped call performance. By targeting weak-signal and interference-heavy conditions around this coverage floor, the proposed DAE-AMC pipeline is aligned with the regulator's need for more reliable monitoring and diagnosis in underserved areas. [5][27]
+
 ### Spectrum Surveillance
 
-It will help with the detection of illegal transmitters and interference mitigation for aviation and public-safety channels. [7][23]
+UCC already uses monitoring, measurement, and complaint-handling mechanisms for spectrum oversight. The added value of the proposed system is not basic automation, but low-SNR signal recovery and modulation classification when transmissions are buried in interference and noise. This can strengthen interpretation of weak illegal or harmful transmissions during monitoring and subsequent enforcement analysis, especially for protected services such as aviation and public safety. [7][23][31][32]
 
-### Rural Broadband
+### Rural Mobile Connectivity
 
-It will help maintain reliable service in low-SNR environments, supporting 30 million Ugandans lacking mobile internet access. [3][6]
+The direct focus of this project is reliable rural mobile connectivity rather than broadband throughput alone. By improving signal interpretation near the coverage floor, the proposed system supports more stable GSM/2G service conditions in underserved areas where weak coverage and interference coexist. [3][5][6][27]
 
 ### Critical Services
 
-It supports stability for Mobile Money and e-government services that depend on reliable radio links. [5][6]
-
-### Meeting UCC Mandates
-
-The DAE is explicitly trained on SNR conditions matching UCUSAF's `-90 dBm` coverage floor, addressing the "near-far" interference documented by UCC QoS audits rather than a generic low-SNR scenario. [5][23][27]
+More reliable weak-signal interpretation can support voice communication, Mobile Money, and other essential services that depend on stable rural mobile links. [5][6]
 
 ### Alignment with National Policy
 
-Our project supports Uganda's national development plans (NDPIII/NBP) that call for more spectrum-efficient technologies. It replaces older, brittle handcrafted methods with a robust, cost-effective, software-based AI algorithm for enhancing signals by removing noise. [4][15][26]
+Our project supports Uganda's connectivity-expansion agenda by complementing conventional feature-engineered signal analysis with a learnable denoising-and-classification pipeline that is better suited to weak-signal, interference-heavy conditions. [4][15][26]
 
 ## Scope
 
@@ -121,34 +121,34 @@ A 6-month dedicated period is allocated for research, model development, and com
 
 ### Classical Methods
 
-Early Automatic Modulation Classification (AMC) relied on statistical analysis and manually engineered features. While elegant, these methods are brittle and fail completely in the low-signal, high-interference environments common in Uganda.
+Early Automatic Modulation Classification (AMC) relied mainly on statistical analysis, likelihood-based decision rules, and manually engineered signal descriptors such as higher-order moments and cyclostationary properties. These approaches are analytically elegant and can perform well in controlled settings, but their performance degrades sharply when channel conditions are unknown or when the received signal is weak and interference-heavy.
 
 **Key limitation**
 
-- They are not robust under unknown channels.
-- These impairments are documented by UCC in congested Ugandan deployments and motivate the transition toward data-driven feature learning. [7][23][27]
+- Classical AMC methods depend on stable channel assumptions and carefully engineered signal descriptors.
+- In congested and interference-affected deployments such as those documented by UCC, weak-signal and noise-heavy conditions make those descriptors less reliable, motivating the transition toward data-driven learning approaches. [7][23][27]
 
 ### Machine Learning Is the New Standard
 
-Modern research has shifted to deep learning models such as CNNs, Transformers, and Mixture-of-Experts frameworks. These models can learn features directly from raw signal data and have shown significant accuracy improvements, especially in low-SNR conditions down to `0 dB`. [15][16][26]
+Modern research has shifted to deep learning models such as convolutional neural networks (CNNs), Transformers, and Mixture-of-Experts frameworks. These models learn discriminative signal characteristics directly from raw I/Q data and have shown significant accuracy improvements, especially in low-SNR conditions around `0 dB` and below. [15][16][26]
 
 ### GSM Noise Mitigation in African Networks
 
-While DAE-based signal enhancement has been extensively studied academically, its application to African GSM networks' specific interference environment remains unexplored. [8][26]
+While DAE-based signal enhancement has been studied in the literature, its use for weak GSM-signal recovery in African interference environments remains limited. [8][26]
 
 #### Regulatory Interventions
 
-UCC's zero-tolerance posture has led to enforcement operations that confiscate illegal boosters and shut down unlicensed Bizindaalo stations. Proliferation continues, however, due to porous borders and sustained demand. [7][23]
+UCC's zero-tolerance posture has led to enforcement operations that confiscate illegal boosters and shut down unlicensed Bizindaalo stations. These interventions are important for spectrum control, but they mainly address interference after it has already been detected. [7][23]
 
-#### Technical Countermeasures
+#### Current Technical Practice
 
-Modern 4G/5G systems use Massive MIMO and beamforming, but these are unavailable for legacy 2G/GSM deployments in rural areas. NBI fiber expansion helps reduce microwave backhaul reliance. [4][24]
+In practice, operators and regulators rely on coverage measurements, drive tests, walk tests, field troubleshooting, and related monitoring procedures to identify weak coverage and interference sources. These methods are useful for confirming degraded service conditions, but they do not directly recover weak GSM signals once those signals are buried in interference and noise. [27][31][32]
 
 #### Research Gap
 
-No published work applies ML-based denoising to UCC-documented GSM interference, including booster oscillation, Bizindaalo harmonics, and tropical rain fade. [7][8][23][24][25][26]
+Although machine-learning methods for denoising and modulation classification are well studied, there is still limited work applying them to interference mitigation and weak-signal GSM monitoring in African networks, especially for Uganda-specific conditions such as booster oscillation, Bizindaalo harmonics, and tropical rain fade. [7][8][23][24][25][26]
 
-We fill that gap by training a DAE on synthetic noise profiles matching documented interference vectors, enabling GMSK classification at SNR levels where conventional approaches fail. [8][15][26]
+We address that gap by training a DAE on synthetic noise profiles matching documented interference vectors, so that weak GSM-family signals can first be cleaned and then classified more reliably under interference-heavy conditions. [8][15][26]
 
 ### Machine Learning in AMC
 
@@ -327,6 +327,12 @@ doi:10.1109/ACCESS.2023.3321108
 
 [30] J. Jang, J. Pyo, Y.-i. Yoon, and J. Choi, "Meta-Transformer: A Meta-Learning Framework for Scalable Automatic Modulation Classification," *IEEE Access*, vol. 12, pp. 9267-9276, 2024.  
 doi:10.1109/ACCESS.2024.3352634
+
+[31] Uganda Communications Commission, *UCC Strategic Plan 2020/21-2024/25*, 2023 online edition.  
+<https://www.ucc.co.ug/wp-content/uploads/2023/10/UCC-Strategic-Plan-202021-202425-ONLINE-VERSION-002_Rev2Final.pdf>
+
+[32] Uganda Communications Commission, *Guidelines on Establishment and Operation of FM Radio Stations in Uganda*, March 2019, Annex 4: Radio Interference Handling Procedures.  
+<https://www.ucc.co.ug/wp-content/uploads/2023/10/Guidelines-on-Establishment-and-Operation-of-FM-Radio-Stations-in-Uganda_-March-2019.pdf>
 
 ## Closing Note
 
