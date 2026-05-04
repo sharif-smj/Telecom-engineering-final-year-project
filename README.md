@@ -8,6 +8,7 @@ This repository contains the final-year project workspace for **DAE-enhanced Aut
 - `presentation-v2/`: current presentation deck (`presentation_v2.html`, `style.css`, `script.js`, `assets/`).
 - `presentation_v1/`: earlier deck snapshot.
 - `reports/`: technical literature summaries and supporting source files.
+- `reports/AI_Enhanced_Rural_GSM_Connectivity.pdf`: AI-enhanced rural GSM connectivity reference/report.
 - `reports/LowSNR_Consolidated_Claims.md`: reconciled working claims sheet for writing/slides.
 - `references/`: captured reference pages and citation images.
 - `deliverables/`: exported submission assets:
