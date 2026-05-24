@@ -1,0 +1,8 @@
+task mode: create
+primary deck-profile: engineering-platform
+secondary profile gates: academic assessment deck, final-year project defense
+required proof objects: DAE-AMC signal chain, controlled simulation setup, accuracy-by-SNR chart, noisy-vs-denoised signal figure, confusion matrix, scope/limitations note
+source requirements: ProjectReport.md, existing root PPTX slide inventory, reports/preliminary_simulation_2026_05_24 outputs
+brand constraints: no invented UCC/Kyambogo logos; use clean academic typography and telecom signal visuals
+QA gates: every required project-presentation particular is represented; results are labelled preliminary controlled simulation; no field deployment or live-service improvement claim
+known missing inputs: final completed model results and field validation are not available today

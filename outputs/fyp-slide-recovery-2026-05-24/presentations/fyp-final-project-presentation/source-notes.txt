@@ -1,0 +1,9 @@
+Primary content sources:
+- /Users/sharif/telecom/final-year-project/ProjectReport.md
+- /Users/sharif/telecom/final-year-project/GSM Signal Denoising and Modulation Classification for Rural Uganda.pptx
+- /Users/sharif/telecom/final-year-project/reports/preliminary_simulation_2026_05_24/README.md
+- /Users/sharif/telecom/final-year-project/reports/preliminary_simulation_2026_05_24/results.csv
+- /Users/sharif/telecom/final-year-project/reports/preliminary_simulation_2026_05_24/*.png
+
+Evidence rule:
+The deck uses preliminary controlled simulation artifacts for result slides. It does not claim completed field deployment, live call/USSD/SMS improvement, or physical tower-range extension.
