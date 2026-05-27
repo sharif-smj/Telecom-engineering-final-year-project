@@ -1,0 +1,131 @@
+[22/04/2026, 08:26:29] UCC paper: ‎Messages and calls are end-to-end encrypted. Only people in this chat can read, listen to, or share them.
+[22/04/2026, 08:26:29] Dr Dickson: ‎Dr Dickson created group “UCC paper”
+[22/04/2026, 08:26:29] UCC paper: ‎Dr Dickson added you
+[22/04/2026, 08:26:38] ~ Derrick: ‎Dr Dickson added ~ Derrick
+[22/04/2026, 08:32:09] ~ Ephrance@kuzimba.com: Thanks for the the Add Dr.
+[22/04/2026, 09:08:20] 丂乇爪ひﾌひ: 🙏🏽
+[22/04/2026, 17:03:31] ~ Ephrance@kuzimba.com: Hello, team, kindly read through this practical application beyond modelling... Let me know what you think... ewe can add it to the proposal as its doable...
+[22/04/2026, 17:03:50] ~ Ephrance@kuzimba.com: we dont have so much time... lets see that we submit by end of this week. Thank you
+[22/04/2026, 17:03:58] ~ Ephrance@kuzimba.com: @⁨Dr Dickson⁩ kindly receive
+‎[22/04/2026, 17:04:10] ~ Ephrance@kuzimba.com: Practical Concept Note Beyond Modelling for GSMA_UCC.docx ‎<attached: 00003010-Practical Concept Note Beyond Modelling for GSMA_UCC.docx>
+[22/04/2026, 18:49:39] Dr Dickson: Well, received
+[22/04/2026, 18:50:03] Dr Dickson: Im going to read thru.
+Been busy with steam conference
+[22/04/2026, 19:01:04] ~ Ephrance@kuzimba.com: Alright Dr.
+[23/04/2026, 15:30:27] 丂乇爪ひﾌひ: @⁨~Ephrance@kuzimba.com⁩ Im requesting for some of the references you used.
+[23/04/2026, 15:37:54] 丂乇爪ひﾌひ: Also how are we going to defend the evidence section since weve not yet built or tested the model yet how do we proceed here
+[23/04/2026, 15:42:01] 丂乇爪ひﾌひ: Also I thought we maybe needed to also cater for the small kabiriti phones which are prevalent around the country
+[23/04/2026, 15:44:20] ~ Ephrance@kuzimba.com: 2G via sms
+[23/04/2026, 15:44:29] ~ Ephrance@kuzimba.com: We are still at proposal level
+[23/04/2026, 15:44:41] ~ Ephrance@kuzimba.com: Am just sharing a future idea that can be proposed
+[23/04/2026, 15:45:00] ~ Ephrance@kuzimba.com: Also it's okay to list your expected results before testinf
+[23/04/2026, 15:46:02] ~ Ephrance@kuzimba.com: I picked this from some of my work done for another project.. as an idea
+[23/04/2026, 15:48:29] ~ Ephrance@kuzimba.com: Also, results are as anticipated.. so I just changed some words to match our proposal.. these can be changed based on current statistics.. and not everything needs to be picked... just the ideology
+[23/04/2026, 16:26:00] ~ Ephrance@kuzimba.com: Is this helpful?
+[23/04/2026, 17:27:31] 丂乇爪ひﾌひ: Oh yeah. I didn't know we were allowed to state our expectations
+[23/04/2026, 17:30:33] ~ Ephrance@kuzimba.com: you can but wisely
+[23/04/2026, 17:47:06] 丂乇爪ひﾌひ: Okay let me add these highlights then. Ill share a draft by midday tomorrow
+[23/04/2026, 17:49:26] ~ Ephrance@kuzimba.com: Yes .. naye let's try handing this in before this week ends.. it's not good to.submit close to deadline... also we need to revise the budget in a proper way as @⁨Dr Dickson⁩ had shared in their previous application..
+[23/04/2026, 17:50:10] ~ Ephrance@kuzimba.com: This practical aspect of our proposal will defend the use of the given finances
+[23/04/2026, 17:52:33] 丂乇爪ひﾌひ: When is tomorrow's meeting?
+[23/04/2026, 17:55:00] ~ Ephrance@kuzimba.com: @⁨Dr Dickson⁩ can tell us when..
+[23/04/2026, 20:33:39] Dr Dickson: I have just reached home, trying to go thru today's discussion 
+Im dedicating ma day tomorrow to go thru the document
+[23/04/2026, 20:33:48] Dr Dickson: Otherwise we'll done team
+[23/04/2026, 20:34:25] Dr Dickson: Lets have rhe meeting tomorrow evening, I have been busy with STEAM, was on the organizing committee
+[23/04/2026, 20:34:40] Dr Dickson: So bin up and down, steam ended today
+[23/04/2026, 20:35:08] Dr Dickson: Tomorrow i will share the budget
+‎[24/04/2026, 11:55:26] 丂乇爪ひﾌひ: ncc-2026-extended-abstract.docx • ‎1 page ‎<attached: 00003036-ncc-2026-extended-abstract.docx>
+‎[24/04/2026, 11:56:54] 丂乇爪ひﾌひ: full-project-proposal.docx • ‎1 page ‎<attached: 00003037-full-project-proposal.docx>
+[24/04/2026, 12:03:34] 丂乇爪ひﾌひ: Hello @⁨Dr Dickson⁩ and @⁨~Ephrance@kuzimba.com⁩ I wrote an extended abstract basing off of the winners from last years NCC and the 2022 book of abstracts still published by NCC. I also wrote a full proposal though i couldnt find a UCC specific format for this as most people have been writing full blown papers for NCC. so here i tried my best to use a standard format. Please read through and advise accordingly.
+[24/04/2026, 12:04:38] 丂乇爪ひﾌひ:
+‎[24/04/2026, 12:04:38] 丂乇爪ひﾌひ: Here are some of my sources ‎<attached: 00003040-PHOTO-2026-04-24-12-04-38.jpg>
+‎[24/04/2026, 12:04:38] 丂乇爪ひﾌひ: ‎<attached: 00003041-PHOTO-2026-04-24-12-04-38.jpg>
+[24/04/2026, 12:12:11] Dr Dickson: Well received, thank you for rhe work done
+[24/04/2026, 14:02:12] ~ Ephrance@kuzimba.com: Oh thanks for the work done ‎<This message was edited>
+[24/04/2026, 14:02:31] Dr Dickson: Hello Dr
+[24/04/2026, 14:02:48] Dr Dickson: I have shared the budget we used last time,
+[24/04/2026, 14:02:55] Dr Dickson: Shared on email
+[24/04/2026, 14:03:09] Dr Dickson: We need to polish the proposal i hv looked at it
+[24/04/2026, 14:04:10] ~ Ephrance@kuzimba.com: Alright
+‎[24/04/2026, 15:17:49] 丂乇爪ひﾌひ: ucc-research-support-proposal.pages ‎<attached: 00003049-ucc-research-support-proposal.pages>
+[24/04/2026, 15:18:41] 丂乇爪ひﾌひ: Ive just seen your email Dr. Im going to pick up the format and make this one look like the one youve shared but for now this is where we are
+‎[24/04/2026, 15:23:19] 丂乇爪ひﾌひ: ucc-research-support-proposal.docx ‎<attached: 00003051-ucc-research-support-proposal.docx>
+[24/04/2026, 15:50:29] ~ Ephrance@kuzimba.com: Alright
+[24/04/2026, 17:47:46] ~ Ephrance@kuzimba.com: Make sure all the listed references are cited and used somewhere within the text..using a known and similar referencing style throughout the document... I am seeing only ucc references...
+[24/04/2026, 20:05:58] ~ Ephrance@kuzimba.com: The competition may be so tight I see the call out on Muk pages..so let's do our very best
+[24/04/2026, 20:06:33] ~ Ephrance@kuzimba.com: If we can submit it by Sunday, it will be good for us
+[26/04/2026, 20:12:28] ~ Ephrance@kuzimba.com: Hellos here
+[26/04/2026, 20:13:02] Dr Dickson: Hello Dr
+[26/04/2026, 20:13:10] Dr Dickson: How is yo evening
+[26/04/2026, 20:13:30] ~ Ephrance@kuzimba.com: Am good
+[26/04/2026, 20:13:49] ~ Ephrance@kuzimba.com: When do we meet to finalise...?
+[26/04/2026, 20:14:00] Dr Dickson: Lets meet on Tuesday
+[26/04/2026, 20:14:08] Dr Dickson: I will give my input tomorrow
+[26/04/2026, 20:14:14] ~ Ephrance@kuzimba.com: Alright
+‎[27/04/2026, 10:42:26] Dr Dickson: We need to be careful on this lot, if the principal investigator is an undergraduate it falls under lot 1, but if the principal investigator is a lecturer I think it falls under lot 3 ‎<attached: 00003064-PHOTO-2026-04-27-10-42-26.jpg>
+‎[27/04/2026, 10:45:22] Dr Dickson: This statement cant be in a project summary ‎<attached: 00003065-PHOTO-2026-04-27-10-45-22.jpg>
+[27/04/2026, 10:45:32] Dr Dickson: Project summary is more of an abstract
+‎[27/04/2026, 10:48:23] Dr Dickson: Get me the actual problem statement with atleast two references ‎<attached: 00003067-PHOTO-2026-04-27-10-48-23.jpg>
+‎[27/04/2026, 10:50:04] Dr Dickson: So how ar we solving the issue? ‎<attached: 00003068-PHOTO-2026-04-27-10-50-04.jpg>
+[27/04/2026, 11:11:14] Dr Dickson: Let me hope im working on the right document, 
+Literature can't come last,aftr methodology
+‎[27/04/2026, 11:15:16] Dr Dickson: Under this subsection we need to discuss more abt the additive noise and selected interference models
+How do they work, why use them, any mathematical equations ‎<attached: 00003070-PHOTO-2026-04-27-11-15-16.jpg>
+[27/04/2026, 11:15:50] Dr Dickson: This section looks like literature review
+[27/04/2026, 11:34:34] Dr Dickson: We can separate data collection from data analytics
+[27/04/2026, 11:34:34] Dr Dickson: Or data analysis
+‎[27/04/2026, 11:34:36] Dr Dickson: Can we expound more on these three data collection tools, if we have a copy can we put under appendix ‎<attached: 00003074-PHOTO-2026-04-27-11-34-36.jpg>
+‎[27/04/2026, 11:52:56] Dr Dickson: temp_1777279963465.986731606.docx • ‎16 pages ‎<attached: 00003075-temp_1777279963465.986731606.docx>
+[27/04/2026, 11:53:31] Dr Dickson: Can we look at this document, the budget aspect, the work schedule activities, the methodology, etc
+[27/04/2026, 14:53:25] ~ Ephrance@kuzimba.com: Hello, thank you Dr. Dickson for the corrections. I am also.told that we have to do something that will.benefit UCC... so in the end we have to write it somewhere how our work will benefit ucc ‎<This message was edited>
+[27/04/2026, 14:54:19] ~ Ephrance@kuzimba.com: Yes we need to fall under 3... cause am told 1 has little.money coming through
+[27/04/2026, 15:02:58] Dr Dickson: We need to change the principal investigator, the students can be research assistants
+[27/04/2026, 15:08:43] ~ Ephrance@kuzimba.com: Yeah am told
+[28/04/2026, 18:06:04] 丂乇爪ひﾌひ: Good evening @⁨Dr Dickson⁩  Sorry Ive been in a fix since yesterday and couldnt settle down to respond.
+[28/04/2026, 18:07:13] 丂乇爪ひﾌひ: Yeah I saw that for an Undergraduate researcher the prize is 20m max. So yeah i think i this case Its better that you take the lead.
+[28/04/2026, 18:07:52] 丂乇爪ひﾌひ: My main concern is wont me and @⁨~Derrick⁩ be penalized for plagiarism when we resubmit this as our final year project?
+[28/04/2026, 18:09:40] Dr Dickson: Ohh no
+[28/04/2026, 18:13:56] 丂乇爪ひﾌひ: Dr. @⁨Dr Dickson⁩ should i continue from this???
+[28/04/2026, 18:14:36] 丂乇爪ひﾌひ: Its much more professional and polished. maybe its missing Dr @⁨~Ephrance@kuzimba.com⁩ cv and @⁨~Derrick⁩
+[28/04/2026, 18:14:57] Dr Dickson: Yes
+[28/04/2026, 18:15:07] Dr Dickson: We were supposed to look at the budget
+[28/04/2026, 18:15:11] Dr Dickson: And schedule
+[28/04/2026, 18:15:51] 丂乇爪ひﾌひ: I had put 66m
+[28/04/2026, 18:16:08] 丂乇爪ひﾌひ: is it better to be in dollars?
+[28/04/2026, 18:17:13] ~ Ephrance@kuzimba.com: Yes..
+[28/04/2026, 18:26:02] ~ Ephrance@kuzimba.com: Am wondering you have decided to go till modeling only? Am here trying to find a prototype proposed somewhere...
+
+If this is what you decided...it should be okay
+[28/04/2026, 18:27:09] ~ Ephrance@kuzimba.com: Also in the write up if the money was written, I shs in the call... then the budget should be in the same... if they used dollars.. then we do the same... just to be on a safe side
+[28/04/2026, 18:27:27] ~ Ephrance@kuzimba.com: I can share a 1-page CV
+‎[28/04/2026, 18:32:52] ~ Ephrance@kuzimba.com: Ephrance_Namugenyi_PhD_1PResume.pdf • ‎1 page ‎<attached: 00003096-Ephrance_Namugenyi_PhD_1PResume.pdf>
+[28/04/2026, 18:42:01] ~ Ephrance@kuzimba.com: We had proposed to have a meeting today
+[28/04/2026, 18:42:51] ~ Ephrance@kuzimba.com: Can we have another proposed date tomorrow or Thursday?
+[28/04/2026, 19:56:07] Dr Dickson: Tomorrow is ok
+[28/04/2026, 19:56:11] Dr Dickson: We can do a zoom
+[28/04/2026, 19:56:17] Dr Dickson: Thursday can be physical
+[28/04/2026, 20:00:17] ~ Ephrance@kuzimba.com: Thursday at what time?
+[28/04/2026, 21:54:50] Dr Dickson: I will be at campus from 9am to 5pm
+[28/04/2026, 21:55:17] TOM DERRICK Kisige: ‎Dr Dickson added TOM DERRICK Kisige
+[28/04/2026, 21:57:40] Dr Dickson: I request  the team @⁨丂乇爪ひﾌひ⁩  to edit the budget, and Gantt chart ‎<This message was edited>
+[28/04/2026, 21:58:03] 丂乇爪ひﾌひ: Im on it
+[28/04/2026, 21:58:09] Dr Dickson: Ok
+[28/04/2026, 21:58:19] 丂乇爪ひﾌひ: tomorrow what time is the zoom meeting
+[28/04/2026, 21:58:31] Dr Dickson: Look at the problem statement and remove that content highlighted
+[28/04/2026, 21:58:52] Dr Dickson: Dr. Is saying we can meet Thursday
+[28/04/2026, 21:59:08] Dr Dickson: Use tomorrow to fine tune the doc
+[28/04/2026, 21:59:16] 丂乇爪ひﾌひ: Okay then
+[29/04/2026, 11:48:23] ~ Ephrance@kuzimba.com: Hello @⁨Dr Dickson⁩, been invited at muk for a panel discussion 8am-5pm.. tomorrow  Kindly advise.. I could come afterwards which would mean 6pm tomorrow. Or we can meet today online in the afternoon or Friday physically in the afternoon. Kindly advise..Thank you. 🙏🏾
+[29/04/2026, 11:53:41] ~ Ephrance@kuzimba.com: Also what have seen withall the ML projects done by Yr 3 software students on the above panel I have been invited at... they all have a prototype or an end user in view, or a mobile platform...beyond the ML models and the optimization which I have been trying to emphasize here
+[29/04/2026, 11:53:50] Dr Dickson: Good morning Dr.
+Lets have an online today
+[29/04/2026, 11:53:59] Dr Dickson: Probably around 7pm
+[29/04/2026, 11:54:30] ~ Ephrance@kuzimba.com: Okay earlier is not possible like at 5pm
+[29/04/2026, 11:55:06] ~ Ephrance@kuzimba.com: Good morning 🙏
+[29/04/2026, 11:56:26] ~ Ephrance@kuzimba.com: Let me know what you think about this, Dr.
+[29/04/2026, 11:57:14] Dr Dickson: I hv a class starting at 4pm to 6
+[29/04/2026, 11:57:29] ~ Ephrance@kuzimba.com: Oh okay get..I remember even last time
+[29/04/2026, 11:58:10] Dr Dickson: This is very important
+[29/04/2026, 11:59:56] ~ Ephrance@kuzimba.com: 7pm then ... I will be on the move, but I will connect..🙏🏾🙏🏾
+[29/04/2026, 12:00:15] Dr Dickson: Ok

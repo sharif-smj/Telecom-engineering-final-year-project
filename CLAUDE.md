@@ -2,7 +2,7 @@
 
 ## Project Overview
 - Treat this repository as the active final-year project workspace for GSM signal denoising and automatic modulation classification in the Uganda telecom context.
-- Support three active workstreams: browser-based simulations in `simulations/`, manuscript and project narrative files at the repository root and in `reports/`, and source evidence in `references/`, `references/images/`, `assets/maps/`, and `docs/`.
+- Support four active workstreams: browser-based simulations in `simulations/`, manuscript and project narrative files at the repository root and in `reports/`, source evidence in `references/`, `references/images/`, `assets/maps/`, and `docs/`, and NCC/UCC strategy material in `NCC/`.
 - Keep technical claims, terminology, and scenario language aligned across `ProjectReport.md`, `DAE_AMC_Use_Cases.md`, `reports/*.md`, `docs/WORK_RECONCILIATION.md`, and any edited simulation page.
 - Treat audience comprehension as a project constraint. Assume some supervisors, reviewers, or professors may understand classical telecom blocks better than machine-learning terminology.
 - Preserve the current working tree reality. Do not assume older cleanup plans were completed.
@@ -15,17 +15,19 @@
 - Do not introduce frameworks, package managers, bundlers, transpilers, or a build system without explicit approval.
 
 ## Current Repository Layout
-- Treat these directories as present and active: `simulations/`, `reports/`, `references/`, `references/images/`, `assets/maps/`, and `docs/`.
+- Treat these directories as present and active: `simulations/`, `reports/`, `references/`, `references/images/`, `assets/maps/`, `docs/`, and `NCC/`.
+- Treat `NCC/` as the in-repository home for NCC 2026 strategy, sources, paper drafts, UCC proposal submissions, supervisor feedback, and proposal QA artifacts.
 - Treat these root files as active source material: `ProjectReport.md`, `DAE_AMC_Use_Cases.md`, `README.md`, and the root-level office/PDF artifacts currently checked in.
 - Treat `.gemini-clipboard/` and `.playwright-mcp/` as tool state. Do not edit them unless the task explicitly targets those directories.
-- Keep new evidence files with `references/` or `reports/` instead of scattering them across the root.
+- Keep new implementation and literature evidence files with `references/` or `reports/` instead of scattering them across the root.
+- Keep new NCC/UCC strategy, proposal, feedback, and source-capture files under the matching `NCC/` subfolder.
 - Keep new reusable geographic assets in `assets/maps/`.
 
 ## Build And Run Commands
 - Serve the repository from the root with `python -m http.server 8000`.
 - Open the simulation portal with `start http://localhost:8000/simulations/index.html`.
 - Open individual simulation pages directly when validating specific changes.
-- Inspect the tracked workspace with `rg --files simulations reports references docs assets`.
+- Inspect the tracked workspace with `rg --files simulations reports references docs assets NCC`.
 - Check scope before and after edits with `git status --short` and `git diff --name-only`.
 - Treat the repository as static. Do not assume `npm`, `pip install`, or other setup steps are required for normal page work.
 
@@ -49,7 +51,7 @@
 - Keep simulation-specific logic inside the relevant file unless a local shared asset already exists and reuse is clearly justified.
 - Prefer editing Markdown source files over regenerating `.pdf`, `.pptx`, or `.docx` artifacts.
 - Do not rename or relocate root-level artifacts without approval.
-- Keep citations traceable to a repository source file under `references/`, `reports/`, or another explicitly cited primary document.
+- Keep citations traceable to a repository source file under `references/`, `reports/`, `NCC/sources/`, or another explicitly cited primary document.
 - Treat `reports/*.txt` files as extraction notes. Do not use them as final citation authority without verifying the original source.
 
 ## Presentation Context
@@ -63,8 +65,9 @@
 
 ## Current FYP Direction From NCC/UCC Work
 - Keep the active final-year project technical core unchanged: GSM-family signal denoising plus automatic modulation classification for weak/noisy edge-of-coverage signal interpretation in rural Uganda.
-- Treat `/Users/sharif/telecom/NCC/ucc-submission/` as supervisor-facing UCC Research Support proposal material. Do not treat that proposal as the implementation source of truth for this repository.
-- Use the broader UCC proposal for context, motivation, diagrams, and supervisor alignment only after checking its source map at `/Users/sharif/telecom/NCC/ucc-submission/source-map-and-compliance-checklist.md`.
+- Treat `NCC/` as related supervisor-facing, administrative, proposal, and publication strategy material inside this repository, not as proof that implementation results already exist.
+- Treat `/Users/sharif/telecom/final-year-project/NCC/ucc-submission/` as supervisor-facing UCC Research Support proposal material. Do not treat that proposal as the implementation source of truth for this repository.
+- Use the broader UCC proposal for context, motivation, diagrams, and supervisor alignment only after checking its source map at `/Users/sharif/telecom/final-year-project/NCC/ucc-submission/source-map-and-compliance-checklist.md`.
 - Frame the defensible technical claim as improved weak-signal recoverability or improved interpretation of noisy I/Q samples under controlled low-SNR or interference conditions.
 - Do not claim physical tower-range extension, live call/USSD/SMS/Mobile Money improvement, completed field deployment, or measured SNR gain without verified experiment artifacts.
 - Treat supervisor concept-note numbers such as 3-5 dB gain, 4.2 dB gain, 52% to 84% decode-rate improvement, 30% usable-radius increase, sub-1.2 MB model size, sub-40 ms latency, Wakiso pre-test outcomes, district rollout outcomes, and 25% failed-session reduction as expected targets or future-pilot language only until verified.

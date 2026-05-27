@@ -1,0 +1,193 @@
+A RESEARCH PROPOSAL
+UGANDA COMMUNICATION COMMISSION (UCC) RESEARCH SUPPORT TO ACADEMIA
+Title:               Signal Denoising for Improved Edge-of-Coverage GSM Service in Rural Uganda
+Period of
+Performance:	31st May 2025 to 31st November 2026
+Date Submitted:	06th May 2026
+Principal Investigator:	   Ssemujju Sharif Abdukarim,
+Co-Student Investigator             Kisige Tom Derrick,
+Amount Requested:   USD 51,000
+Signed:
+_______________________
+Principal Investigator
+PROJECT SUMMARY
+Rural mobile service in Uganda is often discussed as a question of whether a location is covered or not covered. In practice, many users experience a more frustrating middle ground: a phone shows signal, but calls fail, SMS messages delay, and USSD or Mobile Money sessions drop before completion. This project investigates a software-side way of improving the interpretation of such weak and noisy GSM-family signals.
+The study proposes a denoising-assisted signal processing pipeline that combines a denoising autoencoder with automatic modulation classification. A noisy I/Q signal sample is first reconstructed by the denoising model, then passed to a classifier so that the modulation decision is made from a cleaner signal representation. The research will compare this proposed pipeline with a baseline classifier that operates directly on noisy signals.
+It draws on RF signal processing, machine learning, low-cost prototyping, and rural service-quality concerns. The first stage will use public I/Q datasets and controlled low-SNR impairments to test whether denoising improves weak-signal recoverability. Metrics will include reconstruction error, SNR-related measures, classification accuracy, macro F1-score, confusion matrices, model size, and inference latency.
+The project does not claim that software has already extended physical tower coverage. Instead, it asks a defensible research question: can denoising recover more useful signal structure from edge-of-coverage GSM-family conditions? If successful, the results can support better troubleshooting, rural coverage planning, interference investigation, and future low-cost field-support validation for Uganda's communications sector.
+INTRODUCTION
+Uganda’s communications sector continues to expand, but the practical quality of access remains uneven for many users in rural and underserved locations. The Uganda Communications Commission (UCC) Research Support to Academia call emphasizes research that improves access to communication services, supports underserved communities, and contributes to evidence-based policy and regulatory development in the communications sector (Uganda Communications Commission, 2026). This project responds directly to that call by focusing on weak GSM-family service at the edge of coverage.
+For many rural users, the most important mobile services are still basic and immediate: voice calls, SMS, USSD, and Mobile Money. These services may depend on ordinary basic phones as much as smartphones. A weak-service area therefore cannot be judged only by the existence of a signal bar or a nominal coverage map. A location may be technically covered but still unreliable when the received signal is weak, noisy, or affected by interference.
+UCC has also treated signal integrity as a live regulatory concern. It has warned the public about interference arising from the use of network repeaters or boosters, and it has taken action against illegal and non-compliant broadcasters whose transmissions may interfere with licensed services and public safety communications (Uganda Communications Commission, 2021, 2024). These public actions show that weak service is not caused only by distance from a tower. It may also be shaped by interference, poorly controlled transmission, propagation effects, and local equipment conditions.
+Conventional responses to weak rural service include new towers, network optimization, backhaul improvements, better power systems, and coverage monitoring. These remain essential, but they can be costly and slow to implement. A complementary software-side method could help engineers and regulators interpret weak-service areas more clearly before deciding whether a site requires physical expansion, network optimization, interference enforcement, or another intervention.
+This project therefore investigates GSM signal denoising as a practical research problem. It does not attempt to replace licensed network infrastructure or operator planning. Instead, it asks whether a denoising-first signal processing pipeline can recover useful structure from noisy GSM-family signals and improve automatic modulation classification under controlled edge-of-coverage conditions. The result is expected to be useful both as an undergraduate engineering research contribution and as an early step toward low-cost field-support tools for rural connectivity planning.
+PROBLEM STATEMENT
+Rural and underserved areas in Uganda continue to experience weak and noisy mobile service conditions that reduce the usability of basic communication services such as voice, SMS, USSD, and Mobile Money. These services are especially important because they support communication, payments, local coordination, health alerts, and access to information for users who may rely on basic 2G-capable handsets.
+Existing monitoring methods can identify weak-service areas, but they do not fully address the signal recovery problem. At the edge of coverage, GSM-family signals may be degraded by low received power, interference, fading, and environmental attenuation. When the signal is too noisy, both user service and engineering interpretation suffer: users experience failed sessions, while engineers obtain less reliable evidence about what is happening in the radio environment.
+The research problem is therefore: how can a denoising-assisted signal processing pipeline improve the recovery and interpretation of weak GSM-family signals under edge-of-coverage conditions relevant to rural Uganda?
+OBJECTIVES OF THE STUDY
+1. To characterize weak-signal and interference-heavy GSM service conditions relevant to rural Uganda using public sources, literature, and controlled signal impairment models.
+2. To design a denoising autoencoder that reconstructs cleaner I/Q signal representations from noisy GSM-family samples.
+3. To integrate the denoising autoencoder with an automatic modulation classification stage for selected GSM-family or GSM-adjacent modulation classes.
+4. To compare the denoising-assisted pipeline against a baseline classifier operating directly on noisy signals.
+5. To interpret the results in terms of rural service reliability, weak-signal troubleshooting, regulator/operator usefulness, and future pilot feasibility.
+RESEARCH QUESTIONS
+1. What weak-signal and interference conditions are most relevant to GSM-family service interpretation in rural Uganda?
+2. Can a denoising autoencoder recover useful signal structure from noisy GSM-family I/Q samples under controlled low-SNR conditions?
+3. Does a denoising-assisted modulation classification pipeline perform better than a no-denoising baseline under selected weak-signal conditions?
+4. Which evaluation metrics best translate the technical result into practical meaning for rural service troubleshooting and coverage planning?
+5. What technical, ethical, and regulatory limitations must be addressed before the approach can be tested as a field-support tool?
+JUSTIFICATION
+This study is justified because it addresses a practical communications problem at the intersection of infrastructure access, signal processing, artificial intelligence, and rural service quality. UCC's call specifically encourages focused research within priority areas such as access and affordability, digital innovation, emerging technologies, telecommunications infrastructure, and spectrum management (Uganda Communications Commission, 2026). It also provides a strong fit for inter-university collaboration because the work combines communications engineering from Kyambogo University with computing, AI, and applied digital systems expertise from Makerere University CoCIS.
+For rural users, the relevance is direct. Weak GSM-family service can affect ordinary communication tasks such as calls, SMS, USSD, and Mobile Money. A research tool that improves interpretation of weak and noisy signal conditions may help expose why service is failing and what kind of intervention is needed.
+For operators, the value is diagnostic. A denoising-assisted pipeline could support better distinction between low-signal coverage problems, interference-heavy environments, and conditions that require further field investigation. This does not replace operator measurements, but it can contribute to a lower-cost evidence layer.
+For UCC and UCUSAF, the value is policy and regulatory usefulness. The work can contribute evidence for underserved-area planning, interference investigation, service-quality interpretation, and future software-assisted monitoring approaches. It also fits UCC's wider objective of strengthening collaboration between academia, industry, and policymakers through evidence-based research (Uganda Communications Commission, 2026).
+For Kyambogo University, Makerere University, and the student investigators, the study builds capacity in communications engineering, machine learning, experimental design, RF data handling, and responsible applied research. It is not a generic machine learning exercise. It is a locally grounded engineering project with a clear Ugandan communications problem.
+STUDY CONTRIBUTION TO CROSS-CUTTING ISSUES
+The third Uganda National Development Plan (NDP III) 2020/21 – 2024/25 notes that “As countries get more globalized governments face increasingly complex and cross-cutting issues, such as economic volatility, climate change and migration”. Thus, among the prioritized interventions set out in the plan for the five-year period, to achieve objectives 5 (strengthen the capacity of the statistical system to generate data for national development), is the strengthening and compilation of statistics for cross-cutting issues such as; gender, climate change; migration, refugees economic volatility and others (National Planning Authority , 2020). This study will make significant contributions to the cross-cutting issues of Gender, Environmental and climate change considerations, Marginalised groups, and Economic volatility.
+Gender
+The project focuses on basic mobile services used by many groups, including women, youth, small traders, farmers, and community health workers. Any future field observation will aim to include both male and female users where service-use experiences are collected. The project will avoid assuming that smartphone ownership is universal; basic phones remain central to the user reality.
+Environmental and climate change considerations
+The project does not claim that software can replace network infrastructure. However, better weak-signal evidence can help avoid poorly targeted interventions and support more efficient planning. The research will use low-cost, low-power measurement equipment where practical and will prioritize reusable scripts, reproducible datasets, and careful field-trip planning to reduce unnecessary movement.
+Marginalised groups
+Reliable SMS, voice, and USSD services are important for users who may not have access to expensive devices, continuous internet, or advanced digital platforms. By focusing on weak basic-service conditions, the project supports a more inclusive understanding of connectivity. Field tools and reports will be written in clear language so that findings can be understood beyond a narrow technical audience.
+Responsible Innovation
+The project applies AI to a communications problem in a cautious way. It separates measured results from expected outcomes, avoids inflated coverage claims, and includes ethical controls for RF measurement. This supports trustworthy technology development in a sector where privacy, safety, and regulatory compliance matter.
+LITERATURE REVIEW
+Rural Connectivity, Access, and Service Quality
+Connectivity statistics can hide the difference between nominal coverage and usable service. A place may appear covered but still produce failed calls, delayed messages, or dropped USSD sessions because the received signal is too weak or too noisy for reliable use. UCC’s Research Support to Academia call emphasizes access to communication services for all members of society, including underserved communities, and places access, affordability, and user experience among its priority research areas (Uganda Communications Commission, 2026). This strengthens the relevance of studying weak GSM-family service as a practical quality-of-service problem.
+UCC's strategic framing also highlights the need for evidence-based research that can support policy and regulatory development in the communications sector (Uganda Communications Commission, 2026). A denoising-assisted weak-signal interpretation method therefore has value beyond model accuracy. It can help translate signal processing results into evidence that is meaningful for rural service planning.
+Interference and Signal Integrity
+Signal degradation is not caused only by distance from a tower. UCC has issued public warnings about signal interference arising from network repeaters or boosters and has taken enforcement action against illegal or non-compliant broadcasters (Uganda Communications Commission, 2021, 2024). These examples show that signal integrity is a local regulatory and technical concern.
+Propagation and attenuation also affect terrestrial radio links. ITU-R recommendations provide standard models for rain attenuation and terrestrial line-of-sight propagation planning (International Telecommunication Union, 2005, 2021). While GSM service at user level involves many more factors than rain attenuation alone, these references support the use of controlled attenuation and degradation models in the experiment.
+Automatic Modulation Classification and Denoising
+Automatic modulation classification identifies the modulation type of a received signal and is useful in spectrum monitoring, cognitive radio, interference diagnosis, and adaptive communication systems. Traditional feature-based methods can become less reliable when signal quality is poor. Recent work shows that deep learning can improve modulation classification by learning features directly from I/Q samples. Abd-Elaziz et al. (2023), for example, proposed a CNN-based architecture for automatic modulation classification in cognitive radio networks.
+Denoising autoencoders are relevant because they can reconstruct cleaner versions of corrupted inputs before classification. Zhang et al. (2023) proposed a residual denoising autoencoder with attention for modulation signals, while An and Lee (2023) studied robust modulation classification in low-SNR conditions. Gao et al. (2026) further explored autoencoder-based approaches for improving noise robustness in few-shot modulation classification. These studies support the technical idea that denoising can improve downstream signal interpretation under noisy conditions.
+The gap is that most existing work is not framed around Uganda's rural GSM service problem. This project adapts the denoising-first idea to a local engineering question: whether weak GSM-family signal recovery can support better interpretation of rural edge-of-coverage service conditions.
+Gap in the Literature
+abc
+METHODOLOGY
+Research Design
+The study will use an experimental research design. The core work will be conducted offline using public I/Q datasets and controlled signal impairments. This design is appropriate because the first task is to test whether denoising improves weak-signal recoverability under controlled conditions before any field-support validation is attempted.
+Two processing chains will be compared. The first will be a baseline automatic modulation classifier trained and tested on noisy I/Q samples. The second will be a denoising-assisted pipeline in which a denoising autoencoder reconstructs the signal before the same classification task is performed.
+Data Sources
+The first experiment stage will use public datasets. RadioML 2018.01A will be used because it provides labelled modulation samples with structured SNR information (DeepSig, 2018). RF Signal Data will be considered as a secondary dataset because it provides SDR-style signal captures that may introduce more practical signal variation (RF Signal Data, 2025).
+No private subscriber communication content will be collected during the core study. Any future live RF validation will require supervisor approval, lawful procedures, and strict avoidance of decoding or storing private message or call content.
+Signal Impairment Modelling
+Controlled weak-signal conditions will be created using additive noise and selected interference models. The planned scenarios include low-SNR reception, wideband disturbance inspired by illegal repeater or booster interference, narrowband harmonic-style disturbance inspired by poorly filtered transmitters, and time-varying attenuation informed by standard propagation recommendations (International Telecommunication Union, 2005, 2021; Uganda Communications Commission, 2021, 2024).
+These impairments will be treated as controlled approximations, not as field measurements. Their purpose is to test whether denoising can preserve useful GSM-family signal structure when the input is degraded in ways that resemble difficult rural radio conditions.
+Model Design and Experiment Procedure
+The denoising model will be a one-dimensional autoencoder designed for I/Q signal windows. The encoder will compress noisy input into a latent representation, and the decoder will reconstruct a cleaner signal estimate. Training will use paired clean and corrupted signal windows where the clean reference is available from the dataset or generated simulation process.
+The classifier will operate either on raw noisy inputs or on denoised outputs. The same classifier family will be used for both the baseline and the proposed chain so that the comparison remains fair. A compact convolutional neural network or a similar lightweight sequence classifier will be used, depending on dataset structure and available computing resources.
+The experiment will follow these steps:
+Select and document the dataset, modulation classes, SNR ranges, and preprocessing steps.
+Segment and normalize I/Q samples into consistent input windows.
+Create controlled noisy versions of the samples using selected impairment models.
+Train the baseline classifier on noisy samples and record performance.
+Train the denoising autoencoder and inspect reconstruction behaviour.
+Train or evaluate the classifier using denoised outputs.
+Compare the baseline and denoising-assisted pipelines across SNR ranges.
+Interpret the results in terms of weak-signal recoverability and rural service relevance.
+Evaluation Metrics
+The evaluation will include reconstruction error, SNR-related measures, classification accuracy, macro F1-score, confusion matrices, and performance trends across selected low-SNR ranges. Model size and inference latency will also be measured to judge whether the approach could later be considered for low-cost field-support equipment.
+The key comparison will be whether the denoising-assisted pipeline performs better than the no-denoising baseline under weak-signal conditions. The study will not claim field-level service improvement unless field validation is separately completed.
+Data Collection and Analysis Tools
+The study will use three main data collection tools. The first is an experiment log recording dataset version, preprocessing settings, model parameters, training conditions, and evaluation results. The second is a results extraction sheet for SNR-wise metrics, reconstruction error, confusion matrices, model size, and latency. The third is a future field-observation checklist for lawful weak-signal site visits, covering location type, handset service observations, signal measurement setup, weather, nearby interference indicators, and supervisor approvals.
+DATA ANALYSIS
+The collected results will be analyzed using comparative tables, plots of performance against SNR, confusion matrices, and a short practical interpretation of what the findings mean for weak GSM-family service troubleshooting
+ETHICAL CONSIDERATIONS
+Upon receipt of the research grant from UCC, the study proposal will be submitted to the Research Ethical Committees of Makerere university and Kyambogo Universities for approval of the study research protocol and the informed consent documents. Then, a research permit shall be secured from the Uganda National Council for Science and Technology (UNCST), to allow the researchers conduct the study in the country. Also, permission shall be secured from the management of the selected Universities.
+Informed consent shall then be obtained from each participant of the study after ensuring that they have thoroughly understood the study’s aim, procedures, hazards, and requirements. The study shall ensure that no participant is exposed to any danger of stress, humiliation, or loss of self-esteem. In addition to ensuring participants’ anonymity, the study shall protect the confidentiality of the information collected as provided for in the cover letter. Participants shall be provided with a summary of the preliminary findings.  Also, participants shall not be forced to take part in the study; but rather, they will be encouraged by assurances of confidentiality, anonymity, and non-traceability in the research, as well as by disclosure of their rights to discontinue participation at any time or to opt out of completing certain questionnaire items (Cohen, Manion, & Morrison, 2000).
+STUDY BUDGET AND JUSTIFICATION
+APPLICANTS CURRICULUM VITAE – CO-PRINCIPAL INVESTIGATOR (PI)
+References
+Abd-Elaziz, O. F., El-Ghandour, A. M., & Ismail, F. H. (2023). Deep learning-based automatic modulation classification using robust CNN architecture for cognitive radio networks. Sensors, 23(23), Article 9467. https://doi.org/10.3390/s23239467
+An, H., & Lee, B.-M. (2023). Robust automatic modulation classification in low signal-to-noise ratio. IEEE Access, 11, 125678-125690. https://doi.org/10.1109/ACCESS.2023.3321108
+DeepSig. (2018). RadioML 2018.01A dataset. https://www.deepsig.ai/datasets/
+Gao, X., Xu, X., Li, D., Liu, X., Yang, J., & Zhai, D. (2026). Enhancing noise robustness in few-shot automatic modulation classification via complex-valued autoencoders. Electronics, 15(3), Article 674. https://www.mdpi.com/2079-9292/15/3/674
+International Telecommunication Union. (2005). Recommendation ITU-R P.838-3: Specific attenuation model for rain for use in prediction methods. https://www.itu.int/rec/R-REC-P.838-3-200503-P/en
+International Telecommunication Union. (2021). Recommendation ITU-R P.530-18: Propagation data and prediction methods required for the design of terrestrial line-of-sight systems. https://www.itu.int/dms_pubrec/itu-r/rec/p/R-REC-P.530-18-202109-I!!PDF-E.pdf
+RF Signal Data. (2025). RF signal data [Data set]. Kaggle. https://www.kaggle.com/datasets/suraj520/rf-signal-data
+Uganda Communications Commission. (2021, July 26). Public notice: Signal interference arising out of usage of network repeaters - "boosters". https://uccinfoblog.com/2021/07/26/public-notice-signal-interference-arising-out-of-usage-of-network-repeaters-boosters/
+Uganda Communications Commission. (2024, September 25). UCC cracks down on illegal and non-compliant broadcasters. https://www.ucc.co.ug/ucc-cracks-down-on-illegal-and-non-compliant-broadcasters/
+Uganda Communications Commission. (2026). Call for proposals for the Uganda Communications Commission (UCC) research support to academia. https://www.ucc.co.ug/wp-content/uploads/2026/04/Call-for-Research-Proposals-April-2026.pdf
+Zhang, X., et al. (2023). Dual residual denoising autoencoder with channel attention mechanism for modulation of signals. Sensors, 23. https://pmc.ncbi.nlm.nih.gov/articles/PMC9861137/
+
+[[TABLE 1]]
+Phase | Tasks | 2026 | 2026 | 2026 | 2026
+Phase | Tasks | May-Jun | Jul-Aug | Sep-Oct | Nov- Dec | Jan-Feb
+Preliminary | Refine and Validate data collection instruments. |  |  |  |  | 
+Preliminary | Obtain approvals from Kabale and Kyambogo REC. |  |  |  |  | 
+Preliminary | Obtain a research permit from UNCST. |  |  |  |  | 
+Preliminary | Secure permission from management of Universities. |  |  |  |  | 
+Assemble and train the research team | Recruit research assistants. |  |  |  |  | 
+Assemble and train the research team | Train research assistants. |  |  |  |  | 
+Assemble and train the research team | Pilot -test the data collection instruments and tools |  |  |  |  | 
+Prepare preprocessing pipeline | segmentation, normalization |  |  |  |  | 
+Prepare preprocessing pipeline | impairment generation |  |  |  |  | 
+Prepare preprocessing pipeline | Data preparation, |  |  |  |  | 
+Prepare preprocessing pipeline | Sign consent forms. |  |  |  |  | 
+Data collection | experiment log recording dataset version, preprocessing settings, model parameters |  |  |  |  | 
+Data analysis | Descriptive statistics |  |  |  |  | 
+Data analysis | Data Visualization |  |  |  |  | 
+Data analysis |  |  |  |  |  | 
+Data analysis |  |  |  |  |  | 
+Post-Analysis | Compile report |  |  |  |  | 
+Post-Analysis | Validate results with stakeholders to get feedback |  |  |  |  | 
+Post-Analysis | Publish and disseminate findings at workshops |  |  |  |  | 
+Post-Analysis | Hand over final report to UCC |  |  |  |  | 
+
+[[TABLE 2]]
+SN | Item | Unit cost | Quantity | Total Cost | Justification
+Study preliminary costs | Study preliminary costs | Study preliminary costs | Study preliminary costs | Study preliminary costs | Study preliminary costs
+1.1 | Research Ethics Committee (REC) Approvals / | $1,000 | 2 | $2000 | Fast track of REC approvals for study protocols from Mukz and Kyambogo Research and Ethics Committees. Waiting for the normal REC sitting sessions may affect completion of the study in the seven months.
+1.2 | Research Permit from UNCST | $500 | 1 | $500 | To cover costs of obtaining a research permit from UNCST.
+1.3 | Induction meeting of research team | $1200 | 1 | $1200 | Enable the research team (investigators and research assistants) discuss and agree on the study goals, objectives, methodology, timeline, roles and responsibilities.
+ | Subtotal 1 |  |  | $3,700 | 
+Participants incentives | Participants incentives | Participants incentives | Participants incentives | Participants incentives | Participants incentives
+2.1 | Data/airtime gift card for sending screenshots of data usage | $50 | 300 students | $1,500 | A low size incentive that avoids a coercive effect but acknowledges students time while ensuring a representative sample size for the study.
+ | Subtotal 2 |  |  | $1,500 | 
+Tools | Tools | Tools | Tools | Tools | Tools
+3.1 | SDR receiver kits and RF accessories | $3,000 |  | $3,000 | 
+3.2 | Android measurement devices and protective accessories | $3,100 |  | $3,100 | 
+3.3 | Lab consumables, adapters, shielding, and calibration aids | $2,100 |  | $2,100 | 
+ | Subtotal 3 |  |  | $8,200 | 
+Administrative costs | Administrative costs | Administrative costs | Administrative costs | Administrative costs | Administrative costs
+4.1 | Travel expenses | $300 | 6 months x 2 investigators | $3,600 | Includes monthly lodging for each Investigator to the other research institution for meetings, moderation of collected data and validation of findings.
+4.2 | Communication costs | $100 | 5 months x 12 | $6,000 | Monthly Airtime and internet data for investigators and research assistants to facilitate calls and virtual meetings.
+4.3 | Office supplies and printing | $200 | 12 months | $2,400 | Includes design and printing of study recruitment materials (posters, flyers), consent forms, study instruments, and daily office costs.
+ | Subtotal 4 |  |  | $12,000 | 
+Data Analysis Software | Data Analysis Software | Data Analysis Software | Data Analysis Software | Data Analysis Software | Data Analysis Software
+5.1 | Statistics software | $3800 | 1-year subscription | $3,800 | 
+5.2 | Cloud Storage | $1,500 | 1-year subscription | $1,500 | Subscribed storage platform shall ensure compliance with safe storage of participants data.
+5.3 | Netflow Analyser | $4,000 | 1-year | $4,000 | Monitors internet activity
+5.3 | Dedicated server | $5,000 |  | $5,000 | Log storage and Analysis
+5.4 | PFsense-SG 3100 | $2,300 | 1 year | $2,300 | 
+ | Subtotal 5 |  |  | $16,600 | 
+Validation and Dissemination costs | Validation and Dissemination costs | Validation and Dissemination costs | Validation and Dissemination costs | Validation and Dissemination costs | Validation and Dissemination costs
+6.1 | Validation workshops | $2,500 | 2 workshops | $5,000 | To facilitate one stakeholders’ workshop at each institution for feedback on results so as to strengthen the internal validity of the findings.
+6.2 | Journal publication fees | $2,000 | x 3,800 (Ugx) | $2,000 / | This covers the open-access fees to ensure that the study findings are freely available to policy makers and educators.
+6.3 | Conference presentation/Dissemination workshop |  |  |  | To be organised and costs covered
+6.4 | Final report design and binding | $300 | 5 copies | $1,500 | A copy for UCC (1), each institution (2) and each investigator (2).
+ | Subtotal 6 |  |  | $8,500 | 
+Contingency fund | Contingency fund | Contingency fund | Contingency fund | Contingency fund | Contingency fund
+7.1 | Unforeseen costs | $3,000 |  | $3,000 | Any unexpected and thus unbudgeted for costs that may come up in the course of the study.
+ | Subtotal 7 |  |  | $3,000 | 
+ |  |  |  |  | 
+Grand Total                                                        $51,000 | Grand Total                                                        $51,000 | Grand Total                                                        $51,000 | Grand Total                                                        $51,000 | Grand Total                                                        $51,000 | Grand Total                                                        $51,000
+
+[[TABLE 3]]
+Dickson Mugerwa, PhD (co-PI) / Department of Electrical and Electronics / Engineering, Kyambogo University, / P.O. Box 1, Kyambogo, Kampala, Uganda. | / Tel.: +256-743529455 / Email: dmugerwadickson@kyu.ac.ug / Homepage: http://electrical.kyu.ac.ug/ | / Tel.: +256-743529455 / Email: dmugerwadickson@kyu.ac.ug / Homepage: http://electrical.kyu.ac.ug/
+Academic Qualifications | Academic Qualifications | Academic Qualifications
+Ph.D. Radio and Communication Engineering | CBNU, S. Korea | 2020-2024
+MSc. Radio science, Electronics and Communication) | CNU, S. Korea | 2017-2019
+Korean Language – Advanced level | Dongseo Univ. S. Korea | 2016-2017
+BSc. Information Technology and Computing | KyU. Uganda | 2011-2013
+Diploma in Computer Science | KyU, Uganda | 2007-2009
+Employment Record and Research Experience | Employment Record and Research Experience | Employment Record and Research Experience
+Kyambogo University | Senior ICT Tech (Academics) | 2020 - Current
+Tetlangech Embedded Systems Technology, | Embedded Systems Consultant | 2023-Current
+CBNU, S. Korea | Doctoral Researcher | 2020-2024
+Kyambogo University | ICT Technician | 2014-to 2020
+Research Publication | Research Publication | Research Publication
+Mugerwa, D., Nam, Y., Choi, H., Shin, Y., & Lee, E. (2024). Adaptive Mobility-Based IoT LoRa Clustering Communication Scheme. Electronics, 13(11), 2052. / Mugerwa, D., Nam, Y., Choi, H., Shin, Y., & Lee, E. (2023). Implicit Overhearing Node-Based Multi-Hop Communication Scheme in IoT LoRa Networks. Sensors, 23(8), 3874. / Mugerwa, D., Nam, Y., Choi, H., Kwon, Y., & Lee, E. (2023, July). Enhanced Hybrid Energy-Efficient Distributed Clustering Protocol for IoT-Based WSNs with Multiple Sinks. In 2023 IEEE Sensors Applications Symposium (SAS) (pp. 1-6). IEEE. / Mugerwa, D., Nam, Y., Choi, H., Shin, Y., & Lee, E. (2022). SF-Partition-Based Clustering and Relaying Scheme for Resolving Near–Far Unfairness in IoT Multi-hop LoRa Networks. Sensors, 22(23), 9332. / Mugerwa, D., Nam, Y., Cho, H., Choi, H., Shin, Y., & Lee, E. (2022, July). Implicit Multi-hop Communication Scheme based on Overhearing in IoT LoRa Networks. In 2022 Thirteenth International Conference on Ubiquitous and Future Networks (ICUFN) (pp. 190-195). IEEE. / Dick, M., Alwabel, M., & Kwon, Y. (2019). Multiple Sink Nodes to Improve Performance in WSN. Journal of Korea Multimedia Society, 22(6), 676-683. / Dick, M., Ji, J. G., & Kwon, Y. (2017, December). Practical difficulties and anomalies in running Hadoop. In 2017 International Conference on Computational Science and Computational Intelligence (CSCI) (pp. 1501-1504). IEEE. / Nam, Y., Choi, H., Shin, Y., Mugerwa, D., & Lee, E. (2023, January). Delay Tolerable Precaching Scheme in Content-Centric Vehicular Networks. In 2023 IEEE 20th Consumer Communications & Networking Conference (CCNC) (pp. 849-854). IEEE. | Mugerwa, D., Nam, Y., Choi, H., Shin, Y., & Lee, E. (2024). Adaptive Mobility-Based IoT LoRa Clustering Communication Scheme. Electronics, 13(11), 2052. / Mugerwa, D., Nam, Y., Choi, H., Shin, Y., & Lee, E. (2023). Implicit Overhearing Node-Based Multi-Hop Communication Scheme in IoT LoRa Networks. Sensors, 23(8), 3874. / Mugerwa, D., Nam, Y., Choi, H., Kwon, Y., & Lee, E. (2023, July). Enhanced Hybrid Energy-Efficient Distributed Clustering Protocol for IoT-Based WSNs with Multiple Sinks. In 2023 IEEE Sensors Applications Symposium (SAS) (pp. 1-6). IEEE. / Mugerwa, D., Nam, Y., Choi, H., Shin, Y., & Lee, E. (2022). SF-Partition-Based Clustering and Relaying Scheme for Resolving Near–Far Unfairness in IoT Multi-hop LoRa Networks. Sensors, 22(23), 9332. / Mugerwa, D., Nam, Y., Cho, H., Choi, H., Shin, Y., & Lee, E. (2022, July). Implicit Multi-hop Communication Scheme based on Overhearing in IoT LoRa Networks. In 2022 Thirteenth International Conference on Ubiquitous and Future Networks (ICUFN) (pp. 190-195). IEEE. / Dick, M., Alwabel, M., & Kwon, Y. (2019). Multiple Sink Nodes to Improve Performance in WSN. Journal of Korea Multimedia Society, 22(6), 676-683. / Dick, M., Ji, J. G., & Kwon, Y. (2017, December). Practical difficulties and anomalies in running Hadoop. In 2017 International Conference on Computational Science and Computational Intelligence (CSCI) (pp. 1501-1504). IEEE. / Nam, Y., Choi, H., Shin, Y., Mugerwa, D., & Lee, E. (2023, January). Delay Tolerable Precaching Scheme in Content-Centric Vehicular Networks. In 2023 IEEE 20th Consumer Communications & Networking Conference (CCNC) (pp. 849-854). IEEE. | Mugerwa, D., Nam, Y., Choi, H., Shin, Y., & Lee, E. (2024). Adaptive Mobility-Based IoT LoRa Clustering Communication Scheme. Electronics, 13(11), 2052. / Mugerwa, D., Nam, Y., Choi, H., Shin, Y., & Lee, E. (2023). Implicit Overhearing Node-Based Multi-Hop Communication Scheme in IoT LoRa Networks. Sensors, 23(8), 3874. / Mugerwa, D., Nam, Y., Choi, H., Kwon, Y., & Lee, E. (2023, July). Enhanced Hybrid Energy-Efficient Distributed Clustering Protocol for IoT-Based WSNs with Multiple Sinks. In 2023 IEEE Sensors Applications Symposium (SAS) (pp. 1-6). IEEE. / Mugerwa, D., Nam, Y., Choi, H., Shin, Y., & Lee, E. (2022). SF-Partition-Based Clustering and Relaying Scheme for Resolving Near–Far Unfairness in IoT Multi-hop LoRa Networks. Sensors, 22(23), 9332. / Mugerwa, D., Nam, Y., Cho, H., Choi, H., Shin, Y., & Lee, E. (2022, July). Implicit Multi-hop Communication Scheme based on Overhearing in IoT LoRa Networks. In 2022 Thirteenth International Conference on Ubiquitous and Future Networks (ICUFN) (pp. 190-195). IEEE. / Dick, M., Alwabel, M., & Kwon, Y. (2019). Multiple Sink Nodes to Improve Performance in WSN. Journal of Korea Multimedia Society, 22(6), 676-683. / Dick, M., Ji, J. G., & Kwon, Y. (2017, December). Practical difficulties and anomalies in running Hadoop. In 2017 International Conference on Computational Science and Computational Intelligence (CSCI) (pp. 1501-1504). IEEE. / Nam, Y., Choi, H., Shin, Y., Mugerwa, D., & Lee, E. (2023, January). Delay Tolerable Precaching Scheme in Content-Centric Vehicular Networks. In 2023 IEEE 20th Consumer Communications & Networking Conference (CCNC) (pp. 849-854). IEEE.

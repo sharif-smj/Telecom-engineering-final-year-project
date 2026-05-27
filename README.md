@@ -11,6 +11,7 @@ This repository contains the final-year project workspace for **DAE-enhanced Aut
 - `reports/AI_Enhanced_Rural_GSM_Connectivity.pdf`: AI-enhanced rural GSM connectivity reference/report.
 - `reports/LowSNR_Consolidated_Claims.md`: reconciled working claims sheet for writing/slides.
 - `references/`: captured reference pages and citation images.
+- `NCC/`: related NCC 2026 strategy, UCC proposal material, source captures, supervisor feedback, and proposal QA artifacts.
 - `deliverables/`: exported submission assets:
   - `deliverables/papers/`
   - `deliverables/presentations/`

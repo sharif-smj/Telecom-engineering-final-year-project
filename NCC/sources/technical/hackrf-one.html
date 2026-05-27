@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HackRF One &mdash; HackRF  documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="_static/status.css" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="rad1o" href="rad1o.html" />
+    <link rel="prev" title="HackRF Pro" href="hackrf_pro.html" /> 
+<script async type="text/javascript" src="/_/static/javascript/readthedocs-addons.js"></script><meta name="readthedocs-project-slug" content="hackrf" /><meta name="readthedocs-version-slug" content="stable" /><meta name="readthedocs-resolver-filename" content="/hackrf_one.html" /><meta name="readthedocs-http-status" content="200" /></head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            HackRF
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="getting_help.html">Getting Help</a></li>
+<li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">Troubleshooting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="synchronization_checklist.html">Synchronization Checklist</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hackrf_projects_mentions.html">HackRF Community Projects and Mentions</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Hardware Platforms</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="hackrf_pro.html">HackRF Pro</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">HackRF One</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#features">Features</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#maximum-input-power">Maximum input power</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#minimum-detectable-input-power">Minimum detectable input power</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#typical-maximum-transmit-power">Typical maximum transmit power</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="rad1o.html">rad1o</a></li>
+<li class="toctree-l1"><a class="reference internal" href="jawbreaker.html">Jawbreaker</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Hardware Information</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="hackrf_minimum_requirements.html">Minimum Host System Requirements for HackRF</a></li>
+<li class="toctree-l1"><a class="reference internal" href="list_of_hardware_revisions.html">Hardware Revisions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hardware_components.html">Hardware Components</a></li>
+<li class="toctree-l1"><a class="reference internal" href="leds.html">LEDs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hackrfs_buttons.html">Buttons</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hackrf_connectors.html">Connectors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="external_clock_interface.html">External Clock Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="expansion_interface.html">Expansion Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hardware_triggering.html">Hardware Triggering</a></li>
+<li class="toctree-l1"><a class="reference internal" href="enclosure_options.html">Enclosure Options</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usb_cables.html">USB Cables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rf_shield_installation.html">RF Shield Installation Instructions</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Firmware</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="updating_firmware.html">Updating Firmware</a></li>
+<li class="toctree-l1"><a class="reference internal" href="firmware_development_setup.html">Firmware Development Setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="LPC43XX_Debugging.html">LPC43xx Debugging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="LPC43XX_SGPIO_Configuration.html">LPC43xx SGPIO Configuration</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Software</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="installing_hackrf_software.html">Installing HackRF Software</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hackrf_tools.html">HackRF Tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="software_support.html">Third-Party Software Compatible With HackRF</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sampling_rate.html">Sampling Rate and Baseband Filters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="setting_gain.html">Setting Gain Controls for RX</a></li>
+<li class="toctree-l1"><a class="reference internal" href="virtual_machines.html">Virtual Machines</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Opera Cake Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="opera_cake.html">Opera Cake</a></li>
+<li class="toctree-l1"><a class="reference internal" href="opera_cake_faq.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="opera_cake_hardware.html">Hardware</a></li>
+<li class="toctree-l1"><a class="reference internal" href="opera_cake_board_addressing.html">Board Addressing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="opera_cake_port_configuration.html">Port Configurations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="opera_cake_modes_of_operation.html">Modes of Operation</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">HackRF</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">HackRF One</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/hackrf_one.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="hackrf-one">
+<h1>HackRF One<a class="headerlink" href="#hackrf-one" title="Link to this heading"></a></h1>
+<img alt="HackRF One" id="id1" src="_images/HackRF-One-fd0-0009.jpeg" />
+<p>HackRF One was the first production hardware platform for the HackRF project. It is a Software Defined Radio peripheral capable of transmission or reception of radio signals from 1 MHz to 6 GHz. Designed to enable test and development of modern and next generation radio technologies, HackRF One is an open source hardware platform that can be used as a USB peripheral or programmed for stand-alone operation.</p>
+<div class="line-block">
+<div class="line"><a class="reference external" href="https://greatscottgadgets.com/hackrf/one/">Product page</a></div>
+<div class="line"><a class="reference external" href="https://greatscottgadgets.com/hackrf/one/#purchasing">Where to buy</a></div>
+</div>
+<section id="features">
+<h2>Features<a class="headerlink" href="#features" title="Link to this heading"></a></h2>
+<blockquote>
+<div><ul class="simple">
+<li><p>half-duplex transceiver</p></li>
+<li><p>operating freq: 1 MHz to 6 GHz</p></li>
+<li><p>supported sample rates: 2 Msps to 20 Msps (quadrature)</p></li>
+<li><p>resolution: 8 bits</p></li>
+<li><p>interface: High Speed USB (with USB Micro-B connector)</p></li>
+<li><p>power supply: USB bus power</p></li>
+<li><p>software-controlled antenna port power (max 50 mA at 3.0 to 3.3 V)</p></li>
+<li><p>SMA female antenna connector (50 ohms)</p></li>
+<li><p>SMA female clock input and output for synchronization</p></li>
+<li><p>convenient buttons for programming</p></li>
+<li><p>pin headers for expansion</p></li>
+<li><p>portable</p></li>
+<li><p>open source</p></li>
+</ul>
+</div></blockquote>
+</section>
+<section id="maximum-input-power">
+<h2>Maximum input power<a class="headerlink" href="#maximum-input-power" title="Link to this heading"></a></h2>
+<p>The maximum input power of HackRF One is -5 dBm. Exceeding -5 dBm can result in permanent damage!</p>
+<p>In theory, HackRF One can safely accept up to 10 dBm with the front-end RX amplifier disabled. However, a simple software or user error could enable the amplifier, resulting in permanent damage. It is better to use an external attenuator than to risk damage.</p>
+</section>
+<section id="minimum-detectable-input-power">
+<h2>Minimum detectable input power<a class="headerlink" href="#minimum-detectable-input-power" title="Link to this heading"></a></h2>
+<p>This isn’t a question that can be answered for a general purpose SDR platform such as HackRF. Any answer would be very specific to a particular application. For example, an answerable question might be: What is the minimum power level in dBm of modulation M at frequency F that can be detected by HackRF One with software S under configuration C at a bit error rate of no more than E%? Changing any of those variables (M, F, S, C, or E) would change the answer to the question. Even a seemingly minor software update might result in a significantly different answer. To learn the exact answer for a specific application, you would have to measure it yourself.</p>
+<p>HackRF’s concrete specifications include operating frequency range, maximum sample rate, and dynamic range in bits. These specifications can be used to roughly determine the suitability of HackRF for a given application. Testing is required to finely measure performance in an application. Performance can typically be enhanced significantly by selecting an appropriate antenna, external amplifier, and/or external filter for the application.</p>
+</section>
+<section id="typical-maximum-transmit-power">
+<h2>Typical maximum transmit power<a class="headerlink" href="#typical-maximum-transmit-power" title="Link to this heading"></a></h2>
+<p>HackRF One’s maximum TX power varies by operating frequency:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>1 MHz to 10 MHz: 5 dBm to 15 dBm, generally increasing as frequency increases (see this <a class="reference external" href="https://greatscottgadgets.com/2015/05-15-hackrf-one-at-1-mhz/">blog post</a>)</p></li>
+<li><p>10 MHz to 2170 MHz: 5 dBm to 15 dBm, generally decreasing as frequency increases</p></li>
+<li><p>2170 MHz to 2740 MHz: 13 dBm to 15 dBm</p></li>
+<li><p>2740 MHz to 4000 MHz: 0 dBm to 5 dBm, decreasing as frequency increases</p></li>
+<li><p>4000 MHz to 6000 MHz: -10 dBm to 0 dBm, generally decreasing as frequency increases</p></li>
+</ul>
+</div></blockquote>
+<p>Through most of the frequency range up to 4 GHz, the maximum TX power is between 0 and 10 dBm. The frequency range with best performance is 2170 MHz to 2740 MHz.</p>
+<p>Overall, the output power is enough to perform over-the-air experiments at close range or to drive an external amplifier. If you connect an external amplifier, you should also use an external bandpass filter for your operating frequency.</p>
+<p>Before you transmit, know your laws. HackRF One has not been tested for compliance with regulations governing transmission of radio signals. You are responsible for using your HackRF One legally.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="hackrf_pro.html" class="btn btn-neutral float-left" title="HackRF Pro" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="rad1o.html" class="btn btn-neutral float-right" title="rad1o" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Great Scott Gadgets.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
