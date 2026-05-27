@@ -6,8 +6,8 @@ export async function slide12(presentation, ctx) {
   title(slide, ctx, "Conclusion and recommendations", "Final position");
   bulletBox(slide, ctx, "Conclusion", [
     "Weak rural GSM service can be studied through noisy I/Q signal interpretation, not only through coverage-map labels.",
-    "The proposed DAE-AMC chain is technically coherent: denoise first, classify second, evaluate across SNR.",
-    "Preliminary controlled simulation results support continuing the denoising-assisted AMC implementation."
+    "The proposed DAE-AMC chain is technically coherent: denoise first, classify second, evaluate across SNR (O'Shea et al., 2018; An & Lee, 2023).",
+    "Preliminary controlled simulation results support continuing the denoising-assisted AMC implementation (Ssemujju & Kisige, 2026)."
   ], 76, 168, 540, 250, C.teal);
   bulletBox(slide, ctx, "Recommendations", [
     "Complete the full trained DAE and AMC implementation with stronger dataset coverage.",

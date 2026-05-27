@@ -37,6 +37,7 @@
 - For simulation pages with controls, exercise at least two distinct scenario or slider settings and confirm displayed metrics update.
 - For `simulations/uganda_terrain_map.html`, verify that CDN-hosted `three.js` dependencies load and that rotation, hover, and layer toggles still work.
 - For research and manuscript edits, verify every changed claim against a primary source or a clearly identified repository source file.
+- For model or experiment work, log dataset/source, preprocessing, impairment model, SNR range, random seed, model architecture, baseline AMC metrics, DAE-AMC metrics, reconstruction error, macro F1-score, confusion matrices, model size, inference latency, and failure cases.
 
 ## Coding And Content Rules
 - Use 4-space indentation in HTML, CSS, and JavaScript.
@@ -60,12 +61,34 @@
 - When the task involves presentation support, remember that the user wants simulations and demonstrations to paint a strong picture before the final implementation reveal.
 - When the task involves presentation support, prefer visuals and demos that show generated or captured signals being corrupted, denoised, and then measured or classified.
 
+## Current FYP Direction From NCC/UCC Work
+- Keep the active final-year project technical core unchanged: GSM-family signal denoising plus automatic modulation classification for weak/noisy edge-of-coverage signal interpretation in rural Uganda.
+- Treat `/Users/sharif/telecom/NCC/ucc-submission/` as supervisor-facing UCC Research Support proposal material. Do not treat that proposal as the implementation source of truth for this repository.
+- Use the broader UCC proposal for context, motivation, diagrams, and supervisor alignment only after checking its source map at `/Users/sharif/telecom/NCC/ucc-submission/source-map-and-compliance-checklist.md`.
+- Frame the defensible technical claim as improved weak-signal recoverability or improved interpretation of noisy I/Q samples under controlled low-SNR or interference conditions.
+- Do not claim physical tower-range extension, live call/USSD/SMS/Mobile Money improvement, completed field deployment, or measured SNR gain without verified experiment artifacts.
+- Treat supervisor concept-note numbers such as 3-5 dB gain, 4.2 dB gain, 52% to 84% decode-rate improvement, 30% usable-radius increase, sub-1.2 MB model size, sub-40 ms latency, Wakiso pre-test outcomes, district rollout outcomes, and 25% failed-session reduction as expected targets or future-pilot language only until verified.
+- Keep basic GSM/2G "kabiriti" phones central to the user problem. Treat Android phones and SDR equipment as research and measurement tools, not as a requirement for rural users.
+
+## Prototype Direction
+- Use Mode 2 as the current prototype default: Android on-device inference using exported ONNX DAE and AMC models.
+- Train models off-device in Python/PyTorch, export to ONNX, then load the ONNX models into the Android workflow for inference and visualization.
+- Use replay mode as the guaranteed demonstration path: the Android app loads prepared fixed-length two-channel I/Q windows and runs preprocessing, denoising, classification, metrics, and logging locally.
+- Use receive-only SDR capture through USB OTG as a feasible extension when hardware and Android compatibility allow it. Keep SDR hardware options open: RTL-SDR Blog V4, ADALM-Pluto, HackRF One, and LimeSDR Mini.
+- Treat microcontrollers as optional support components for control, triggering, power, or accessory handling, not as the main GSM I/Q receiver.
+- Show the prototype as a signal-processing and measurement workflow: `I/Q sample source -> Android preprocessing -> ONNX DAE -> ONNX AMC -> visualization, latency, confidence, and observation log`.
+- Do not describe the Android prototype as a live cellular modem modification, booster, or direct improvement to the phone's built-in calls, SMS, USSD, or Mobile Money sessions.
+- When supervisors ask for "data collection tools," clarify whether they mean research instruments or physical equipment. For physical tools, include Android measurement phones, basic GSM/2G phones, receive-only SDR dongles, antennas, RF cables/adapters/filters/attenuators, USB OTG adapters, laptop/workstation, power banks, SIM cards/airtime/data, and field observation materials.
+
 ## Security And Data Rules
 - Never add secrets, credentials, tokens, or personal data.
 - Never add new remote scripts, fonts, or analytics without approval.
 - Never change existing CDN dependency URLs or versions without approval.
 - Never present unverified numeric, regulatory, or literature claims as final facts.
 - Preserve provenance for captured reference pages and screenshots.
+- For any future RF or field activity, keep the workflow receive-only unless separate authorization is obtained.
+- Do not record, decode, store, or summarize private subscriber communication content.
+- Treat WhatsApp supervisor messages and UCC proposal drafts as operational context, not final academic citations.
 
 ## Operating Boundaries
 - Edit only the files required for the task.

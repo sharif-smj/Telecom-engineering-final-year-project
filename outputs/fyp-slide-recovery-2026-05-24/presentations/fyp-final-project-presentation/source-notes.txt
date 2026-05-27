@@ -5,5 +5,16 @@ Primary content sources:
 - /Users/sharif/telecom/final-year-project/reports/preliminary_simulation_2026_05_24/results.csv
 - /Users/sharif/telecom/final-year-project/reports/preliminary_simulation_2026_05_24/*.png
 
+External sources cited visibly in the updated deck:
+- Uganda Communications Commission. (2025). UCC market report for Q4 2024. https://www.ucc.co.ug/wp-content/uploads/2025/02/UCC-Market-Report-for-Q4-2024-December-2024.pdf
+- Uganda Communications Commission. (2024). UCC cracks down on illegal and non-compliant broadcasters. https://www.ucc.co.ug/ucc-cracks-down-on-illegal-and-non-compliant-broadcasters/
+- Uganda Communications Commission. (2022). QoS Publication: December 2021 mobile voice/data benchmark measurements. https://www.ucc.co.ug/wp-content/uploads/2023/11/QoS-Publication-December-2021-9-05-2022.pdf
+- DeepSig. (2018). RadioML 2018.01A [Data set]. Kaggle. https://www.kaggle.com/datasets/pinxau1000/radioml2018
+- An, T. T., & Lee, B. M. (2023). Robust automatic modulation classification in low signal to noise ratio. IEEE Access, 11, 7860-7872. https://doi.org/10.1109/ACCESS.2023.3238995
+- O'Shea, T. J., Roy, T., & Clancy, T. C. (2018). Over-the-air deep learning based radio signal classification. IEEE Journal of Selected Topics in Signal Processing, 12(1), 168-179. https://doi.org/10.1109/JSTSP.2018.2797022
+
+Citation style note:
+- Slides now use APA-style parenthetical in-text citations inside the actual slide prose, not footer-style citation lists.
+
 Evidence rule:
 The deck uses preliminary controlled simulation artifacts for result slides. It does not claim completed field deployment, live call/USSD/SMS improvement, or physical tower-range extension.

@@ -17,10 +17,10 @@ export async function slide04(presentation, ctx) {
     align: "center",
   });
   bulletBox(slide, ctx, "Specific objectives", [
-    "Define GSM-family low-SNR and interference scenarios for controlled evaluation.",
+    "Define GSM-family low-SNR and interference scenarios for controlled evaluation (O'Shea et al., 2018).",
     "Design a denoising front end that reconstructs cleaner I/Q representations.",
     "Train and evaluate an AMC stage on raw noisy and denoised signal features.",
-    "Compare baseline and denoising-assisted performance using accuracy, macro F1, confusion behavior, and signal plots.",
+    "Compare baseline and denoising-assisted performance using accuracy, macro F1, confusion behavior, and signal plots (DeepSig, 2018).",
     "Interpret the findings for weak-service troubleshooting and rural connectivity planning."
   ], 100, 328, 1080, 278, C.teal);
   return slide;
